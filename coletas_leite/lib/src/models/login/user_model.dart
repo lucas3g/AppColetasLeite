@@ -4,10 +4,12 @@ class UserModel {
   final String cnpj;
   final String login;
   final String senha;
+  String? nome;
   UserModel({
     this.cnpj = '',
     this.login = '',
     this.senha = '',
+    this.nome = '',
   });
 
   factory UserModel.login(UserModel account) {
@@ -15,6 +17,7 @@ class UserModel {
       cnpj: account.cnpj,
       login: account.login,
       senha: account.senha,
+      nome: account.nome,
     );
   }
 
@@ -22,11 +25,13 @@ class UserModel {
     String? cnpj,
     String? login,
     String? senha,
+    String? nome,
   }) {
     return UserModel(
       cnpj: cnpj ?? this.cnpj,
       login: login ?? this.login,
       senha: senha ?? this.senha,
+      nome: nome ?? this.nome,
     );
   }
 
@@ -35,6 +40,7 @@ class UserModel {
       'cnpj': cnpj,
       'login': login,
       'senha': senha,
+      'nome': nome,
     };
   }
 
@@ -43,6 +49,7 @@ class UserModel {
       cnpj: map['cnpj'] ?? '',
       login: map['login'] ?? '',
       senha: map['senha'] ?? '',
+      nome: map['nome'] ?? '',
     );
   }
 
@@ -52,7 +59,8 @@ class UserModel {
       UserModel.fromMap(json.decode(source));
 
   @override
-  String toString() => 'UserModel(cnpj: $cnpj, login: $login, senha: $senha)';
+  String toString() =>
+      'UserModel(cnpj: $cnpj, login: $login, senha: $senha, nome: $nome)';
 
   @override
   bool operator ==(Object other) {
@@ -61,9 +69,11 @@ class UserModel {
     return other is UserModel &&
         other.cnpj == cnpj &&
         other.login == login &&
-        other.senha == senha;
+        other.senha == senha &&
+        other.nome == nome;
   }
 
   @override
-  int get hashCode => cnpj.hashCode ^ login.hashCode ^ senha.hashCode;
+  int get hashCode =>
+      cnpj.hashCode ^ login.hashCode ^ senha.hashCode ^ nome.hashCode;
 }

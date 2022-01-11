@@ -22,6 +22,7 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
   @override
   void initState() {
     getRotas();
+
     super.initState();
   }
 
@@ -35,58 +36,60 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Observer(
-            builder: (_) => controller.status == RotasLeiteStatus.success
-                ? SingleChildScrollView(
-                    child: Column(
-                      children: (controller.rotas.map(
-                        (rota) => Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      TransportadorPage(
-                                    rota: rota.descricao,
-                                  ),
+          builder: (_) => controller.status == RotasLeiteStatus.success
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: (controller.rotas.map(
+                      (rota) => Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    TransportadorPage(
+                                  rota: rota.descricao,
+                                  id_rota: rota.id,
                                 ),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.directions_outlined),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Container(
-                                  child: Expanded(
-                                    child: Text(
-                                      rota.descricao,
-                                      style: AppTheme.textStyles.titleLogin
-                                          .copyWith(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.directions_outlined),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Container(
+                                child: Expanded(
+                                  child: Text(
+                                    rota.descricao,
+                                    style:
+                                        AppTheme.textStyles.titleLogin.copyWith(
+                                      fontSize: 20,
+                                      color: Colors.black,
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      )).toList(),
-                    ),
-                  )
-                : Container(
-                    child: Text('Nenhuma Rota Encontrada!'),
-                  )),
+                      ),
+                    )).toList(),
+                  ),
+                )
+              : Container(
+                  child: Text('Nenhuma Rota Encontrada!'),
+                ),
+        ),
       ),
     );
   }

@@ -61,6 +61,8 @@ abstract class _LoginControllerBase with Store {
 
         late String autorizado = 'N';
 
+        user.nome = jsonDecode(response.data)['nome'];
+
         if (response.data.toString().isNotEmpty) {
           autorizado = jsonDecode(response.data)['app_coleta'];
         } else {

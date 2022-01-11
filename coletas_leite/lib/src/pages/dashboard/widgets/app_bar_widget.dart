@@ -1,3 +1,5 @@
+import 'package:coletas_leite/src/configs/global_settings.dart';
+import 'package:coletas_leite/src/pages/configuracao/configuracao_page.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,8 +8,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
   final Size size;
   final BuildContext context;
 
-  const AppBarWidget({Key? key, required this.size, required this.context})
+  AppBarWidget({Key? key, required this.size, required this.context})
       : super(key: key);
+
+  final motorista = GlobalSettings().appSettings.user.nome;
 
   void confirmarSair() {
     showDialog(
@@ -123,56 +127,61 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 20,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: size.height * 0.04,
-                  ),
-                  child: Container(
-                    height: size.height * 0.05,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: size.width * 0.05,
-                        ),
-                        Spacer(),
-                        Text(
-                          'Coletas de Leite',
-                          style: AppTheme.textStyles.title,
-                          textAlign: TextAlign.center,
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(
-                            Icons.exit_to_app,
-                            color: Colors.white,
-                          ),
-                          onPressed: () async {
-                            confirmarSair();
-                          },
-                        )
-                      ],
-                    ),
-                  ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: size.height * 0.04,
                 ),
-                Text(
-                  'Motorista: Lucas Silva',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ConfiguracaoPage(),
+                            ),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.settings_rounded,
+                          color: Colors.white,
+                        )),
+                    Text(
+                      'Coletas Plus',
+                      style: AppTheme.textStyles.title,
+                      textAlign: TextAlign.center,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.exit_to_app,
+                        color: Colors.white,
+                      ),
+                      onPressed: () async {
+                        confirmarSair();
+                      },
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  'Motorista: $motorista',
                   style: AppTheme.textStyles.title.copyWith(fontSize: 16),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       );
 
   @override
   Size get preferredSize => size.height >= 850.99
-      ? Size.fromHeight(size.height * 0.14)
-      : Size.fromHeight(size.height * 0.16);
+      ? Size.fromHeight(size.height * 0.10)
+      : Size.fromHeight(size.height * 0.12);
 }

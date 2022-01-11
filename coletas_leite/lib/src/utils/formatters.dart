@@ -45,6 +45,13 @@ extension DataString on DateTime {
   }
 }
 
+extension DiaMesAnoString on DateTime {
+  String DiaMesAno() {
+    final format = DateFormat("d 'de' MMMM 'de' yyyy", 'pt_br');
+    return format.format(this);
+  }
+}
+
 extension DiaString on DateTime {
   String Dia() {
     final format = DateFormat('dd');
