@@ -3,6 +3,8 @@ import 'package:coletas_leite/src/components/el_input_widget.dart';
 import 'package:coletas_leite/src/controllers/login/login_controller.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -29,7 +31,31 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
       if (controllerLogin.status == LoginStatus.success) {
         await Future.delayed(Duration(seconds: 1));
         Navigator.pushReplacementNamed(context, '/dashboard');
-      } else if (controllerLogin.status == LoginStatus.error) {}
+      } else if (controllerLogin.status == LoginStatus.error) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message: 'Não Foi Possivel Fazer Login.Verifique seus Dados.',
+            type: TypeToast.error,
+            context: context);
+      } else if (controllerLogin.status == LoginStatus.semInternet) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message: 'Parece que você está sem Internet',
+            type: TypeToast.noNet,
+            context: context);
+      } else if (controllerLogin.status == LoginStatus.invalidCNPJ) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message: 'Você digitou um CNPJ inválido.',
+            type: TypeToast.dadosInv,
+            context: context);
+      } else if (controllerLogin.status == LoginStatus.naoAutorizado) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message: 'Seu usuário não tem permissão para acessar o aplicativo.',
+            type: TypeToast.dadosInv,
+            context: context);
+      }
     });
     super.initState();
   }

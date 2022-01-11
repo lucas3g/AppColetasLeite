@@ -14,7 +14,7 @@ abstract class AppTextStyles {
 
 class AppTextStylesDefault implements AppTextStyles {
   @override
-  TextStyle get button => GoogleFonts.inter(
+  TextStyle get button => GoogleFonts.roboto(
       fontSize: 16, fontWeight: FontWeight.w400, color: AppTheme.colors.button);
 
   @override

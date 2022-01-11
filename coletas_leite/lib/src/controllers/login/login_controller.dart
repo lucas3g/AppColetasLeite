@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/models/login/user_model.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:dio/dio.dart';
@@ -67,12 +68,12 @@ abstract class _LoginControllerBase with Store {
         }
 
         if (autorizado == 'S') {
-          //await GlobalSettings().appSettings.setLogado(conectado: 'S');
-          //await GlobalSettings().appSettings.setUser(user: user);
+          await GlobalSettings().appSettings.setLogado(conectado: 'S');
+          await GlobalSettings().appSettings.setUser(user: user);
           status = LoginStatus.success;
           await Future.delayed(Duration(seconds: 2));
         } else {
-          //await GlobalSettings().appSettings.setLogado(conectado: 'N');
+          await GlobalSettings().appSettings.setLogado(conectado: 'N');
           status = LoginStatus.naoAutorizado;
         }
         // print('EU SOU RESPONSE $autorizado');
@@ -82,7 +83,7 @@ abstract class _LoginControllerBase with Store {
         status = LoginStatus.empty;
       }
     } on DioError catch (e) {
-      //await GlobalSettings().appSettings.setLogado(conectado: 'N');
+      await GlobalSettings().appSettings.setLogado(conectado: 'N');
       status = LoginStatus.error;
       print('EU SOU O ERRO $e');
     }

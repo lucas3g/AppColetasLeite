@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -19,6 +22,13 @@ class _SplashPageState extends State<SplashPage> {
         inicializar();
       }
     } on SocketException catch (_) {
+      await GlobalSettings().appSettings.removeLogado();
+
+      MeuToast.toast(
+          title: 'Ops... :(',
+          message: 'Parece que você está sem Internet',
+          type: TypeToast.noNet,
+          context: context);
       Navigator.popAndPushNamed(context, '/login');
       return;
     }
@@ -26,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void inicializar() async {
     await Future.delayed(Duration(seconds: 2));
-    final String conectado = 'N';
+    final String conectado = GlobalSettings().appSettings.logado['conectado']!;
 
     if (conectado == 'N') {
       Navigator.pushReplacementNamed(context, '/login');

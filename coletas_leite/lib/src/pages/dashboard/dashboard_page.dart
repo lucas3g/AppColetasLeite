@@ -8,6 +8,20 @@ class DashBoardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(appBar: AppBarWidget(size: size, context: context));
+    return Scaffold(
+      appBar: AppBarWidget(size: size, context: context),
+      body: Container(
+        child: Center(
+          child: Text('Coletas Futuras'),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/rotas_leite');
+        },
+        child: Icon(Icons.add),
+        backgroundColor: AppTheme.colors.secondaryColor,
+      ),
+    );
   }
 }
