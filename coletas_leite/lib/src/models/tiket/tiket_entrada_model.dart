@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class TiketEntradaModel {
   int rota;
+  String? rota_nome;
   String nome;
   String municipios;
   String uf;
@@ -21,6 +22,7 @@ class TiketEntradaModel {
 
   TiketEntradaModel({
     required this.rota,
+    this.rota_nome,
     required this.nome,
     required this.municipios,
     required this.uf,
@@ -42,6 +44,7 @@ class TiketEntradaModel {
   TiketEntradaModel copyWith({
     int? rota,
     String? nome,
+    String? rota_nome,
     String? municipios,
     String? uf,
     int? clifor,
@@ -61,6 +64,7 @@ class TiketEntradaModel {
     return TiketEntradaModel(
       rota: rota ?? this.rota,
       nome: nome ?? this.nome,
+      rota_nome: rota_nome ?? this.rota_nome,
       municipios: municipios ?? this.municipios,
       uf: uf ?? this.uf,
       clifor: clifor ?? this.clifor,
@@ -83,6 +87,7 @@ class TiketEntradaModel {
     return {
       'rota': rota,
       'nome': nome,
+      'rota_nome': rota_nome,
       'municipios': municipios,
       'uf': uf,
       'clifor': clifor,
@@ -105,21 +110,18 @@ class TiketEntradaModel {
     return TiketEntradaModel(
       rota: map['rota']?.toInt() ?? 0,
       nome: map['nome'] ?? '',
+      rota_nome: map['rota_nome'] ?? '',
       municipios: map['municipios'] ?? '',
       uf: map['uf'] ?? '',
       clifor: map['clifor']?.toInt(),
       produto: map['produto']?.toInt(),
-      data: map['data'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['data'])
-          : null,
+      data: map['data'] != null ? DateTime.now() : null,
       tiket: map['tiket']?.toInt(),
       quantidade: map['quantidade']?.toInt() ?? 0,
       per_desconto: map['per_desconto']?.toDouble() ?? 0.0,
       ccusto: map['ccusto']?.toInt() ?? 0,
       crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
-      hora: map['hora'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['hora'])
-          : null,
+      hora: map['hora'] != null ? DateTime.now() : null,
       particao: map['particao']?.toInt() ?? 0,
       observacao: map['observacao'] ?? '',
       temperatura: map['temperatura']?.toDouble() ?? 0.0,

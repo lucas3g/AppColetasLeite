@@ -4,9 +4,9 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_status.dart';
 import 'package:coletas_leite/src/database/db.dart';
-import 'package:coletas_leite/src/models/coletas_clientes/coletas_clientes_model.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
 import 'package:coletas_leite/src/services/dio.dart';
+import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 part 'tiket_entrada_controller.g.dart';
@@ -54,85 +54,99 @@ abstract class _TiketEntradaControllerBase with Store {
   Future<void> geraTiketEntrada({required int rota}) async {
     try {
       await getTikets();
+
       status = TiketEntradaStatus.loading;
 
-      db = await DB.instance.database;
+      await insert(rota: rota);
 
-      await db.transaction((txn) async {
-        final List tiketsdb = await txn.query('agl_tiket_entrada');
-      });
-
-      await db.transaction((txn) async {
-        final List tiket = await txn.query('agl_tiket_entrada',
-            where: 'rota_coleta = ? and data = ?',
-            whereArgs: [rota, DateTime.now().toIso8601String()]);
-
-        if (tiket.isEmpty) {
-          for (var item in tikets) {
-            await txn.insert('agl_tiket_entrada', {
-              'clifor': item.clifor,
-              'produto': 0,
-              'data': DateTime.now().toIso8601String(),
-              'tiket': 1,
-              'quantidade': item.quantidade,
-              'per_desconto': 0.0,
-              'ccusto': 0,
-              'rota_coleta': rota,
-              'crioscopia': 0.0, //VER
-              'hora': DateTime.now().toIso8601String(),
-              'observacao': item.observacao,
-              'temperatura': item.temperatura,
-            });
-          }
-        }
-      });
-
-      tikets.clear();
-
-      await db.transaction((txn) async {
-        final List tiketsdb = await txn.query(
-          'agl_tiket_entrada',
-        );
-
-        for (var tik in tiketsdb) {
-          tikets.add(
-            TiketEntradaModel(
-              clifor: tik['clifor'],
-              uf: tik['uf'],
-              municipios: tik['municipios'],
-              rota: tik['rota_coleta'],
-              nome: tik['nome'],
-              ccusto: tik['ccusto'],
-              crioscopia: tik['crioscopia'],
-              data: DateTime.parse(tik['data']),
-              hora: DateTime.parse(tik['hora']),
-              observacao: tik['observaoca'],
-              id: tik['id'],
-              particao: tik['particao'],
-              per_desconto: tik['per_desconto'],
-              produto: tik['produto'],
-              quantidade: tik['quantidade'],
-              temperatura: tik['temperatura'],
-              tiket: tik['tiket'],
-            ),
-          );
-        }
-      });
+      await busca(rota: rota);
 
       if (tikets.isNotEmpty) {
         status = TiketEntradaStatus.success;
       } else {
         status = TiketEntradaStatus.error;
       }
-
-      status = TiketEntradaStatus.success;
     } catch (e) {
       status = TiketEntradaStatus.error;
+      print('eu sou o erro $e');
     }
   }
 
+  Future<void> insert({required int rota}) async {
+    db = await DB.instance.database;
+
+    await db.transaction((txn) async {
+      final List tiket = await txn.query('agl_tiket_entrada',
+          where: 'rota_coleta = ? and data = ?',
+          whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
+
+      if (tiket.isEmpty) {
+        for (var item in tikets) {
+          await txn.insert('agl_tiket_entrada', {
+            'clifor': item.clifor,
+            'uf': item.uf,
+            'municipios': item.municipios,
+            'nome': item.nome,
+            'produto': 0,
+            'data': DateTime.now().DiaMesAnoDB(),
+            'tiket': 1,
+            'quantidade': item.quantidade,
+            'per_desconto': 0.0,
+            'ccusto': 0,
+            'rota_coleta': rota,
+            'crioscopia': 0.0, //VER
+            'hora': DateTime.now().DiaMesAnoDB(),
+            'particao': 1,
+            'observacao': item.observacao,
+            'temperatura': item.temperatura,
+          });
+        }
+      }
+    });
+
+    db.close();
+  }
+
+  Future<void> busca({required int rota}) async {
+    db = await DB.instance.database;
+
+    tikets.clear();
+
+    List tiketsdb = await db.query('agl_tiket_entrada',
+        where:
+            'rota_coleta = ? and data = ? and quantidade = 0 and temperatura = 0.0',
+        whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
+
+    if (tiketsdb.isNotEmpty)
+      for (var tik in tiketsdb) {
+        tikets.add(
+          TiketEntradaModel(
+            clifor: tik['clifor'],
+            uf: tik['uf'],
+            municipios: tik['municipios'],
+            rota: tik['rota_coleta'],
+            nome: tik['nome'],
+            ccusto: tik['ccusto'],
+            crioscopia: tik['crioscopia'],
+            data: DateTime.tryParse(tik['data']),
+            hora: DateTime.tryParse(tik['hora']),
+            observacao: tik['observaoca'],
+            id: tik['id'],
+            particao: tik['particao'],
+            per_desconto: tik['per_desconto'],
+            produto: tik['produto'],
+            quantidade: tik['quantidade'],
+            temperatura: tik['temperatura'],
+            tiket: tik['tiket'],
+          ),
+        );
+      }
+
+    db.close();
+  }
+
   @action
-  Future<void> atualizaTiket({required ColetasClientesModel coleta}) async {
+  Future<void> atualizaTiket({required TiketEntradaModel coleta}) async {
     try {
       db = await DB.instance.database;
       await db.transaction((txn) async {
@@ -154,6 +168,8 @@ abstract class _TiketEntradaControllerBase with Store {
       });
       status = TiketEntradaStatus.loading;
       status = TiketEntradaStatus.success;
-    } catch (e) {}
+    } catch (e) {
+      print('eu sou o erro ao atualizar $e');
+    }
   }
 }

@@ -37,55 +37,60 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
         padding: const EdgeInsets.all(20),
         child: Observer(
           builder: (_) => controller.status == RotasLeiteStatus.success
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: (controller.rotas.map(
-                      (rota) => Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    TransportadorPage(
-                                  rota: rota.descricao,
-                                  id_rota: rota.id,
-                                ),
+              ? ListView.separated(
+                  itemBuilder: (_, int index) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: (controller.rotas[index].rota_finalizada == 1
+                                ? true
+                                : false)
+                            ? Colors.white
+                            : Colors.grey,
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  TransportadorPage(
+                                rota: controller.rotas[index].descricao,
+                                id_rota: controller.rotas[index].id,
                               ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.directions_outlined),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Container(
-                                child: Expanded(
-                                  child: Text(
-                                    rota.descricao,
-                                    style:
-                                        AppTheme.textStyles.titleLogin.copyWith(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
+                          );
+                        },
+                        minLeadingWidth: 10,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        leading: Container(
+                          height: double.maxFinite,
+                          child: Icon(
+                            Icons.directions_outlined,
+                            color: Colors.black,
                           ),
                         ),
+                        title: Text(
+                          controller.rotas[index].id.toString() +
+                              ' - ' +
+                              controller.rotas[index].descricao,
+                          style: AppTheme.textStyles.titleLogin.copyWith(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                        enabled: (controller.rotas[index].rota_finalizada == 1
+                            ? true
+                            : false),
                       ),
-                    )).toList(),
-                  ),
-                )
+                    );
+                  },
+                  separatorBuilder: (_, int index) => SizedBox(
+                        height: 15,
+                      ),
+                  itemCount: controller.rotas.length)
               : Container(
                   child: Text('Nenhuma Rota Encontrada!'),
                 ),

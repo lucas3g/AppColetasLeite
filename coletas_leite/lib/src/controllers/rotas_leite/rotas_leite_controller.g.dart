@@ -47,6 +47,15 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
     return _$getRotasAsyncAction.run(() => super.getRotas());
   }
 
+  final _$retornaRotaFinalizadaAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.retornaRotaFinalizada');
+
+  @override
+  Future<void> retornaRotaFinalizada({required RotasLeiteModel rotaf}) {
+    return _$retornaRotaFinalizadaAsyncAction
+        .run(() => super.retornaRotaFinalizada(rotaf: rotaf));
+  }
+
   @override
   String toString() {
     return '''

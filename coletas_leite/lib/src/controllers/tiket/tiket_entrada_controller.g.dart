@@ -60,7 +60,7 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
       AsyncAction('_TiketEntradaControllerBase.atualizaTiket');
 
   @override
-  Future<void> atualizaTiket({required ColetasClientesModel coleta}) {
+  Future<void> atualizaTiket({required TiketEntradaModel coleta}) {
     return _$atualizaTiketAsyncAction
         .run(() => super.atualizaTiket(coleta: coleta));
   }

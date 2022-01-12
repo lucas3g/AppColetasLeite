@@ -1,4 +1,3 @@
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
@@ -33,6 +32,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
   void iniciaRota({required String caminhao, required int km_inicio}) async {
     await controllerColetas.iniciaColeta(
         rota: widget.id_rota,
+        rota_nome: widget.rota,
         motorista: motorista!,
         caminhao: caminhao,
         km_inicio: km_inicio);
@@ -170,11 +170,13 @@ class _TransportadorPageState extends State<TransportadorPage> {
                     GestureDetector(
                       onTap: () {
                         iniciaRota(caminhao: caminhao, km_inicio: km_inicio);
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => ColetasPage(
                               id_rota: widget.id_rota,
+                              coleta: controllerColetas.coletas,
                             ),
                           ),
                         );

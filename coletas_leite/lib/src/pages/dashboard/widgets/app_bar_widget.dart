@@ -1,5 +1,5 @@
 import 'package:coletas_leite/src/configs/global_settings.dart';
-import 'package:coletas_leite/src/pages/configuracao/configuracao_page.dart';
+import 'package:coletas_leite/src/pages/imprimir_ticket/imprimir.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -142,8 +142,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ConfiguracaoPage(),
+                              builder: (BuildContext context) => ImprimirPage(),
                             ),
                           );
                         },

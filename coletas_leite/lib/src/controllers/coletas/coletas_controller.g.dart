@@ -60,11 +60,13 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
   @override
   Future<void> iniciaColeta(
       {required int rota,
+      required String rota_nome,
       required String motorista,
       required String caminhao,
       required int km_inicio}) {
     return _$iniciaColetaAsyncAction.run(() => super.iniciaColeta(
         rota: rota,
+        rota_nome: rota_nome,
         motorista: motorista,
         caminhao: caminhao,
         km_inicio: km_inicio));
@@ -76,6 +78,15 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
   @override
   Future<void> getColetas() {
     return _$getColetasAsyncAction.run(() => super.getColetas());
+  }
+
+  final _$finalizaColetaAsyncAction =
+      AsyncAction('_ColetasControllerBase.finalizaColeta');
+
+  @override
+  Future<void> finalizaColeta({required ColetasModel coleta}) {
+    return _$finalizaColetaAsyncAction
+        .run(() => super.finalizaColeta(coleta: coleta));
   }
 
   @override

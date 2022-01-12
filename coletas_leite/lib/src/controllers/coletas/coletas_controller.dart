@@ -22,6 +22,7 @@ abstract class _ColetasControllerBase with Store {
   @action
   Future<void> iniciaColeta(
       {required int rota,
+      required String rota_nome,
       required String motorista,
       required String caminhao,
       required int km_inicio}) async {
@@ -41,6 +42,7 @@ abstract class _ColetasControllerBase with Store {
           await txn.insert('agl_coleta', {
             'data_mov': DateTime.now().toIso8601String(),
             'rota_coleta': rota,
+            'rota_nome': rota_nome,
             'km_inicio': km_inicio,
             'km_fim': 0,
             'dt_hora_ini': DateTime.now().toIso8601String(),
@@ -49,9 +51,10 @@ abstract class _ColetasControllerBase with Store {
             'motorista': motorista,
             'ccusto': 0,
             'rota_finalizada': 0,
-          });
+          }).then((value) => coletas.id = value);
         }
       });
+      status = ColetasStatus.success;
     } catch (e) {
       status = ColetasStatus.error;
     }
@@ -78,9 +81,11 @@ abstract class _ColetasControllerBase with Store {
             dt_hora_fim: DateTime.parse(item['dt_hora_fim']),
             transportador: item['transportador'],
             rota_finalizada: item['rota_finalizada'],
+            rota_nome: item['rota_nome'],
             km_inicio: item['km_inicio'],
             km_fim: item['km_fim'],
             ccusto: item['ccusto'],
+            id: item['id'],
           ),
         );
       }
@@ -92,6 +97,57 @@ abstract class _ColetasControllerBase with Store {
     } catch (e) {
       print('CAIU AQUI O ERRO DA PESQUISA $e');
       status = ColetasStatus.error;
+    }
+  }
+
+  @action
+  Future<void> finalizaColeta({required ColetasModel coleta}) async {
+    try {
+      status = ColetasStatus.loading;
+
+      db = await DB.instance.database;
+
+      await db.transaction((txn) async {
+        final col = await txn
+            .query('agl_coleta', where: 'id = ?', whereArgs: [coleta.id]);
+
+        if (col.isNotEmpty) {
+          await txn.update(
+              'agl_coleta',
+              {
+                'rota_finalizada': 1,
+                'dt_hora_fim': DateTime.now().toIso8601String(),
+                'km_fim': coleta.km_fim
+              },
+              where: 'id = ?',
+              whereArgs: [coleta.id]);
+        }
+
+        status = ColetasStatus.success;
+      });
+    } catch (e) {
+      status = ColetasStatus.error;
+      rethrow;
+    }
+  }
+
+  @action
+  Future<bool> retornaRotaFinalizada({required int id}) async {
+    try {
+      status = ColetasStatus.loading;
+
+      db = await DB.instance.database;
+
+      List coleta =
+          await db.query('agl_coleta', where: 'id = ?', whereArgs: [id]);
+
+      if (coleta[0]['rota_finalizada'] == 1) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }
