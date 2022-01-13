@@ -8,18 +8,18 @@ class TiketEntradaModel {
   String uf;
   int? clifor;
   int? produto;
-  DateTime? data;
+  String? data;
   int? tiket;
   int? quantidade;
   double? per_desconto;
   int? ccusto;
   double? crioscopia;
-  DateTime? hora;
+  String? hora;
   int? particao;
   String? observacao;
   double? temperatura;
   int? id;
-
+  int? id_coleta;
   TiketEntradaModel({
     required this.rota,
     this.rota_nome,
@@ -39,32 +39,34 @@ class TiketEntradaModel {
     this.observacao,
     this.temperatura,
     this.id,
+    this.id_coleta,
   });
 
   TiketEntradaModel copyWith({
     int? rota,
-    String? nome,
     String? rota_nome,
+    String? nome,
     String? municipios,
     String? uf,
     int? clifor,
     int? produto,
-    DateTime? data,
+    String? data,
     int? tiket,
     int? quantidade,
     double? per_desconto,
     int? ccusto,
     double? crioscopia,
-    DateTime? hora,
+    String? hora,
     int? particao,
     String? observacao,
     double? temperatura,
     int? id,
+    int? id_coleta,
   }) {
     return TiketEntradaModel(
       rota: rota ?? this.rota,
-      nome: nome ?? this.nome,
       rota_nome: rota_nome ?? this.rota_nome,
+      nome: nome ?? this.nome,
       municipios: municipios ?? this.municipios,
       uf: uf ?? this.uf,
       clifor: clifor ?? this.clifor,
@@ -80,52 +82,55 @@ class TiketEntradaModel {
       observacao: observacao ?? this.observacao,
       temperatura: temperatura ?? this.temperatura,
       id: id ?? this.id,
+      id_coleta: id_coleta ?? this.id_coleta,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'rota': rota,
-      'nome': nome,
       'rota_nome': rota_nome,
+      'nome': nome,
       'municipios': municipios,
       'uf': uf,
       'clifor': clifor,
       'produto': produto,
-      'data': data?.millisecondsSinceEpoch,
+      'data': data,
       'tiket': tiket,
       'quantidade': quantidade,
       'per_desconto': per_desconto,
       'ccusto': ccusto,
       'crioscopia': crioscopia,
-      'hora': hora?.millisecondsSinceEpoch,
+      'hora': hora,
       'particao': particao,
       'observacao': observacao,
       'temperatura': temperatura,
       'id': id,
+      'id_coleta': id_coleta,
     };
   }
 
   factory TiketEntradaModel.fromMap(Map<String, dynamic> map) {
     return TiketEntradaModel(
       rota: map['rota']?.toInt() ?? 0,
-      nome: map['nome'] ?? '',
       rota_nome: map['rota_nome'] ?? '',
+      nome: map['nome'] ?? '',
       municipios: map['municipios'] ?? '',
       uf: map['uf'] ?? '',
-      clifor: map['clifor']?.toInt(),
-      produto: map['produto']?.toInt(),
-      data: map['data'] != null ? DateTime.now() : null,
-      tiket: map['tiket']?.toInt(),
+      clifor: map['clifor']?.toInt() ?? 0,
+      produto: map['produto']?.toInt() ?? 0,
+      data: map['data'] ?? '',
+      tiket: map['tiket']?.toInt() ?? 0,
       quantidade: map['quantidade']?.toInt() ?? 0,
       per_desconto: map['per_desconto']?.toDouble() ?? 0.0,
       ccusto: map['ccusto']?.toInt() ?? 0,
       crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
-      hora: map['hora'] != null ? DateTime.now() : null,
+      hora: map['hora'] ?? '',
       particao: map['particao']?.toInt() ?? 0,
       observacao: map['observacao'] ?? '',
       temperatura: map['temperatura']?.toDouble() ?? 0.0,
       id: map['id']?.toInt() ?? 0,
+      id_coleta: map['id_coleta']?.toInt() ?? 0,
     );
   }
 
@@ -136,7 +141,7 @@ class TiketEntradaModel {
 
   @override
   String toString() {
-    return 'TiketEntradaModel(rota: $rota, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id)';
+    return 'TiketEntradaModel(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
   }
 
   @override
@@ -145,6 +150,7 @@ class TiketEntradaModel {
 
     return other is TiketEntradaModel &&
         other.rota == rota &&
+        other.rota_nome == rota_nome &&
         other.nome == nome &&
         other.municipios == municipios &&
         other.uf == uf &&
@@ -160,12 +166,14 @@ class TiketEntradaModel {
         other.particao == particao &&
         other.observacao == observacao &&
         other.temperatura == temperatura &&
-        other.id == id;
+        other.id == id &&
+        other.id_coleta == id_coleta;
   }
 
   @override
   int get hashCode {
     return rota.hashCode ^
+        rota_nome.hashCode ^
         nome.hashCode ^
         municipios.hashCode ^
         uf.hashCode ^
@@ -181,6 +189,7 @@ class TiketEntradaModel {
         particao.hashCode ^
         observacao.hashCode ^
         temperatura.hashCode ^
-        id.hashCode;
+        id.hashCode ^
+        id_coleta.hashCode;
   }
 }

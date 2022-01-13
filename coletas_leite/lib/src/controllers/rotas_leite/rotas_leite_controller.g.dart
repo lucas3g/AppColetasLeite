@@ -47,6 +47,22 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
     return _$getRotasAsyncAction.run(() => super.getRotas());
   }
 
+  final _$gravaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.gravaRotas');
+
+  @override
+  Future<void> gravaRotas() {
+    return _$gravaRotasAsyncAction.run(() => super.gravaRotas());
+  }
+
+  final _$buscaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.buscaRotas');
+
+  @override
+  Future<void> buscaRotas() {
+    return _$buscaRotasAsyncAction.run(() => super.buscaRotas());
+  }
+
   final _$retornaRotaFinalizadaAsyncAction =
       AsyncAction('_RotasLeiteControllerBase.retornaRotaFinalizada');
 

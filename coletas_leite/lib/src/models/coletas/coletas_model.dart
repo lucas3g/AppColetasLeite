@@ -1,18 +1,19 @@
 import 'dart:convert';
 
 class ColetasModel {
-  DateTime? data_mov;
+  String? data_mov;
   int? rota_coleta;
   String? rota_nome;
   int? km_inicio;
   int? km_fim;
-  DateTime? dt_hora_ini;
-  DateTime? dt_hora_fim;
+  String? dt_hora_ini;
+  String? dt_hora_fim;
   String? transportador;
   String? motorista;
   int? ccusto;
   int? rota_finalizada;
   int? id;
+
   ColetasModel({
     this.data_mov,
     this.rota_coleta,
@@ -29,13 +30,13 @@ class ColetasModel {
   });
 
   ColetasModel copyWith({
-    DateTime? data_mov,
+    String? data_mov,
     int? rota_coleta,
     String? rota_nome,
     int? km_inicio,
     int? km_fim,
-    DateTime? dt_hora_ini,
-    DateTime? dt_hora_fim,
+    String? dt_hora_ini,
+    String? dt_hora_fim,
     String? transportador,
     String? motorista,
     int? ccusto,
@@ -60,13 +61,13 @@ class ColetasModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'data_mov': data_mov?.millisecondsSinceEpoch,
+      'data_mov': data_mov,
       'rota_coleta': rota_coleta,
       'rota_nome': rota_nome,
       'km_inicio': km_inicio,
       'km_fim': km_fim,
-      'dt_hora_ini': dt_hora_ini?.millisecondsSinceEpoch,
-      'dt_hora_fim': dt_hora_fim?.millisecondsSinceEpoch,
+      'dt_hora_ini': dt_hora_ini,
+      'dt_hora_fim': dt_hora_fim,
       'transportador': transportador,
       'motorista': motorista,
       'ccusto': ccusto,
@@ -77,19 +78,13 @@ class ColetasModel {
 
   factory ColetasModel.fromMap(Map<String, dynamic> map) {
     return ColetasModel(
-      data_mov: map['data_mov'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['data_mov'])
-          : null,
+      data_mov: map['data_mov'],
       rota_coleta: map['rota_coleta']?.toInt(),
       rota_nome: map['rota_nome'],
       km_inicio: map['km_inicio']?.toInt(),
       km_fim: map['km_fim']?.toInt(),
-      dt_hora_ini: map['dt_hora_ini'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['dt_hora_ini'])
-          : null,
-      dt_hora_fim: map['dt_hora_fim'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['dt_hora_fim'])
-          : null,
+      dt_hora_ini: map['dt_hora_ini'],
+      dt_hora_fim: map['dt_hora_fim'],
       transportador: map['transportador'],
       motorista: map['motorista'],
       ccusto: map['ccusto']?.toInt(),

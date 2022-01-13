@@ -29,15 +29,6 @@ class _TransportadorPageState extends State<TransportadorPage> {
     if (controller.transp.isEmpty) await controller.getTransp();
   }
 
-  void iniciaRota({required String caminhao, required int km_inicio}) async {
-    await controllerColetas.iniciaColeta(
-        rota: widget.id_rota,
-        rota_nome: widget.rota,
-        motorista: motorista!,
-        caminhao: caminhao,
-        km_inicio: km_inicio);
-  }
-
   @override
   void initState() {
     getTransp();
@@ -167,44 +158,52 @@ class _TransportadorPageState extends State<TransportadorPage> {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        iniciaRota(caminhao: caminhao, km_inicio: km_inicio);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => ColetasPage(
-                              id_rota: widget.id_rota,
-                              coleta: controllerColetas.coletas,
+                    Observer(builder: (_) {
+                      return GestureDetector(
+                        onTap: () async {
+                          await controllerColetas.iniciaColeta(
+                              rota: widget.id_rota,
+                              rota_nome: widget.rota,
+                              motorista: motorista!,
+                              caminhao: caminhao,
+                              km_inicio: km_inicio);
+
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => ColetasPage(
+                                id_rota: widget.id_rota,
+                                coleta: controllerColetas.coletas,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: PhysicalModel(
-                        color: Colors.white,
-                        elevation: 8,
-                        shadowColor: AppTheme.colors.secondaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              'Iniciar Rota',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
+                          );
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: AppTheme.colors.secondaryColor,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                'Iniciar Rota',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
                             ),
-                          ),
-                          height: 45,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            color: AppTheme.colors.secondaryColor,
-                            borderRadius: BorderRadius.circular(20),
+                            height: 45,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: AppTheme.colors.secondaryColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 )
               ],

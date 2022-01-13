@@ -16,7 +16,7 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
   final controller = GlobalSettings().controllerRotas;
 
   void getRotas() async {
-    if (controller.rotas.isEmpty) await controller.getRotas();
+    await controller.getRotas();
   }
 
   @override
@@ -51,8 +51,8 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: ListTile(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
@@ -62,6 +62,7 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                               ),
                             ),
                           );
+                          controller.getRotas();
                         },
                         minLeadingWidth: 10,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),

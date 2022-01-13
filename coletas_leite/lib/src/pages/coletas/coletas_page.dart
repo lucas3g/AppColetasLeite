@@ -12,11 +12,11 @@ import 'package:coletas_leite/src/theme/app_theme.dart';
 
 class ColetasPage extends StatefulWidget {
   final int id_rota;
-  final ColetasModel? coleta;
+  final ColetasModel coleta;
   const ColetasPage({
     Key? key,
     required this.id_rota,
-    this.coleta,
+    required this.coleta,
   }) : super(key: key);
 
   @override
@@ -26,10 +26,11 @@ class ColetasPage extends StatefulWidget {
 class _ColetasPageState extends State<ColetasPage> {
   final controller = GlobalSettings().controllerTiket;
   final controllerColeta = GlobalSettings().controllerColetas;
-  String dropdownValue = '1';
+  int dropdownValue = 1;
 
   void gravaTikets() async {
-    await controller.geraTiketEntrada(rota: widget.id_rota);
+    await controller.geraTiketEntrada(
+        rota: widget.id_rota, id_coleta: widget.coleta.id!);
   }
 
   @override
@@ -42,7 +43,7 @@ class _ColetasPageState extends State<ColetasPage> {
   @override
   Widget build(BuildContext context) {
     void modalColeta({required TiketEntradaModel tiket}) {
-      dropdownValue = tiket.particao.toString();
+      dropdownValue = tiket.particao!;
       showDialog(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -63,10 +64,13 @@ class _ColetasPageState extends State<ColetasPage> {
                     Column(
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              'Quantidade LT',
+                            Row(
+                              children: [
+                                Text(
+                                  'Quantidade LT',
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 10,
@@ -78,8 +82,8 @@ class _ColetasPageState extends State<ColetasPage> {
                               onChanged: (value) {
                                 tiket.quantidade = int.tryParse(value);
                               },
+                              keyboardType: TextInputType.number,
                               initialValue: tiket.quantidade!.toString(),
-                              textAlign: TextAlign.end,
                               cursorColor: AppTheme.colors.secondaryColor,
                               style: AppTheme.textStyles.title.copyWith(
                                   fontSize: 16,
@@ -118,12 +122,10 @@ class _ColetasPageState extends State<ColetasPage> {
                               style: AppTheme.textStyles.title.copyWith(
                                   fontSize: 16,
                                   color: AppTheme.colors.secondaryColor),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
                               onChanged: (value) {
                                 tiket.temperatura = double.tryParse(value);
                               },
+                              keyboardType: TextInputType.number,
                               initialValue: tiket.temperatura!.toString(),
                               textAlign: TextAlign.start,
                               cursorColor: AppTheme.colors.secondaryColor,
@@ -146,20 +148,45 @@ class _ColetasPageState extends State<ColetasPage> {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Checkbox(
-                                    value: true,
-                                    onChanged: (_) {},
-                                    activeColor: AppTheme.colors.secondaryColor,
-                                  ),
-                                  Text('Alizarol')
-                                ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Crioscopia',
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              style: AppTheme.textStyles.title.copyWith(
+                                  fontSize: 16,
+                                  color: AppTheme.colors.secondaryColor),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onChanged: (value) {
+                                tiket.crioscopia = double.tryParse(value);
+                              },
+                              keyboardType: TextInputType.number,
+                              initialValue: tiket.crioscopia!.toString(),
+                              textAlign: TextAlign.start,
+                              cursorColor: AppTheme.colors.secondaryColor,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: AppTheme.colors.secondaryColor),
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -289,9 +316,10 @@ class _ColetasPageState extends State<ColetasPage> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            setState(() {});
                             await controller.atualizaTiket(coleta: tiket);
+                            controller.imprimirTicket(tiket: tiket);
                             Navigator.pop(context);
+                            setState(() {});
                           },
                           child: PhysicalModel(
                             color: Colors.white,
@@ -328,7 +356,8 @@ class _ColetasPageState extends State<ColetasPage> {
       );
     }
 
-    void confirmaFinalizacao({required ColetasModel coleta}) {
+    void confirmaFinalizacao(
+        {required ColetasModel coleta, required BuildContext context}) {
       showDialog(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -358,6 +387,15 @@ class _ColetasPageState extends State<ColetasPage> {
                       height: 10,
                     ),
                     TextFormField(
+                      validator: (value) {
+                        value!.isEmpty
+                            ? MeuToast.toast(
+                                title: 'Teste',
+                                message: 'message',
+                                type: TypeToast.error,
+                                context: context)
+                            : '';
+                      },
                       onChanged: (value) {
                         coleta.km_fim = int.tryParse(value);
                       },
@@ -422,7 +460,7 @@ class _ColetasPageState extends State<ColetasPage> {
                           onTap: () async {
                             setState(() {});
                             await controllerColeta.finalizaColeta(
-                                coleta: widget.coleta!);
+                                coleta: widget.coleta);
 
                             Navigator.popAndPushNamed(context, '/dashboard');
 
@@ -594,7 +632,7 @@ class _ColetasPageState extends State<ColetasPage> {
                   ),
                 ),
                 onPressed: () {
-                  confirmaFinalizacao(coleta: widget.coleta!);
+                  confirmaFinalizacao(coleta: widget.coleta, context: context);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

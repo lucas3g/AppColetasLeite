@@ -54,22 +54,35 @@ abstract class _LoginControllerBase with Store {
         final authConfig =
             jsonEncode({'USUARIO': user.login, 'SENHA': user.senha});
 
-        final response = await MeuDio.dio().post(
-          '/login/${UtilBrasilFields.removeCaracteres(user.cnpj.substring(0, 10))}',
-          data: authConfig,
-        );
+        final Response<dynamic> response =
+            await GlobalSettings.recursiveFunction(
+                function: () {
+                  try {
+                    final response = MeuDio.dio().post(
+                      '/login/${UtilBrasilFields.removeCaracteres(user.cnpj.substring(0, 10))}',
+                      data: authConfig,
+                    );
+                    return response;
+                  } on DioError catch (e) {
+                    print('EU SOU O ERRO DO DIO $e');
+                  }
+                },
+                quantity: 0,
+                callback: () {
+                  status = LoginStatus.error;
+                  return;
+                });
 
         late String autorizado = 'N';
 
-        user.nome = jsonDecode(response.data)['nome'];
-
-        if (response.data.toString().isNotEmpty) {
+        if (response.data.isNotEmpty) {
           autorizado = jsonDecode(response.data)['app_coleta'];
         } else {
           autorizado = 'N';
         }
 
         if (autorizado == 'S') {
+          user.nome = jsonDecode(response.data)['nome'];
           await GlobalSettings().appSettings.setLogado(conectado: 'S');
           await GlobalSettings().appSettings.setUser(user: user);
           status = LoginStatus.success;
@@ -81,6 +94,7 @@ abstract class _LoginControllerBase with Store {
         // print('EU SOU RESPONSE $autorizado');
       } else {
         status = LoginStatus.error;
+        await GlobalSettings().appSettings.setLogado(conectado: 'N');
         await Future.delayed(Duration(seconds: 2));
         status = LoginStatus.empty;
       }

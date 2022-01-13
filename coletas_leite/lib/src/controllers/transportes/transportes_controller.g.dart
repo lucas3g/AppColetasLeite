@@ -47,6 +47,22 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
     return _$getTranspAsyncAction.run(() => super.getTransp());
   }
 
+  final _$gravaCaminhoesAsyncAction =
+      AsyncAction('_TransportesControllerBase.gravaCaminhoes');
+
+  @override
+  Future<void> gravaCaminhoes() {
+    return _$gravaCaminhoesAsyncAction.run(() => super.gravaCaminhoes());
+  }
+
+  final _$buscaCaminhoesAsyncAction =
+      AsyncAction('_TransportesControllerBase.buscaCaminhoes');
+
+  @override
+  Future<void> buscaCaminhoes() {
+    return _$buscaCaminhoesAsyncAction.run(() => super.buscaCaminhoes());
+  }
+
   @override
   String toString() {
     return '''

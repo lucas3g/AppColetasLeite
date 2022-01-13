@@ -25,6 +25,8 @@ class DB {
   _onCreate(db, versao) async {
     await db.execute(_coletas);
     await db.execute(_tiket);
+    await db.execute(_rotas);
+    await db.execute(_caminhoes);
   }
 
   String get _coletas => '''
@@ -47,6 +49,7 @@ class DB {
   String get _tiket => '''
     CREATE TABLE agl_tiket_entrada(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id_coleta INT,
       clifor INT,
       uf TEXT,
       municipios TEXT,
@@ -63,6 +66,22 @@ class DB {
       particao INT,
       observacao TEXT,
       temperatura REAL
+    )
+  ''';
+
+  String get _rotas => '''
+    CREATE TABLE rotas(
+      id INT,
+      descricao TEXT,
+      transportador TEXT,
+      rota_finalizada INT
+    )
+  ''';
+
+  String get _caminhoes => '''
+    CREATE TABLE rotas(
+      placa TEXT,
+      descricao TEXT
     )
   ''';
 }

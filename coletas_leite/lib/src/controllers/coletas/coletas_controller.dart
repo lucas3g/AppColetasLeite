@@ -1,6 +1,7 @@
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/database/db.dart';
 import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
+import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 part 'coletas_controller.g.dart';
@@ -33,30 +34,60 @@ abstract class _ColetasControllerBase with Store {
 
       db = await DB.instance.database;
 
+      late int id_gerado = 0;
+
       await db.transaction((txn) async {
         final coleta = await txn.query('agl_coleta',
             where: 'rota_coleta = ? and rota_finalizada = 0 and data_mov = ?',
-            whereArgs: [rota, DateTime.now().toIso8601String()]);
+            whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
 
         if (coleta.isEmpty) {
-          await txn.insert('agl_coleta', {
-            'data_mov': DateTime.now().toIso8601String(),
+          id_gerado = await txn.insert('agl_coleta', {
+            'data_mov': DateTime.now().DiaMesAnoDB(),
             'rota_coleta': rota,
             'rota_nome': rota_nome,
             'km_inicio': km_inicio,
             'km_fim': 0,
-            'dt_hora_ini': DateTime.now().toIso8601String(),
-            'dt_hora_fim': DateTime.now().toIso8601String(),
+            'dt_hora_ini': DateTime.now().hour.toString() +
+                ':' +
+                DateTime.now().minute.toString(),
+            'dt_hora_fim': '',
             'transportador': caminhao,
             'motorista': motorista,
             'ccusto': 0,
             'rota_finalizada': 0,
-          }).then((value) => coletas.id = value);
+          });
         }
       });
+
+      db.close();
+
+      db = await DB.instance.database;
+
+      List coleta =
+          await db.query('agl_coleta', where: 'id = ?', whereArgs: [id_gerado]);
+
+      for (var item in coleta) {
+        coletas.data_mov = item['data_mov'];
+        coletas.rota_coleta = item['rota_coleta'];
+        coletas.motorista = item['motorista'];
+        coletas.dt_hora_ini = item['dt_hora_ini'];
+        coletas.dt_hora_fim = item['dt_hora_fim'];
+        coletas.transportador = item['transportador'];
+        coletas.rota_finalizada = item['rota_finalizada'];
+        coletas.rota_nome = item['rota_nome'];
+        coletas.km_inicio = item['km_inicio'];
+        coletas.km_fim = item['km_fim'];
+        coletas.ccusto = item['ccusto'];
+        coletas.id = item['id'];
+      }
+
+      db.close();
+
       status = ColetasStatus.success;
     } catch (e) {
       status = ColetasStatus.error;
+      rethrow;
     }
   }
 
@@ -74,11 +105,11 @@ abstract class _ColetasControllerBase with Store {
       for (var item in coleta) {
         ListaColetas.add(
           ColetasModel(
-            data_mov: DateTime.parse(item['data_mov']),
+            data_mov: item['data_mov'],
             rota_coleta: item['rota_coleta'],
             motorista: item['motorista'],
-            dt_hora_ini: DateTime.parse(item['dt_hora_ini']),
-            dt_hora_fim: DateTime.parse(item['dt_hora_fim']),
+            dt_hora_ini: item['dt_hora_ini'],
+            dt_hora_fim: item['dt_hora_fim'],
             transportador: item['transportador'],
             rota_finalizada: item['rota_finalizada'],
             rota_nome: item['rota_nome'],
@@ -116,7 +147,9 @@ abstract class _ColetasControllerBase with Store {
               'agl_coleta',
               {
                 'rota_finalizada': 1,
-                'dt_hora_fim': DateTime.now().toIso8601String(),
+                'dt_hora_fim': DateTime.now().hour.toString() +
+                    ':' +
+                    DateTime.now().minute.toString(),
                 'km_fim': coleta.km_fim
               },
               where: 'id = ?',

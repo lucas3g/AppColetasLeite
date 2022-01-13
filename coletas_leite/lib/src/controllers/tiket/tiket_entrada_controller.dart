@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_status.dart';
@@ -16,6 +17,8 @@ class TiketEntradaController = _TiketEntradaControllerBase
 
 abstract class _TiketEntradaControllerBase with Store {
   late Database db;
+  late BluetoothDevice? device;
+  late BlueThermalPrinter printer = BlueThermalPrinter.instance;
 
   @observable
   ObservableList<TiketEntradaModel> tikets = ObservableList.of([]);
@@ -51,15 +54,16 @@ abstract class _TiketEntradaControllerBase with Store {
   }
 
   @action
-  Future<void> geraTiketEntrada({required int rota}) async {
+  Future<void> geraTiketEntrada(
+      {required int rota, required int id_coleta}) async {
     try {
       await getTikets();
 
       status = TiketEntradaStatus.loading;
 
-      await insert(rota: rota);
+      await insert(rota: rota, id_coleta: id_coleta);
 
-      await busca(rota: rota);
+      await busca(rota: rota, id_coleta: id_coleta);
 
       if (tikets.isNotEmpty) {
         status = TiketEntradaStatus.success;
@@ -72,13 +76,13 @@ abstract class _TiketEntradaControllerBase with Store {
     }
   }
 
-  Future<void> insert({required int rota}) async {
+  Future<void> insert({required int rota, required int id_coleta}) async {
     db = await DB.instance.database;
 
     await db.transaction((txn) async {
       final List tiket = await txn.query('agl_tiket_entrada',
-          where: 'rota_coleta = ? and data = ?',
-          whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
+          where: 'rota_coleta = ? and data = ? and id_coleta = ?',
+          whereArgs: [rota, DateTime.now().DiaMesAnoDB(), id_coleta]);
 
       if (tiket.isEmpty) {
         for (var item in tikets) {
@@ -94,8 +98,11 @@ abstract class _TiketEntradaControllerBase with Store {
             'per_desconto': 0.0,
             'ccusto': 0,
             'rota_coleta': rota,
-            'crioscopia': 0.0, //VER
-            'hora': DateTime.now().DiaMesAnoDB(),
+            'id_coleta': id_coleta,
+            'crioscopia': item.crioscopia,
+            'hora': DateTime.now().hour.toString() +
+                ':' +
+                DateTime.now().minute.toString(),
             'particao': 1,
             'observacao': item.observacao,
             'temperatura': item.temperatura,
@@ -107,15 +114,14 @@ abstract class _TiketEntradaControllerBase with Store {
     db.close();
   }
 
-  Future<void> busca({required int rota}) async {
+  Future<void> busca({required int rota, required int id_coleta}) async {
     db = await DB.instance.database;
 
     tikets.clear();
 
     List tiketsdb = await db.query('agl_tiket_entrada',
-        where:
-            'rota_coleta = ? and data = ? and quantidade = 0 and temperatura = 0.0',
-        whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
+        where: 'rota_coleta = ? and data = ? and id_coleta = ?',
+        whereArgs: [rota, DateTime.now().DiaMesAnoDB(), id_coleta]);
 
     if (tiketsdb.isNotEmpty)
       for (var tik in tiketsdb) {
@@ -128,8 +134,8 @@ abstract class _TiketEntradaControllerBase with Store {
             nome: tik['nome'],
             ccusto: tik['ccusto'],
             crioscopia: tik['crioscopia'],
-            data: DateTime.tryParse(tik['data']),
-            hora: DateTime.tryParse(tik['hora']),
+            data: tik['data'],
+            hora: tik['hora'],
             observacao: tik['observaoca'],
             id: tik['id'],
             particao: tik['particao'],
@@ -137,6 +143,7 @@ abstract class _TiketEntradaControllerBase with Store {
             produto: tik['produto'],
             quantidade: tik['quantidade'],
             temperatura: tik['temperatura'],
+            id_coleta: tik['id_coleta'],
             tiket: tik['tiket'],
           ),
         );
@@ -159,8 +166,9 @@ abstract class _TiketEntradaControllerBase with Store {
               {
                 'quantidade': coleta.quantidade,
                 'temperatura': coleta.temperatura,
-                'particao': coleta.particao,
-                'observacao': coleta.observacao
+                'crioscopia': coleta.crioscopia,
+                'particao': coleta.particao, //TANQUE DO CAMINHAO
+                'observacao': coleta.observacao //MOTIVO DA NAO COLETA
               },
               where: 'id = ?',
               whereArgs: [coleta.id]);
@@ -170,6 +178,45 @@ abstract class _TiketEntradaControllerBase with Store {
       status = TiketEntradaStatus.success;
     } catch (e) {
       print('eu sou o erro ao atualizar $e');
+    }
+  }
+
+  @action
+  Future<void> imprimirTicket({required TiketEntradaModel tiket}) async {
+    device = GlobalSettings().appSettings.imp;
+
+    if (!(await printer.isConnected)!) await printer.connect(device!);
+
+    if ((await printer.isConnected)!) {
+      printer.printNewLine();
+      printer.printCustom('COOPROLAT', 1, 1);
+      printer.printNewLine();
+      printer.printCustom(
+          'Data: ' + tiket.data.toString() + ' Hora: ' + tiket.hora.toString(),
+          1,
+          0);
+      printer.printCustom('Produtor: ' + tiket.nome, 1, 0);
+      printer.printCustom(
+          'Quantidade: ' +
+              tiket.quantidade.toString() +
+              ' Temperatura: ' +
+              tiket.temperatura.toString(),
+          1,
+          0);
+      printer.printCustom('Crioscopia: ' + tiket.crioscopia.toString(), 1, 0);
+      if (tiket.observacao.toString() != 'null')
+        printer.printCustom(
+            'Motivo da Não Coleta: ' + tiket.observacao.toString(), 1, 0);
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printCustom('_____________________________________', 1, 0);
+      printer.printCustom(GlobalSettings().appSettings.user.nome!, 1, 0);
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
     }
   }
 }

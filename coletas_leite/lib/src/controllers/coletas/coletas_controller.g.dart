@@ -89,6 +89,15 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.finalizaColeta(coleta: coleta));
   }
 
+  final _$retornaRotaFinalizadaAsyncAction =
+      AsyncAction('_ColetasControllerBase.retornaRotaFinalizada');
+
+  @override
+  Future<bool> retornaRotaFinalizada({required int id}) {
+    return _$retornaRotaFinalizadaAsyncAction
+        .run(() => super.retornaRotaFinalizada(id: id));
+  }
+
   @override
   String toString() {
     return '''

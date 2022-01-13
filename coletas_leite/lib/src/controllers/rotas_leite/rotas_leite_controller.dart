@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
@@ -30,13 +31,26 @@ abstract class _RotasLeiteControllerBase with Store {
       final cnpj = UtilBrasilFields.removeCaracteres(
           GlobalSettings().appSettings.user.cnpj.substring(0, 10));
 
-      final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/rotas');
+      try {
+        final result = await InternetAddress.lookup(MeuDio.baseUrl);
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/rotas');
 
-      final lista = jsonDecode(response.data)
-          .map<RotasLeiteModel>((elemento) => RotasLeiteModel.fromMap(elemento))
-          .toList();
+          final lista = jsonDecode(response.data)
+              .map<RotasLeiteModel>(
+                  (elemento) => RotasLeiteModel.fromMap(elemento))
+              .toList();
 
-      rotas = ObservableList.of(lista);
+          rotas = ObservableList.of(lista);
+
+          await gravaRotas(); //GRAVA AS ROTAS NO BANCO DO CELULAR
+
+        }
+      } on SocketException catch (_) {
+        print('Sem Internet Login');
+      }
+
+      await buscaRotas();
 
       for (var item in rotas) {
         await retornaRotaFinalizada(rotaf: item);
@@ -50,6 +64,51 @@ abstract class _RotasLeiteControllerBase with Store {
     } catch (e) {
       print('Eu sou erro das rotas $e');
     }
+  }
+
+  @action
+  Future<void> gravaRotas() async {
+    db = await DB.instance.database;
+
+    await db.transaction((txn) async {
+      final List rota = await txn.query('rotas');
+
+      if (rota.isEmpty) {
+        for (var item in rotas) {
+          await txn.insert('rotas', {
+            'id': item.id,
+            'descricao': item.descricao,
+            'transportador': item.transportador,
+            'rota_finalizada': item.rota_finalizada,
+          });
+        }
+      }
+    });
+
+    db.close();
+  }
+
+  @action
+  Future<void> buscaRotas() async {
+    db = await DB.instance.database;
+
+    rotas.clear();
+
+    List rota = await db.query('rotas');
+
+    if (rota.isNotEmpty)
+      for (var item in rota) {
+        rotas.add(
+          RotasLeiteModel(
+            id: item['id'],
+            descricao: item['descricao'],
+            transportador: item['transportador'],
+            rota_finalizada: item['rota_finalizada'],
+          ),
+        );
+      }
+
+    db.close();
   }
 
   @action

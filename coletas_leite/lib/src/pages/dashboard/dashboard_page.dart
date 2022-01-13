@@ -2,9 +2,9 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
 import 'package:coletas_leite/src/pages/dashboard/widgets/app_bar_widget.dart';
-import 'package:coletas_leite/src/pages/imprimir_ticket/imprimir.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
-import 'package:coletas_leite/src/utils/formatters.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -18,6 +18,7 @@ class DashBoardPage extends StatefulWidget {
 
 class _DashBoardPageState extends State<DashBoardPage> {
   final controller = GlobalSettings().controllerColetas;
+  final controllerEnvio = GlobalSettings().controllerEnvio;
 
   void getColetas() async {
     await controller.getColetas();
@@ -30,6 +31,114 @@ class _DashBoardPageState extends State<DashBoardPage> {
     });
 
     super.initState();
+  }
+
+  void modalEnvio() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Atenção',
+                  style: AppTheme.textStyles.titleCharts.copyWith(fontSize: 20),
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Enviar Todas as Rotas Finalizadas para o Servidor?',
+                                style: AppTheme.textStyles.dropdownText
+                                    .copyWith(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: PhysicalModel(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                          ),
+                          height: 45,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Observer(builder: (_) {
+                      return GestureDetector(
+                        onTap: () async {
+                          await controllerEnvio.enviar();
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: AppTheme.colors.secondaryColor,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                'Enviar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            height: 45,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: AppTheme.colors.secondaryColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -76,39 +185,29 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   borderRadius: BorderRadius.circular(10)),
                               child: ListTile(
                                 onTap: () async {
-                                  // if (controller.ListaColetas[index]
-                                  //         .rota_finalizada ==
-                                  //     0) {
-                                  //   //   await Navigator.push(
-                                  //   //     context,
-                                  //   //     MaterialPageRoute(
-                                  //   //       builder: (_) => ColetasPage(
-                                  //   //         id_rota: controller
-                                  //   //             .ListaColetas[index].rota_coleta!,
-                                  //   //         coleta:
-                                  //   //             controller.ListaColetas[index],
-                                  //   //       ),
-                                  //   //     ),
-                                  //   //   );
-                                  //   //   controller.getColetas();
-                                  //   await Navigator.push(
-                                  //       context,
-                                  //       MaterialPageRoute(
-                                  //         builder: (_) => Imprimir(),
-                                  //       ));
-                                  // } else {
-                                  //   MeuToast.toast(
-                                  //       title: 'Rota Já Finalizada',
-                                  //       message: controller
-                                  //           .ListaColetas[index].rota_nome!,
-                                  //       type: TypeToast.dadosInv,
-                                  //       context: context);
-                                  // }
-                                  await Navigator.push(
+                                  if (controller.ListaColetas[index]
+                                          .rota_finalizada ==
+                                      0) {
+                                    await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => ImprimirPage(),
-                                      ));
+                                        builder: (_) => ColetasPage(
+                                          id_rota: controller
+                                              .ListaColetas[index].rota_coleta!,
+                                          coleta:
+                                              controller.ListaColetas[index],
+                                        ),
+                                      ),
+                                    );
+                                    controller.getColetas();
+                                  } else {
+                                    MeuToast.toast(
+                                        title: 'Rota Já Finalizada',
+                                        message: controller
+                                            .ListaColetas[index].rota_nome!,
+                                        type: TypeToast.dadosInv,
+                                        context: context);
+                                  }
                                 },
                                 title: Column(
                                   children: [
@@ -147,8 +246,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         ),
                                         Text(
                                           controller
-                                              .ListaColetas[index].data_mov!
-                                              .DiaMesAno(),
+                                              .ListaColetas[index].data_mov!,
                                         ),
                                       ],
                                     ),
@@ -248,13 +346,28 @@ class _DashBoardPageState extends State<DashBoardPage> {
           }),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.pushNamed(context, '/rotas_leite');
-          controller.getColetas();
-        },
-        child: Icon(Icons.add),
-        backgroundColor: AppTheme.colors.secondaryColor,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                modalEnvio();
+              },
+              child: Icon(Icons.upgrade),
+              backgroundColor: AppTheme.colors.secondaryColor,
+            ),
+            FloatingActionButton(
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/rotas_leite');
+                controller.getColetas();
+              },
+              child: Icon(Icons.add),
+              backgroundColor: AppTheme.colors.secondaryColor,
+            ),
+          ],
+        ),
       ),
     );
   }
