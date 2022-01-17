@@ -47,6 +47,7 @@ abstract class _RotasLeiteControllerBase with Store {
 
         }
       } on SocketException catch (_) {
+        await buscaRotas();
         print('Sem Internet Login');
       }
 
@@ -62,12 +63,14 @@ abstract class _RotasLeiteControllerBase with Store {
         status = RotasLeiteStatus.success;
       }
     } catch (e) {
-      print('Eu sou erro das rotas $e');
+      await buscaRotas();
+      print('Eu sou erro das rotas porcoziu $e');
     }
   }
 
   @action
   Future<void> gravaRotas() async {
+    status = RotasLeiteStatus.loading;
     db = await DB.instance.database;
 
     await db.transaction((txn) async {
@@ -86,10 +89,13 @@ abstract class _RotasLeiteControllerBase with Store {
     });
 
     db.close();
+    status = RotasLeiteStatus.success;
   }
 
   @action
   Future<void> buscaRotas() async {
+    status = RotasLeiteStatus.loading;
+
     db = await DB.instance.database;
 
     rotas.clear();
@@ -109,6 +115,11 @@ abstract class _RotasLeiteControllerBase with Store {
       }
 
     db.close();
+    if (rotas.isNotEmpty) {
+      status = RotasLeiteStatus.success;
+    } else {
+      status = RotasLeiteStatus.error;
+    }
   }
 
   @action

@@ -6,7 +6,7 @@ import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
 
 class EnvioModel {
-  List<ColetasModel>? coletas;
+  ColetasModel? coletas;
   List<TiketEntradaModel>? tikets;
   EnvioModel({
     this.coletas,
@@ -14,7 +14,7 @@ class EnvioModel {
   });
 
   EnvioModel copyWith({
-    List<ColetasModel>? coletas,
+    ColetasModel? coletas,
     List<TiketEntradaModel>? tikets,
   }) {
     return EnvioModel(
@@ -25,17 +25,15 @@ class EnvioModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'coletas': coletas?.map((x) => x.toMap()).toList(),
+      'coletas': coletas?.toMap(),
       'tikets': tikets?.map((x) => x.toMap()).toList(),
     };
   }
 
   factory EnvioModel.fromMap(Map<String, dynamic> map) {
     return EnvioModel(
-      coletas: map['coletas'] != null
-          ? List<ColetasModel>.from(
-              map['coletas']?.map((x) => ColetasModel.fromMap(x)))
-          : null,
+      coletas:
+          map['coletas'] != null ? ColetasModel.fromMap(map['coletas']) : null,
       tikets: map['tikets'] != null
           ? List<TiketEntradaModel>.from(
               map['tikets']?.map((x) => TiketEntradaModel.fromMap(x)))
@@ -56,7 +54,7 @@ class EnvioModel {
     if (identical(this, other)) return true;
 
     return other is EnvioModel &&
-        listEquals(other.coletas, coletas) &&
+        other.coletas == coletas &&
         listEquals(other.tikets, tikets);
   }
 

@@ -2,6 +2,7 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_status.dart';
 import 'package:coletas_leite/src/pages/transportador/transportador_page.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
+import 'package:coletas_leite/src/utils/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -32,6 +33,12 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
       appBar: AppBar(
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Selecione uma Rota'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/dashboard', (Route<dynamic> route) => false);
+            }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -62,7 +69,7 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                               ),
                             ),
                           );
-                          controller.getRotas();
+                          await controller.getRotas();
                         },
                         minLeadingWidth: 10,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -92,9 +99,13 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                         height: 15,
                       ),
                   itemCount: controller.rotas.length)
-              : Container(
-                  child: Text('Nenhuma Rota Encontrada!'),
-                ),
+              : ListView.separated(
+                  itemBuilder: (_, __) => LoadingWidget(
+                      size: Size(double.maxFinite, 50), radius: 10),
+                  separatorBuilder: (_, __) => SizedBox(
+                        height: 15,
+                      ),
+                  itemCount: 10),
         ),
       ),
     );

@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
-import 'package:coletas_leite/src/utils/meu_toast.dart';
-import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -15,23 +13,8 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   void verificaInternet() async {
-    try {
-      await Future.delayed(Duration(seconds: 1));
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        inicializar();
-      }
-    } on SocketException catch (_) {
-      await GlobalSettings().appSettings.removeLogado();
-
-      MeuToast.toast(
-          title: 'Ops... :(',
-          message: 'Parece que você está sem Internet',
-          type: TypeToast.noNet,
-          context: context);
-      Navigator.popAndPushNamed(context, '/login');
-      return;
-    }
+    await Future.delayed(Duration(seconds: 1));
+    inicializar();
   }
 
   void inicializar() async {

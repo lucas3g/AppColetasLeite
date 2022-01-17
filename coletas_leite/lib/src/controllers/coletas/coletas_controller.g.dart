@@ -98,6 +98,15 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.retornaRotaFinalizada(id: id));
   }
 
+  final _$imprimirResumoColetasAsyncAction =
+      AsyncAction('_ColetasControllerBase.imprimirResumoColetas');
+
+  @override
+  Future<void> imprimirResumoColetas({required ColetasModel coleta}) {
+    return _$imprimirResumoColetasAsyncAction
+        .run(() => super.imprimirResumoColetas(coleta: coleta));
+  }
+
   @override
   String toString() {
     return '''

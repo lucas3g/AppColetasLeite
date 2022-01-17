@@ -1,3 +1,5 @@
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/database/db.dart';
 import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
@@ -10,6 +12,8 @@ class ColetasController = _ColetasControllerBase with _$ColetasController;
 
 abstract class _ColetasControllerBase with Store {
   late Database db;
+  late BluetoothDevice? device;
+  late BlueThermalPrinter printer = BlueThermalPrinter.instance;
 
   @observable
   ColetasModel coletas = ColetasModel(rota_finalizada: 0);
@@ -39,23 +43,26 @@ abstract class _ColetasControllerBase with Store {
       await db.transaction((txn) async {
         final coleta = await txn.query('agl_coleta',
             where: 'rota_coleta = ? and rota_finalizada = 0 and data_mov = ?',
-            whereArgs: [rota, DateTime.now().DiaMesAnoDB()]);
+            whereArgs: [rota, '"' + DateTime.now().DiaMesAnoDB() + '"']);
 
         if (coleta.isEmpty) {
           id_gerado = await txn.insert('agl_coleta', {
-            'data_mov': DateTime.now().DiaMesAnoDB(),
+            'data_mov': '"' + DateTime.now().DiaMesAnoDB() + '"',
             'rota_coleta': rota,
             'rota_nome': rota_nome,
             'km_inicio': km_inicio,
             'km_fim': 0,
-            'dt_hora_ini': DateTime.now().hour.toString() +
+            'dt_hora_ini': '"' +
+                DateTime.now().hour.toString() +
                 ':' +
-                DateTime.now().minute.toString(),
+                DateTime.now().minute.toString() +
+                '"',
             'dt_hora_fim': '',
             'transportador': caminhao,
             'motorista': motorista,
             'ccusto': 0,
             'rota_finalizada': 0,
+            'enviada': 0,
           });
         }
       });
@@ -80,6 +87,7 @@ abstract class _ColetasControllerBase with Store {
         coletas.km_fim = item['km_fim'];
         coletas.ccusto = item['ccusto'];
         coletas.id = item['id'];
+        coletas.enviada = item['enviada'];
       }
 
       db.close();
@@ -117,9 +125,14 @@ abstract class _ColetasControllerBase with Store {
             km_fim: item['km_fim'],
             ccusto: item['ccusto'],
             id: item['id'],
+            enviada: item['enviada'],
           ),
         );
       }
+
+      ListaColetas.sort(
+          (a, b) => a.rota_finalizada!.compareTo(b.rota_finalizada!));
+
       if (ListaColetas.isNotEmpty) {
         status = ColetasStatus.success;
       } else {
@@ -147,9 +160,11 @@ abstract class _ColetasControllerBase with Store {
               'agl_coleta',
               {
                 'rota_finalizada': 1,
-                'dt_hora_fim': DateTime.now().hour.toString() +
+                'dt_hora_fim': '"' +
+                    DateTime.now().hour.toString() +
                     ':' +
-                    DateTime.now().minute.toString(),
+                    DateTime.now().minute.toString() +
+                    '"',
                 'km_fim': coleta.km_fim
               },
               where: 'id = ?',
@@ -181,6 +196,60 @@ abstract class _ColetasControllerBase with Store {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @action
+  Future<void> imprimirResumoColetas({required ColetasModel coleta}) async {
+    device = GlobalSettings().appSettings.imp;
+
+    if (!(await printer.isConnected)!) await printer.connect(device!);
+
+    if ((await printer.isConnected)!) {
+      db = await DB.instance.database;
+
+      List<dynamic> listaColetas = [];
+
+      List tikets = await db.query('agl_tiket_entrada',
+          where: 'id_coleta = ?', whereArgs: [coleta.id]);
+
+      if (tikets.isNotEmpty) {
+        listaColetas = tikets;
+      }
+
+      db.close();
+
+      late int total = 0;
+
+      printer.printCustom('COOPROLAT', 1, 1);
+      printer.printNewLine();
+      printer.printCustom('..:Resumo das Coletas:..', 2, 1);
+      printer.printNewLine();
+      for (var item in listaColetas) {
+        printer.printCustom(
+            'Produtor: ' +
+                item['nome'].toString().substring(
+                    0,
+                    item['nome'].toString().length > 20
+                        ? 17
+                        : item['nome'].toString().length) +
+                ' Qtd: ' +
+                item['quantidade'].toString(),
+            1,
+            0);
+        total = (total + item['quantidade']!) as int;
+      }
+
+      printer.printCustom(
+          '------------------------------------------------', 1, 0);
+
+      printer.printCustom('Total: ' + total.toString(), 1, 0);
+
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
+      printer.printNewLine();
     }
   }
 }

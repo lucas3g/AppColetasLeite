@@ -1,6 +1,8 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 
 class ImprimirPage extends StatefulWidget {
@@ -45,6 +47,12 @@ class _ImprimirPageState extends State<ImprimirPage> {
       appBar: AppBar(
         title: Text('Configuração da Impressora'),
         backgroundColor: AppTheme.colors.secondaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/dashboard', (Route<dynamic> route) => false);
+            }),
       ),
       body: Center(
         child: Column(
@@ -80,6 +88,11 @@ class _ImprimirPageState extends State<ImprimirPage> {
                       controller.setImp(device: selectedDevice!);
                       conectada = true;
                       setState(() {});
+                      MeuToast.toast(
+                          title: 'Sucesso',
+                          message: 'Impressora conectada!',
+                          type: TypeToast.success,
+                          context: context);
                     }
                   : null,
               child: Text('Conectar'),
@@ -94,6 +107,11 @@ class _ImprimirPageState extends State<ImprimirPage> {
                       controller.removeImpressora();
                       conectada = false;
                       setState(() {});
+                      MeuToast.toast(
+                          title: 'Atençao',
+                          message: 'Impressora desconectada!',
+                          type: TypeToast.dadosInv,
+                          context: context);
                     }
                   : null,
               child: Text('Desconectar'),

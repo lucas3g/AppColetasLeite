@@ -43,17 +43,20 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
       AsyncAction('_TiketEntradaControllerBase.getTikets');
 
   @override
-  Future<void> getTikets() {
-    return _$getTiketsAsyncAction.run(() => super.getTikets());
+  Future<void> getTikets(
+      {required int rota, required int id_coleta, required String placa}) {
+    return _$getTiketsAsyncAction.run(
+        () => super.getTikets(rota: rota, id_coleta: id_coleta, placa: placa));
   }
 
   final _$geraTiketEntradaAsyncAction =
       AsyncAction('_TiketEntradaControllerBase.geraTiketEntrada');
 
   @override
-  Future<void> geraTiketEntrada({required int rota, required int id_coleta}) {
-    return _$geraTiketEntradaAsyncAction
-        .run(() => super.geraTiketEntrada(rota: rota, id_coleta: id_coleta));
+  Future<void> geraTiketEntrada(
+      {required int rota, required int id_coleta, required String placa}) {
+    return _$geraTiketEntradaAsyncAction.run(() =>
+        super.geraTiketEntrada(rota: rota, id_coleta: id_coleta, placa: placa));
   }
 
   final _$atualizaTiketAsyncAction =

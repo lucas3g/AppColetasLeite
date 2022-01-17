@@ -47,6 +47,7 @@ dependencies:
   intl: ^0.17.0
   flutter_app_name: ^0.1.1
   flutter_launcher_icons: ^0.9.2
+  shimmer: ^2.0.0
 
 flutter_app_name:
   name: "Coletas Plus"

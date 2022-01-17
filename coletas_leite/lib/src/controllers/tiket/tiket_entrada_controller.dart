@@ -27,7 +27,10 @@ abstract class _TiketEntradaControllerBase with Store {
   TiketEntradaStatus status = TiketEntradaStatus.empty;
 
   @action
-  Future<void> getTikets() async {
+  Future<void> getTikets(
+      {required int rota,
+      required int id_coleta,
+      required String placa}) async {
     try {
       status = TiketEntradaStatus.loading;
 
@@ -43,25 +46,35 @@ abstract class _TiketEntradaControllerBase with Store {
 
       tikets = ObservableList.of(lista);
 
+      await insertProdutores(produtores: tikets);
+
+      await buscaProdutores(rota: rota);
+
       if (tikets.isNotEmpty) {
         status = TiketEntradaStatus.success;
       } else {
         status = TiketEntradaStatus.error;
       }
     } catch (e) {
+      await buscaProdutores(rota: rota);
+      await insert(rota: rota, id_coleta: id_coleta, placa: placa);
+
+      await busca(rota: rota, id_coleta: id_coleta);
       print('Eu sou erro das rotas $e');
     }
   }
 
   @action
   Future<void> geraTiketEntrada(
-      {required int rota, required int id_coleta}) async {
+      {required int rota,
+      required int id_coleta,
+      required String placa}) async {
     try {
-      await getTikets();
+      await getTikets(rota: rota, id_coleta: id_coleta, placa: placa);
 
       status = TiketEntradaStatus.loading;
 
-      await insert(rota: rota, id_coleta: id_coleta);
+      await insert(rota: rota, id_coleta: id_coleta, placa: placa);
 
       await busca(rota: rota, id_coleta: id_coleta);
 
@@ -76,13 +89,68 @@ abstract class _TiketEntradaControllerBase with Store {
     }
   }
 
-  Future<void> insert({required int rota, required int id_coleta}) async {
+  Future<void> insertProdutores(
+      {required ObservableList<TiketEntradaModel> produtores}) async {
+    status = TiketEntradaStatus.loading;
+    db = await DB.instance.database;
+
+    await db.transaction((txn) async {
+      for (var item in produtores) {
+        final List tiket = await txn.query('produtores',
+            where: 'rota = ? and clifor = ? ',
+            whereArgs: [item.rota, item.clifor]);
+
+        if (tiket.isEmpty) {
+          await txn.insert('produtores', {
+            'clifor': item.clifor,
+            'uf': item.uf,
+            'municipios': item.municipios,
+            'nome': item.nome,
+            'rota': item.rota,
+          });
+        }
+      }
+    });
+
+    db.close();
+    status = TiketEntradaStatus.success;
+  }
+
+  Future<void> buscaProdutores({required int rota}) async {
+    status = TiketEntradaStatus.loading;
+    db = await DB.instance.database;
+
+    tikets.clear();
+
+    List tiketsdb =
+        await db.query('produtores', where: 'rota = ?', whereArgs: [rota]);
+
+    if (tiketsdb.isNotEmpty) {
+      final lista = tiketsdb
+          .map<TiketEntradaModel>(
+              (elemento) => TiketEntradaModel.fromMap(elemento))
+          .toList();
+      tikets = ObservableList.of(lista);
+    }
+    db.close();
+    status = TiketEntradaStatus.success;
+  }
+
+  Future<void> insert(
+      {required int rota,
+      required int id_coleta,
+      required String placa}) async {
+    status = TiketEntradaStatus.loading;
     db = await DB.instance.database;
 
     await db.transaction((txn) async {
       final List tiket = await txn.query('agl_tiket_entrada',
           where: 'rota_coleta = ? and data = ? and id_coleta = ?',
-          whereArgs: [rota, DateTime.now().DiaMesAnoDB(), id_coleta]);
+          whereArgs: [
+            rota,
+            '"' + DateTime.now().DiaMesAnoDB() + '"',
+            id_coleta
+          ]);
 
       if (tiket.isEmpty) {
         for (var item in tikets) {
@@ -92,7 +160,7 @@ abstract class _TiketEntradaControllerBase with Store {
             'municipios': item.municipios,
             'nome': item.nome,
             'produto': 0,
-            'data': DateTime.now().DiaMesAnoDB(),
+            'data': '"' + DateTime.now().DiaMesAnoDB() + '"',
             'tiket': 1,
             'quantidade': item.quantidade,
             'per_desconto': 0.0,
@@ -100,11 +168,14 @@ abstract class _TiketEntradaControllerBase with Store {
             'rota_coleta': rota,
             'id_coleta': id_coleta,
             'crioscopia': item.crioscopia,
-            'hora': DateTime.now().hour.toString() +
+            'hora': '"' +
+                DateTime.now().hour.toString() +
                 ':' +
-                DateTime.now().minute.toString(),
+                DateTime.now().minute.toString() +
+                '"',
             'particao': 1,
             'observacao': item.observacao,
+            'placa': placa,
             'temperatura': item.temperatura,
           });
         }
@@ -112,16 +183,18 @@ abstract class _TiketEntradaControllerBase with Store {
     });
 
     db.close();
+    status = TiketEntradaStatus.success;
   }
 
   Future<void> busca({required int rota, required int id_coleta}) async {
+    status = TiketEntradaStatus.loading;
     db = await DB.instance.database;
 
     tikets.clear();
 
     List tiketsdb = await db.query('agl_tiket_entrada',
         where: 'rota_coleta = ? and data = ? and id_coleta = ?',
-        whereArgs: [rota, DateTime.now().DiaMesAnoDB(), id_coleta]);
+        whereArgs: [rota, '"' + DateTime.now().DiaMesAnoDB() + '"', id_coleta]);
 
     if (tiketsdb.isNotEmpty)
       for (var tik in tiketsdb) {
@@ -136,7 +209,8 @@ abstract class _TiketEntradaControllerBase with Store {
             crioscopia: tik['crioscopia'],
             data: tik['data'],
             hora: tik['hora'],
-            observacao: tik['observaoca'],
+            observacao: tik['observacao'],
+            placa: tik['placa'],
             id: tik['id'],
             particao: tik['particao'],
             per_desconto: tik['per_desconto'],
@@ -150,6 +224,7 @@ abstract class _TiketEntradaControllerBase with Store {
       }
 
     db.close();
+    status = TiketEntradaStatus.success;
   }
 
   @action
@@ -188,11 +263,13 @@ abstract class _TiketEntradaControllerBase with Store {
     if (!(await printer.isConnected)!) await printer.connect(device!);
 
     if ((await printer.isConnected)!) {
-      printer.printNewLine();
       printer.printCustom('COOPROLAT', 1, 1);
       printer.printNewLine();
       printer.printCustom(
-          'Data: ' + tiket.data.toString() + ' Hora: ' + tiket.hora.toString(),
+          'Data: ' +
+              tiket.data.toString().replaceAll('"', '') +
+              ' Hora: ' +
+              tiket.hora.toString().replaceAll('"', ''),
           1,
           0);
       printer.printCustom('Produtor: ' + tiket.nome, 1, 0);
@@ -204,9 +281,14 @@ abstract class _TiketEntradaControllerBase with Store {
           1,
           0);
       printer.printCustom('Crioscopia: ' + tiket.crioscopia.toString(), 1, 0);
-      if (tiket.observacao.toString() != 'null')
+      printer.printCustom('Tanque: ' + tiket.particao.toString(), 1, 0);
+      printer.printCustom('Placa: ' + tiket.placa!, 1, 0);
+      if (tiket.observacao.toString() != '')
         printer.printCustom(
-            'Motivo da Não Coleta: ' + tiket.observacao.toString(), 1, 0);
+            'Motivo da Nao Coleta: ' +
+                tiket.observacao.toString().removeAcentos(),
+            1,
+            0);
       printer.printNewLine();
       printer.printNewLine();
       printer.printNewLine();

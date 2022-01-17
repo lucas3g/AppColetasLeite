@@ -17,6 +17,7 @@ class TiketEntradaModel {
   String? hora;
   int? particao;
   String? observacao;
+  String? placa;
   double? temperatura;
   int? id;
   int? id_coleta;
@@ -37,6 +38,7 @@ class TiketEntradaModel {
     this.hora,
     this.particao,
     this.observacao,
+    this.placa,
     this.temperatura,
     this.id,
     this.id_coleta,
@@ -59,6 +61,7 @@ class TiketEntradaModel {
     String? hora,
     int? particao,
     String? observacao,
+    String? placa,
     double? temperatura,
     int? id,
     int? id_coleta,
@@ -80,6 +83,7 @@ class TiketEntradaModel {
       hora: hora ?? this.hora,
       particao: particao ?? this.particao,
       observacao: observacao ?? this.observacao,
+      placa: placa ?? this.placa,
       temperatura: temperatura ?? this.temperatura,
       id: id ?? this.id,
       id_coleta: id_coleta ?? this.id_coleta,
@@ -128,6 +132,7 @@ class TiketEntradaModel {
       hora: map['hora'] ?? '',
       particao: map['particao']?.toInt() ?? 0,
       observacao: map['observacao'] ?? '',
+      placa: map['placa'] ?? '',
       temperatura: map['temperatura']?.toDouble() ?? 0.0,
       id: map['id']?.toInt() ?? 0,
       id_coleta: map['id_coleta']?.toInt() ?? 0,
@@ -165,6 +170,7 @@ class TiketEntradaModel {
         other.hora == hora &&
         other.particao == particao &&
         other.observacao == observacao &&
+        other.placa == placa &&
         other.temperatura == temperatura &&
         other.id == id &&
         other.id_coleta == id_coleta;
@@ -188,6 +194,7 @@ class TiketEntradaModel {
         hora.hashCode ^
         particao.hashCode ^
         observacao.hashCode ^
+        placa.hashCode ^
         temperatura.hashCode ^
         id.hashCode ^
         id_coleta.hashCode;

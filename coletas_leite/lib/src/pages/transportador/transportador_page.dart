@@ -1,6 +1,7 @@
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
+import 'package:coletas_leite/src/utils/loading_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coletas_leite/src/theme/app_theme.dart';
@@ -43,6 +44,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
+        final GlobalKey<FormState> key = GlobalKey<FormState>();
         return AlertDialog(
           content: SingleChildScrollView(
             child: Column(
@@ -97,27 +99,36 @@ class _TransportadorPageState extends State<TransportadorPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              km_inicio = int.parse(value);
-                            });
-                          },
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          cursorColor: AppTheme.colors.secondaryColor,
-                          style: AppTheme.textStyles.title.copyWith(
-                              fontSize: 16,
-                              color: AppTheme.colors.secondaryColor),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: AppTheme.colors.secondaryColor),
+                        Form(
+                          key: key,
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Informe os KM iniciais.';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                km_inicio = int.parse(value);
+                              });
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            cursorColor: AppTheme.colors.secondaryColor,
+                            style: AppTheme.textStyles.title.copyWith(
+                                fontSize: 16,
+                                color: AppTheme.colors.secondaryColor),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: AppTheme.colors.secondaryColor),
+                              ),
                             ),
                           ),
                         ),
@@ -158,9 +169,9 @@ class _TransportadorPageState extends State<TransportadorPage> {
                         ),
                       ),
                     ),
-                    Observer(builder: (_) {
-                      return GestureDetector(
-                        onTap: () async {
+                    GestureDetector(
+                      onTap: () async {
+                        if (key.currentState!.validate()) {
                           await controllerColetas.iniciaColeta(
                               rota: widget.id_rota,
                               rota_nome: widget.rota,
@@ -173,37 +184,37 @@ class _TransportadorPageState extends State<TransportadorPage> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) => ColetasPage(
-                                id_rota: widget.id_rota,
-                                coleta: controllerColetas.coletas,
-                              ),
+                                  id_rota: widget.id_rota,
+                                  coleta: controllerColetas.coletas,
+                                  placa: caminhao),
                             ),
                           );
-                        },
-                        child: PhysicalModel(
-                          color: Colors.white,
-                          elevation: 8,
-                          shadowColor: AppTheme.colors.secondaryColor,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            child: Center(
-                              child: Text(
-                                'Iniciar Rota',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
-                            ),
-                            height: 45,
-                            width: 120,
-                            decoration: BoxDecoration(
-                              color: AppTheme.colors.secondaryColor,
-                              borderRadius: BorderRadius.circular(20),
+                        }
+                      },
+                      child: PhysicalModel(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: AppTheme.colors.secondaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              'Iniciar Rota',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
                             ),
                           ),
+                          height: 45,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: AppTheme.colors.secondaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
-                      );
-                    }),
+                      ),
+                    ),
                   ],
                 )
               ],
@@ -250,61 +261,69 @@ class _TransportadorPageState extends State<TransportadorPage> {
               height: 15,
             ),
             Observer(
-                builder: (_) => controller.status == TransportesStatus.success
-                    ? Expanded(
-                        child: ListView.separated(
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
-                                      height: 15,
-                                    ),
-                            itemCount: controller.transp.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: ListTile(
-                                  onTap: () {
-                                    modalColeta(
-                                        caminhao:
-                                            controller.transp[index].placa);
-                                  },
-                                  minLeadingWidth: 10,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
-                                  leading: Container(
-                                    child: Icon(
-                                      Icons.local_shipping_outlined,
-                                      color: Colors.black,
-                                    ),
-                                    height: double.maxFinite,
+              builder: (_) => controller.status == TransportesStatus.success
+                  ? Expanded(
+                      child: ListView.separated(
+                          separatorBuilder: (BuildContext context, int index) =>
+                              SizedBox(
+                                height: 15,
+                              ),
+                          itemCount: controller.transp.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: ListTile(
+                                onTap: () {
+                                  modalColeta(
+                                      caminhao: controller.transp[index].placa);
+                                },
+                                minLeadingWidth: 10,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 10),
+                                leading: Container(
+                                  child: Icon(
+                                    Icons.local_shipping_outlined,
+                                    color: Colors.black,
                                   ),
-                                  title: Text(
-                                    controller.transp[index].descricao,
-                                    style:
-                                        AppTheme.textStyles.titleLogin.copyWith(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(
-                                        'Placa: ',
-                                        style: AppTheme.textStyles.titleLogin
-                                            .copyWith(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                      ),
-                                      Text(controller.transp[index].placa)
-                                    ],
+                                  height: double.maxFinite,
+                                ),
+                                title: Text(
+                                  controller.transp[index].descricao,
+                                  style:
+                                      AppTheme.textStyles.titleLogin.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              );
-                            }),
-                      )
-                    : Container()),
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      'Placa: ',
+                                      style: AppTheme.textStyles.titleLogin
+                                          .copyWith(
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                    ),
+                                    Text(controller.transp[index].placa)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    )
+                  : Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (_, __) => LoadingWidget(
+                              size: Size(double.maxFinite, 50), radius: 10),
+                          separatorBuilder: (_, __) => SizedBox(
+                                height: 15,
+                              ),
+                          itemCount: 10),
+                    ),
+            ),
           ],
         ),
       ),

@@ -47,6 +47,7 @@ abstract class _TransportesControllerBase with Store {
 
         }
       } on SocketException catch (_) {
+        await buscaCaminhoes();
         print('Sem Internet Login');
       }
 
@@ -58,6 +59,7 @@ abstract class _TransportesControllerBase with Store {
         status = TransportesStatus.success;
       }
     } catch (e) {
+      await buscaCaminhoes();
       print('Eu sou erro das transp $e');
     }
   }

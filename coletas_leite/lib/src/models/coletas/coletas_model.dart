@@ -13,7 +13,7 @@ class ColetasModel {
   int? ccusto;
   int? rota_finalizada;
   int? id;
-
+  int? enviada;
   ColetasModel({
     this.data_mov,
     this.rota_coleta,
@@ -27,6 +27,7 @@ class ColetasModel {
     this.ccusto,
     this.rota_finalizada,
     this.id,
+    this.enviada,
   });
 
   ColetasModel copyWith({
@@ -42,6 +43,7 @@ class ColetasModel {
     int? ccusto,
     int? rota_finalizada,
     int? id,
+    int? enviada,
   }) {
     return ColetasModel(
       data_mov: data_mov ?? this.data_mov,
@@ -56,6 +58,7 @@ class ColetasModel {
       ccusto: ccusto ?? this.ccusto,
       rota_finalizada: rota_finalizada ?? this.rota_finalizada,
       id: id ?? this.id,
+      enviada: enviada ?? this.enviada,
     );
   }
 
@@ -73,6 +76,7 @@ class ColetasModel {
       'ccusto': ccusto,
       'rota_finalizada': rota_finalizada,
       'id': id,
+      'enviada': enviada,
     };
   }
 
@@ -90,6 +94,7 @@ class ColetasModel {
       ccusto: map['ccusto']?.toInt(),
       rota_finalizada: map['rota_finalizada']?.toInt(),
       id: map['id']?.toInt(),
+      enviada: map['enviada']?.toInt(),
     );
   }
 
@@ -100,7 +105,7 @@ class ColetasModel {
 
   @override
   String toString() {
-    return 'ColetasModel(data_mov: $data_mov, rota_coleta: $rota_coleta, rota_nome: $rota_nome, km_inicio: $km_inicio, km_fim: $km_fim, dt_hora_ini: $dt_hora_ini, dt_hora_fim: $dt_hora_fim, transportador: $transportador, motorista: $motorista, ccusto: $ccusto, rota_finalizada: $rota_finalizada, id: $id)';
+    return 'ColetasModel(data_mov: $data_mov, rota_coleta: $rota_coleta, rota_nome: $rota_nome, km_inicio: $km_inicio, km_fim: $km_fim, dt_hora_ini: $dt_hora_ini, dt_hora_fim: $dt_hora_fim, transportador: $transportador, motorista: $motorista, ccusto: $ccusto, rota_finalizada: $rota_finalizada, id: $id, enviada: $enviada)';
   }
 
   @override
@@ -119,7 +124,8 @@ class ColetasModel {
         other.motorista == motorista &&
         other.ccusto == ccusto &&
         other.rota_finalizada == rota_finalizada &&
-        other.id == id;
+        other.id == id &&
+        other.enviada == enviada;
   }
 
   @override
@@ -135,6 +141,7 @@ class ColetasModel {
         motorista.hashCode ^
         ccusto.hashCode ^
         rota_finalizada.hashCode ^
-        id.hashCode;
+        id.hashCode ^
+        enviada.hashCode;
   }
 }

@@ -27,6 +27,7 @@ class DB {
     await db.execute(_tiket);
     await db.execute(_rotas);
     await db.execute(_caminhoes);
+    await db.execute(_produtores);
   }
 
   String get _coletas => '''
@@ -40,9 +41,11 @@ class DB {
       dt_hora_ini TEXT,
       dt_hora_fim TEXT,
       transportador TEXT,
+      placa TEXT,
       motorista TEXT,
       ccusto INT,
-      rota_finalizada INT
+      rota_finalizada INT,
+      enviada INT
     )
   ''';
 
@@ -65,6 +68,7 @@ class DB {
       hora TEXT,
       particao INT,
       observacao TEXT,
+      placa TEXT,
       temperatura REAL
     )
   ''';
@@ -79,9 +83,20 @@ class DB {
   ''';
 
   String get _caminhoes => '''
-    CREATE TABLE rotas(
+    CREATE TABLE caminhoes(
       placa TEXT,
       descricao TEXT
+    )
+  ''';
+
+  String get _produtores => '''
+    CREATE TABLE produtores(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      clifor INT,
+      rota INT,
+      nome TEXT,
+      municipios TEXT,
+      uf TEXT
     )
   ''';
 }
