@@ -53,10 +53,6 @@ abstract class _RotasLeiteControllerBase with Store {
 
       await buscaRotas();
 
-      for (var item in rotas) {
-        await retornaRotaFinalizada(rotaf: item);
-      }
-
       if (rotas.isNotEmpty) {
         status = RotasLeiteStatus.success;
       } else {
@@ -88,8 +84,8 @@ abstract class _RotasLeiteControllerBase with Store {
       }
     });
 
-    db.close();
     status = RotasLeiteStatus.success;
+    db.close();
   }
 
   @action
@@ -114,12 +110,17 @@ abstract class _RotasLeiteControllerBase with Store {
         );
       }
 
-    db.close();
+    for (var item in rotas) {
+      await retornaRotaFinalizada(rotaf: item);
+    }
+
     if (rotas.isNotEmpty) {
       status = RotasLeiteStatus.success;
     } else {
       status = RotasLeiteStatus.error;
     }
+
+    db.close();
   }
 
   @action
@@ -138,12 +139,32 @@ abstract class _RotasLeiteControllerBase with Store {
       } else {
         rotas[rotas.indexOf(rotaf)].rota_finalizada = 1;
       }
-
-      db.close();
-
       status = RotasLeiteStatus.success;
+      db.close();
     } catch (e) {
       rethrow;
     }
+  }
+
+  @action
+  Future<ObservableList<RotasLeiteModel>> onSearchChanged(
+      {required String value}) async {
+    if (value.isEmpty) {
+      status = RotasLeiteStatus.loading;
+    }
+
+    ObservableList<RotasLeiteModel> lista = ObservableList.of(rotas
+        .where((rota) =>
+            (rota.descricao.toLowerCase().contains(value.toLowerCase())))
+        .toList());
+
+    if (value.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    if (value.isEmpty) {
+      status = RotasLeiteStatus.success;
+    }
+    return lista;
   }
 }

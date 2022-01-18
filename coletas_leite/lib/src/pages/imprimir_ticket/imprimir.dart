@@ -1,5 +1,6 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
+import 'package:coletas_leite/src/pages/imprimir_ticket/status_imprimir.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/meu_toast.dart';
 import 'package:coletas_leite/src/utils/types_toast.dart';
@@ -17,6 +18,8 @@ class _ImprimirPageState extends State<ImprimirPage> {
   BluetoothDevice? selectedDevice = GlobalSettings().appSettings.imp;
   BlueThermalPrinter printer = BlueThermalPrinter.instance;
   final controller = GlobalSettings().appSettings;
+
+  late ImprimirStatus status = ImprimirStatus.empty;
 
   late bool conectada = false;
 
@@ -83,8 +86,10 @@ class _ImprimirPageState extends State<ImprimirPage> {
                 primary: AppTheme.colors.secondaryColor,
               ),
               onPressed: !conectada
-                  ? () {
-                      printer.connect(selectedDevice!);
+                  ? () async {
+                      status = ImprimirStatus.loading;
+                      setState(() {});
+                      await printer.connect(selectedDevice!);
                       controller.setImp(device: selectedDevice!);
                       conectada = true;
                       setState(() {});
@@ -93,17 +98,30 @@ class _ImprimirPageState extends State<ImprimirPage> {
                           message: 'Impressora conectada!',
                           type: TypeToast.success,
                           context: context);
+                      status = ImprimirStatus.success;
                     }
                   : null,
-              child: Text('Conectar'),
+              child: status == ImprimirStatus.loading
+                  ? Container(
+                      height: 25,
+                      width: 25,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : Text('Conectar'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: AppTheme.colors.secondaryColor,
               ),
               onPressed: conectada
-                  ? () {
-                      printer.disconnect();
+                  ? () async {
+                      status = ImprimirStatus.loading;
+                      setState(() {});
+                      await printer.disconnect();
                       controller.removeImpressora();
                       conectada = false;
                       setState(() {});
@@ -112,6 +130,7 @@ class _ImprimirPageState extends State<ImprimirPage> {
                           message: 'Impressora desconectada!',
                           type: TypeToast.dadosInv,
                           context: context);
+                      status = ImprimirStatus.success;
                     }
                   : null,
               child: Text('Desconectar'),

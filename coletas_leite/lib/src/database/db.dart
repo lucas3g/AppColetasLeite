@@ -65,6 +65,7 @@ class DB {
       ccusto INT,
       rota_coleta INT,
       crioscopia REAL,
+      alizarol INT,
       hora TEXT,
       particao INT,
       observacao TEXT,

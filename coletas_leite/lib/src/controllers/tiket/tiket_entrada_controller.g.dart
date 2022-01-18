@@ -77,6 +77,16 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.imprimirTicket(tiket: tiket));
   }
 
+  final _$onSearchChangedAsyncAction =
+      AsyncAction('_TiketEntradaControllerBase.onSearchChanged');
+
+  @override
+  Future<ObservableList<TiketEntradaModel>> onSearchChanged(
+      {required String value}) {
+    return _$onSearchChangedAsyncAction
+        .run(() => super.onSearchChanged(value: value));
+  }
+
   @override
   String toString() {
     return '''

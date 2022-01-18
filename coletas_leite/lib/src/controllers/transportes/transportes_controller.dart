@@ -66,6 +66,7 @@ abstract class _TransportesControllerBase with Store {
 
   @action
   Future<void> gravaCaminhoes() async {
+    status = TransportesStatus.loading;
     db = await DB.instance.database;
 
     await db.transaction((txn) async {
@@ -80,12 +81,13 @@ abstract class _TransportesControllerBase with Store {
         }
       }
     });
-
+    status = TransportesStatus.success;
     db.close();
   }
 
   @action
   Future<void> buscaCaminhoes() async {
+    status = TransportesStatus.loading;
     db = await DB.instance.database;
 
     transp.clear();
@@ -101,7 +103,29 @@ abstract class _TransportesControllerBase with Store {
           ),
         );
       }
-
+    status = TransportesStatus.success;
     db.close();
+  }
+
+  @action
+  Future<ObservableList<TransportesModel>> onSearchChanged(
+      {required String value}) async {
+    if (value.isEmpty) {
+      status = TransportesStatus.loading;
+    }
+
+    ObservableList<TransportesModel> lista = ObservableList.of(transp
+        .where(
+            (rota) => (rota.placa.toLowerCase().contains(value.toLowerCase())))
+        .toList());
+
+    if (value.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    if (value.isEmpty) {
+      status = TransportesStatus.success;
+    }
+    return lista;
   }
 }

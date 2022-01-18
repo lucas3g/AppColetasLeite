@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
+import 'package:coletas_leite/src/controllers/envio/envio_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
 import 'package:coletas_leite/src/pages/dashboard/widgets/app_bar_widget.dart';
 import 'package:coletas_leite/src/services/dio.dart';
@@ -30,17 +31,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   @override
   void initState() {
-    autorun((_) {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       getColetas();
     });
-
-    super.initState();
   }
 
-  void modalEnvio() {
-    showDialog(
+  Future<void> modalEnvio() async {
+    await showDialog(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           content: SingleChildScrollView(
@@ -152,13 +152,24 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             child: Center(
-                              child: Text(
-                                'Enviar',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
+                              child:
+                                  controllerEnvio.status == EnvioStatus.loading
+                                      ? Container(
+                                          height: 25,
+                                          width: 25,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                      : Text(
+                                          'Enviar',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
                             ),
                             height: 45,
                             width: 120,
@@ -470,16 +481,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 try {
                   final result = await InternetAddress.lookup(MeuDio.baseUrl);
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    modalEnvio();
+                    await modalEnvio();
                   }
                 } on SocketException catch (_) {
                   MeuToast.toast(
                       title: 'Sem Internet',
                       message:
-                          'Você precisa esta conectado na internet para enviar as coletas para o servidor',
+                          'Você precisa estar conectado na internet para enviar as coletas para o servidor',
                       type: TypeToast.noNet,
                       context: context);
-                  print('Sem Internet Login');
                 }
               },
               child: Icon(Icons.upgrade),

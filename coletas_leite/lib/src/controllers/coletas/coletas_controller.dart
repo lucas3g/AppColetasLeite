@@ -53,6 +53,8 @@ abstract class _ColetasControllerBase with Store {
             'km_inicio': km_inicio,
             'km_fim': 0,
             'dt_hora_ini': '"' +
+                DateTime.now().DiaMesAnoDB() +
+                ' ' +
                 DateTime.now().hour.toString() +
                 ':' +
                 DateTime.now().minute.toString() +
@@ -60,7 +62,7 @@ abstract class _ColetasControllerBase with Store {
             'dt_hora_fim': '',
             'transportador': caminhao,
             'motorista': motorista,
-            'ccusto': 0,
+            'ccusto': GlobalSettings().appSettings.user.ccusto,
             'rota_finalizada': 0,
             'enviada': 0,
           });
@@ -130,8 +132,9 @@ abstract class _ColetasControllerBase with Store {
         );
       }
 
-      ListaColetas.sort(
-          (a, b) => a.rota_finalizada!.compareTo(b.rota_finalizada!));
+      ListaColetas.sort((a, b) => ("${a.rota_finalizada}${a.enviada}")
+          .toString()
+          .compareTo(("${b.rota_finalizada}${b.enviada}").toString()));
 
       if (ListaColetas.isNotEmpty) {
         status = ColetasStatus.success;
@@ -161,6 +164,8 @@ abstract class _ColetasControllerBase with Store {
               {
                 'rota_finalizada': 1,
                 'dt_hora_fim': '"' +
+                    DateTime.now().DiaMesAnoDB() +
+                    ' ' +
                     DateTime.now().hour.toString() +
                     ':' +
                     DateTime.now().minute.toString() +
@@ -201,6 +206,10 @@ abstract class _ColetasControllerBase with Store {
 
   @action
   Future<void> imprimirResumoColetas({required ColetasModel coleta}) async {
+    status = ColetasStatus.imprimindo;
+
+    await Future.delayed(Duration(milliseconds: 300));
+
     device = GlobalSettings().appSettings.imp;
 
     if (!(await printer.isConnected)!) await printer.connect(device!);
@@ -221,18 +230,30 @@ abstract class _ColetasControllerBase with Store {
 
       late int total = 0;
 
-      printer.printCustom('COOPROLAT', 1, 1);
+      printer.printCustom(
+          GlobalSettings()
+              .appSettings
+              .user
+              .descEmpresa
+              .toString()
+              .substring(0, 21)
+              .removeAcentos(),
+          1,
+          1);
       printer.printNewLine();
       printer.printCustom('..:Resumo das Coletas:..', 2, 1);
       printer.printNewLine();
       for (var item in listaColetas) {
         printer.printCustom(
             'Produtor: ' +
-                item['nome'].toString().substring(
-                    0,
-                    item['nome'].toString().length > 20
-                        ? 17
-                        : item['nome'].toString().length) +
+                item['nome']
+                    .toString()
+                    .substring(
+                        0,
+                        item['nome'].toString().length > 20
+                            ? 17
+                            : item['nome'].toString().length)
+                    .removeAcentos() +
                 ' Qtd: ' +
                 item['quantidade'].toString(),
             1,
@@ -251,5 +272,6 @@ abstract class _ColetasControllerBase with Store {
       printer.printNewLine();
       printer.printNewLine();
     }
+    status = ColetasStatus.success;
   }
 }

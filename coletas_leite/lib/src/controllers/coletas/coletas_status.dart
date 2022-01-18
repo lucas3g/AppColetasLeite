@@ -1,6 +1,1 @@
-enum ColetasStatus {
-  empty,
-  loading,
-  success,
-  error,
-}
+enum ColetasStatus { empty, loading, success, error, imprimindo }

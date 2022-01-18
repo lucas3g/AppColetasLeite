@@ -1,6 +1,8 @@
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_status.dart';
+import 'package:coletas_leite/src/models/transportes/transportes_model.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
+import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +28,20 @@ class _TransportadorPageState extends State<TransportadorPage> {
   final controllerColetas = GlobalSettings().controllerColetas;
   final motorista = GlobalSettings().appSettings.user.nome;
 
+  final TextEditingController controllerInput = TextEditingController();
+
+  List<TransportesModel> filteredTransp = [];
+
   void getTransp() async {
     if (controller.transp.isEmpty) await controller.getTransp();
+    setState(() {
+      filteredTransp = controller.transp;
+    });
+  }
+
+  void _onSearchChanged(String value) async {
+    filteredTransp = await controller.onSearchChanged(value: value);
+    setState(() {});
   }
 
   @override
@@ -102,6 +116,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
                         Form(
                           key: key,
                           child: TextFormField(
+                            autofocus: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Informe os KM iniciais.';
@@ -116,6 +131,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
+                            keyboardType: TextInputType.number,
                             cursorColor: AppTheme.colors.secondaryColor,
                             style: AppTheme.textStyles.title.copyWith(
                                 fontSize: 16,
@@ -260,70 +276,136 @@ class _TransportadorPageState extends State<TransportadorPage> {
             SizedBox(
               height: 15,
             ),
-            Observer(
-              builder: (_) => controller.status == TransportesStatus.success
-                  ? Expanded(
-                      child: ListView.separated(
-                          separatorBuilder: (BuildContext context, int index) =>
-                              SizedBox(
-                                height: 15,
-                              ),
-                          itemCount: controller.transp.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: ListTile(
-                                onTap: () {
-                                  modalColeta(
-                                      caminhao: controller.transp[index].placa);
-                                },
-                                minLeadingWidth: 10,
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                                leading: Container(
-                                  child: Icon(
-                                    Icons.local_shipping_outlined,
-                                    color: Colors.black,
-                                  ),
-                                  height: double.maxFinite,
-                                ),
-                                title: Text(
-                                  controller.transp[index].descricao,
-                                  style:
-                                      AppTheme.textStyles.titleLogin.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                subtitle: Row(
-                                  children: [
-                                    Text(
-                                      'Placa: ',
-                                      style: AppTheme.textStyles.titleLogin
-                                          .copyWith(
-                                              fontSize: 14,
-                                              color: Colors.black),
-                                    ),
-                                    Text(controller.transp[index].placa)
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    )
-                  : Expanded(
-                      child: ListView.separated(
-                          itemBuilder: (_, __) => LoadingWidget(
-                              size: Size(double.maxFinite, 50), radius: 10),
-                          separatorBuilder: (_, __) => SizedBox(
-                                height: 15,
-                              ),
-                          itemCount: 10),
+            Theme(
+              data: ThemeData(
+                colorScheme: ThemeData().colorScheme.copyWith(
+                      primary: AppTheme.colors.secondaryColor,
                     ),
+              ),
+              child: PhysicalModel(
+                color: Colors.white,
+                elevation: 8,
+                shadowColor: Colors.grey,
+                borderRadius: BorderRadius.circular(20),
+                child: TextFormField(
+                  controller: controllerInput,
+                  inputFormatters: [UpperCaseTextFormatter()],
+                  onChanged: (value) {
+                    _onSearchChanged(value);
+                  },
+                  cursorColor: AppTheme.colors.primaryColor,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    fillColor: Colors.grey.shade300,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: 25,
+                    ),
+                    suffixIcon: controllerInput.value.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              size: 25,
+                            ),
+                            onPressed: () {
+                              controllerInput.clear();
+                              _onSearchChanged('');
+                            },
+                          )
+                        : null,
+                    hintText: 'Digite a placa do caminhão',
+                    alignLabelWithHint: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: AppTheme.colors.secondaryColor,
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            Observer(
+                builder: (_) => controller.status ==
+                            TransportesStatus.success &&
+                        filteredTransp.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            separatorBuilder:
+                                (BuildContext context, int index) => SizedBox(
+                                      height: 15,
+                                    ),
+                            itemCount: filteredTransp.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: ListTile(
+                                  onTap: () {
+                                    modalColeta(
+                                        caminhao: filteredTransp[index].placa);
+                                  },
+                                  minLeadingWidth: 10,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                  leading: Container(
+                                    child: Icon(
+                                      Icons.local_shipping_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    height: double.maxFinite,
+                                  ),
+                                  title: Text(
+                                    filteredTransp[index].descricao,
+                                    style:
+                                        AppTheme.textStyles.titleLogin.copyWith(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  subtitle: Row(
+                                    children: [
+                                      Text(
+                                        'Placa: ',
+                                        style: AppTheme.textStyles.titleLogin
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: Colors.black),
+                                      ),
+                                      Text(filteredTransp[index].placa)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      )
+                    : controller.status == TransportesStatus.loading
+                        ? Expanded(
+                            child: ListView.separated(
+                                itemBuilder: (_, __) => LoadingWidget(
+                                    size: Size(double.maxFinite, 50),
+                                    radius: 10),
+                                separatorBuilder: (_, __) => SizedBox(
+                                      height: 15,
+                                    ),
+                                itemCount: 10),
+                          )
+                        : Container(
+                            child: Center(
+                              child: Text('Nenhum caminhão encontrado!'),
+                            ),
+                          )),
           ],
         ),
       ),

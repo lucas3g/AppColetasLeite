@@ -61,28 +61,19 @@ class _SplashPageState extends State<SplashPage> {
                   ),
                 ],
               ),
-              Container(
-                height: 78,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      flex: 0,
-                      child: Text('Coletas',
-                          style: AppTheme.textStyles.titleLogin
-                              .copyWith(fontSize: 70)),
-                    ),
-                    Flexible(
-                      child: Text(
-                        ' Plus',
-                        style: AppTheme.textStyles.titleLogin.copyWith(
-                          color: Color(0xFF525252),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Coletas',
+                      style: AppTheme.textStyles.titleLogin
+                          .copyWith(fontSize: 70)),
+                  Text(
+                    'Plus',
+                    style: AppTheme.textStyles.titleLogin
+                        .copyWith(color: Color(0xFF525252), fontSize: 50),
+                  ),
+                ],
               ),
               Column(
                 children: [

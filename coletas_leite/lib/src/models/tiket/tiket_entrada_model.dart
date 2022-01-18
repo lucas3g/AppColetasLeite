@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:coletas_leite/src/configs/global_settings.dart';
+
 class TiketEntradaModel {
   int rota;
   String? rota_nome;
@@ -14,6 +16,7 @@ class TiketEntradaModel {
   double? per_desconto;
   int? ccusto;
   double? crioscopia;
+  bool? alizarol;
   String? hora;
   int? particao;
   String? observacao;
@@ -21,6 +24,7 @@ class TiketEntradaModel {
   double? temperatura;
   int? id;
   int? id_coleta;
+
   TiketEntradaModel({
     required this.rota,
     this.rota_nome,
@@ -33,6 +37,7 @@ class TiketEntradaModel {
     this.tiket,
     this.quantidade,
     this.per_desconto,
+    this.alizarol,
     this.ccusto,
     this.crioscopia,
     this.hora,
@@ -58,6 +63,7 @@ class TiketEntradaModel {
     double? per_desconto,
     int? ccusto,
     double? crioscopia,
+    bool? alizarol,
     String? hora,
     int? particao,
     String? observacao,
@@ -80,6 +86,7 @@ class TiketEntradaModel {
       per_desconto: per_desconto ?? this.per_desconto,
       ccusto: ccusto ?? this.ccusto,
       crioscopia: crioscopia ?? this.crioscopia,
+      alizarol: alizarol ?? this.alizarol,
       hora: hora ?? this.hora,
       particao: particao ?? this.particao,
       observacao: observacao ?? this.observacao,
@@ -105,6 +112,7 @@ class TiketEntradaModel {
       'per_desconto': per_desconto,
       'ccusto': ccusto,
       'crioscopia': crioscopia,
+      'alizarol': alizarol,
       'hora': hora,
       'particao': particao,
       'observacao': observacao,
@@ -127,8 +135,10 @@ class TiketEntradaModel {
       tiket: map['tiket']?.toInt() ?? 0,
       quantidade: map['quantidade']?.toInt() ?? 0,
       per_desconto: map['per_desconto']?.toDouble() ?? 0.0,
-      ccusto: map['ccusto']?.toInt() ?? 0,
+      ccusto:
+          map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.ccusto,
       crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
+      alizarol: map['alizarol'] ?? false,
       hora: map['hora'] ?? '',
       particao: map['particao']?.toInt() ?? 0,
       observacao: map['observacao'] ?? '',
@@ -146,7 +156,7 @@ class TiketEntradaModel {
 
   @override
   String toString() {
-    return 'TiketEntradaModel(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
+    return 'TiketEntradaModel(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, alizarol: $alizarol, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
   }
 
   @override
@@ -167,6 +177,7 @@ class TiketEntradaModel {
         other.per_desconto == per_desconto &&
         other.ccusto == ccusto &&
         other.crioscopia == crioscopia &&
+        other.alizarol == alizarol &&
         other.hora == hora &&
         other.particao == particao &&
         other.observacao == observacao &&
@@ -191,6 +202,7 @@ class TiketEntradaModel {
         per_desconto.hashCode ^
         ccusto.hashCode ^
         crioscopia.hashCode ^
+        alizarol.hashCode ^
         hora.hashCode ^
         particao.hashCode ^
         observacao.hashCode ^

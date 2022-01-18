@@ -72,6 +72,16 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
         .run(() => super.retornaRotaFinalizada(rotaf: rotaf));
   }
 
+  final _$onSearchChangedAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.onSearchChanged');
+
+  @override
+  Future<ObservableList<RotasLeiteModel>> onSearchChanged(
+      {required String value}) {
+    return _$onSearchChangedAsyncAction
+        .run(() => super.onSearchChanged(value: value));
+  }
+
   @override
   String toString() {
     return '''

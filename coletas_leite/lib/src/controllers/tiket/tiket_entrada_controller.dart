@@ -164,10 +164,11 @@ abstract class _TiketEntradaControllerBase with Store {
             'tiket': 1,
             'quantidade': item.quantidade,
             'per_desconto': 0.0,
-            'ccusto': 0,
+            'ccusto': GlobalSettings().appSettings.user.ccusto,
             'rota_coleta': rota,
             'id_coleta': id_coleta,
             'crioscopia': item.crioscopia,
+            'alizarol': item.alizarol! == true ? 1 : 0,
             'hora': '"' +
                 DateTime.now().hour.toString() +
                 ':' +
@@ -207,6 +208,7 @@ abstract class _TiketEntradaControllerBase with Store {
             nome: tik['nome'],
             ccusto: tik['ccusto'],
             crioscopia: tik['crioscopia'],
+            alizarol: tik['alizarol'] == 1 ? true : false,
             data: tik['data'],
             hora: tik['hora'],
             observacao: tik['observacao'],
@@ -241,7 +243,7 @@ abstract class _TiketEntradaControllerBase with Store {
               {
                 'quantidade': coleta.quantidade,
                 'temperatura': coleta.temperatura,
-                'crioscopia': coleta.crioscopia,
+                'alizarol': coleta.alizarol! ? 1 : 0,
                 'particao': coleta.particao, //TANQUE DO CAMINHAO
                 'observacao': coleta.observacao //MOTIVO DA NAO COLETA
               },
@@ -249,8 +251,8 @@ abstract class _TiketEntradaControllerBase with Store {
               whereArgs: [coleta.id]);
         }
       });
-      status = TiketEntradaStatus.loading;
-      status = TiketEntradaStatus.success;
+      // status = TiketEntradaStatus.loading;
+      // status = TiketEntradaStatus.success;
     } catch (e) {
       print('eu sou o erro ao atualizar $e');
     }
@@ -258,12 +260,25 @@ abstract class _TiketEntradaControllerBase with Store {
 
   @action
   Future<void> imprimirTicket({required TiketEntradaModel tiket}) async {
+    status = TiketEntradaStatus.imprimindo;
+
+    await Future.delayed(Duration(milliseconds: 300));
+
     device = GlobalSettings().appSettings.imp;
 
     if (!(await printer.isConnected)!) await printer.connect(device!);
 
     if ((await printer.isConnected)!) {
-      printer.printCustom('COOPROLAT', 1, 1);
+      printer.printCustom(
+          GlobalSettings()
+              .appSettings
+              .user
+              .descEmpresa
+              .toString()
+              .substring(0, 21)
+              .removeAcentos(),
+          1,
+          1);
       printer.printNewLine();
       printer.printCustom(
           'Data: ' +
@@ -280,7 +295,8 @@ abstract class _TiketEntradaControllerBase with Store {
               tiket.temperatura.toString(),
           1,
           0);
-      printer.printCustom('Crioscopia: ' + tiket.crioscopia.toString(), 1, 0);
+      printer.printCustom(
+          'Alizarol: ' + (tiket.alizarol! ? 'Positivo' : 'Negativo'), 1, 0);
       printer.printCustom('Tanque: ' + tiket.particao.toString(), 1, 0);
       printer.printCustom('Placa: ' + tiket.placa!, 1, 0);
       if (tiket.observacao.toString() != '')
@@ -300,5 +316,28 @@ abstract class _TiketEntradaControllerBase with Store {
       printer.printNewLine();
       printer.printNewLine();
     }
+    status = TiketEntradaStatus.success;
+  }
+
+  @action
+  Future<ObservableList<TiketEntradaModel>> onSearchChanged(
+      {required String value}) async {
+    if (value.isEmpty) {
+      status = TiketEntradaStatus.loading;
+    }
+
+    ObservableList<TiketEntradaModel> lista = ObservableList.of(tikets
+        .where(
+            (rota) => (rota.nome.toLowerCase().contains(value.toLowerCase())))
+        .toList());
+
+    if (value.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    if (value.isEmpty) {
+      status = TiketEntradaStatus.success;
+    }
+    return lista;
   }
 }

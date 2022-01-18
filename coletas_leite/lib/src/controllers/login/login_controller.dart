@@ -83,6 +83,9 @@ abstract class _LoginControllerBase with Store {
 
         if (autorizado == 'S') {
           user.nome = jsonDecode(response.data)['nome'];
+          user.ccusto = jsonDecode(response.data)['ccusto'];
+          user.descEmpresa = jsonDecode(response.data)['descEmpresa'];
+
           await GlobalSettings().appSettings.setLogado(conectado: 'S');
           await GlobalSettings().appSettings.setUser(user: user);
           status = LoginStatus.success;

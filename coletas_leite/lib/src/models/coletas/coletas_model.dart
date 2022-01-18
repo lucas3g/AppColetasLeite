@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:coletas_leite/src/configs/global_settings.dart';
+
 class ColetasModel {
   String? data_mov;
   int? rota_coleta;
@@ -91,7 +93,8 @@ class ColetasModel {
       dt_hora_fim: map['dt_hora_fim'],
       transportador: map['transportador'],
       motorista: map['motorista'],
-      ccusto: map['ccusto']?.toInt(),
+      ccusto:
+          map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.ccusto,
       rota_finalizada: map['rota_finalizada']?.toInt(),
       id: map['id']?.toInt(),
       enviada: map['enviada']?.toInt(),

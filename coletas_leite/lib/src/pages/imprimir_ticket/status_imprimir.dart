@@ -1,7 +1,6 @@
-enum TiketEntradaStatus {
+enum ImprimirStatus {
   empty,
   loading,
   success,
   error,
-  imprimindo,
 }

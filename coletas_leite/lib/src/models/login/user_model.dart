@@ -5,11 +5,15 @@ class UserModel {
   final String login;
   final String senha;
   String? nome;
+  int? ccusto;
+  String? descEmpresa;
   UserModel({
     this.cnpj = '',
     this.login = '',
     this.senha = '',
-    this.nome = '',
+    this.nome,
+    this.ccusto,
+    this.descEmpresa,
   });
 
   factory UserModel.login(UserModel account) {
@@ -18,6 +22,8 @@ class UserModel {
       login: account.login,
       senha: account.senha,
       nome: account.nome,
+      ccusto: account.ccusto,
+      descEmpresa: account.descEmpresa,
     );
   }
 
@@ -26,12 +32,16 @@ class UserModel {
     String? login,
     String? senha,
     String? nome,
+    int? ccusto,
+    String? descEmpresa,
   }) {
     return UserModel(
       cnpj: cnpj ?? this.cnpj,
       login: login ?? this.login,
       senha: senha ?? this.senha,
       nome: nome ?? this.nome,
+      ccusto: ccusto ?? this.ccusto,
+      descEmpresa: descEmpresa ?? this.descEmpresa,
     );
   }
 
@@ -41,6 +51,8 @@ class UserModel {
       'login': login,
       'senha': senha,
       'nome': nome,
+      'ccusto': ccusto,
+      'descEmpresa': descEmpresa,
     };
   }
 
@@ -49,7 +61,9 @@ class UserModel {
       cnpj: map['cnpj'] ?? '',
       login: map['login'] ?? '',
       senha: map['senha'] ?? '',
-      nome: map['nome'] ?? '',
+      nome: map['nome'],
+      ccusto: map['ccusto']?.toInt(),
+      descEmpresa: map['descEmpresa'],
     );
   }
 
@@ -59,8 +73,9 @@ class UserModel {
       UserModel.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'UserModel(cnpj: $cnpj, login: $login, senha: $senha, nome: $nome)';
+  String toString() {
+    return 'UserModel(cnpj: $cnpj, login: $login, senha: $senha, nome: $nome, ccusto: $ccusto, descEmpresa: $descEmpresa)';
+  }
 
   @override
   bool operator ==(Object other) {
@@ -70,10 +85,18 @@ class UserModel {
         other.cnpj == cnpj &&
         other.login == login &&
         other.senha == senha &&
-        other.nome == nome;
+        other.nome == nome &&
+        other.ccusto == ccusto &&
+        other.descEmpresa == descEmpresa;
   }
 
   @override
-  int get hashCode =>
-      cnpj.hashCode ^ login.hashCode ^ senha.hashCode ^ nome.hashCode;
+  int get hashCode {
+    return cnpj.hashCode ^
+        login.hashCode ^
+        senha.hashCode ^
+        nome.hashCode ^
+        ccusto.hashCode ^
+        descEmpresa.hashCode;
+  }
 }

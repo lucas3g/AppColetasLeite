@@ -63,6 +63,16 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
     return _$buscaCaminhoesAsyncAction.run(() => super.buscaCaminhoes());
   }
 
+  final _$onSearchChangedAsyncAction =
+      AsyncAction('_TransportesControllerBase.onSearchChanged');
+
+  @override
+  Future<ObservableList<TransportesModel>> onSearchChanged(
+      {required String value}) {
+    return _$onSearchChangedAsyncAction
+        .run(() => super.onSearchChanged(value: value));
+  }
+
   @override
   String toString() {
     return '''

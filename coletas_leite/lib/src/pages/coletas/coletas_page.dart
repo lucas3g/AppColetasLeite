@@ -1,3 +1,4 @@
+import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
 import 'package:coletas_leite/src/utils/meu_toast.dart';
@@ -35,8 +36,11 @@ class _ColetasPageState extends State<ColetasPage> {
   final controllerCrio = TextEditingController();
   final controllerMotivoNC = TextEditingController();
 
+  final TextEditingController controllerInput = TextEditingController();
+
+  List<TiketEntradaModel> filteredProd = [];
+
   FocusNode temp = FocusNode();
-  FocusNode crio = FocusNode();
   FocusNode tanque = FocusNode();
   FocusNode mnc = FocusNode();
 
@@ -47,10 +51,19 @@ class _ColetasPageState extends State<ColetasPage> {
         rota: widget.id_rota,
         id_coleta: widget.coleta.id!,
         placa: widget.placa);
+    setState(() {
+      filteredProd = controller.tikets;
+    });
+  }
+
+  void _onSearchChanged(String value) async {
+    filteredProd = await controller.onSearchChanged(value: value);
+    setState(() {});
   }
 
   @override
   void initState() {
+    super.initState();
     gravaTikets();
     temp.addListener(() {
       if (temp.hasFocus) {
@@ -58,320 +71,303 @@ class _ColetasPageState extends State<ColetasPage> {
             baseOffset: 0, extentOffset: controllerTemp.text.length);
       }
     });
-    crio.addListener(() {
-      if (crio.hasFocus) {
-        controllerCrio.selection = TextSelection(
-            baseOffset: 0, extentOffset: controllerCrio.text.length);
-      }
-    });
-    super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    void modalColeta({required TiketEntradaModel tiket}) {
-      dropdownValue = tiket.particao!;
-      controllerQtd.text = tiket.quantidade.toString();
-      controllerTemp.text = tiket.temperatura.toString();
-      controllerCrio.text = tiket.crioscopia.toString();
-      controllerMotivoNC.text = tiket.observacao.toString() == 'null'
-          ? ''
-          : tiket.observacao.toString();
-      showDialog(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setStateDialog) =>
-                  SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Informações sobre a coleta',
-                      style: AppTheme.textStyles.titleCharts
-                          .copyWith(fontSize: 20),
-                    ),
-                    Divider(),
-                    Column(
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Quantidade LT',
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              onFieldSubmitted: (value) {
-                                temp.requestFocus();
-                              },
-                              controller: controllerQtd,
-                              onTap: () => controllerQtd.selectAll(),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              onChanged: (value) {
-                                tiket.quantidade = int.tryParse(value);
-                              },
-                              keyboardType: TextInputType.number,
-                              //initialValue: tiket.quantidade!.toString(),
-                              cursorColor: AppTheme.colors.secondaryColor,
-                              style: AppTheme.textStyles.title.copyWith(
-                                  fontSize: 16,
-                                  color: AppTheme.colors.secondaryColor),
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppTheme.colors.secondaryColor),
-                                ),
+  Future<void> modalColeta({required TiketEntradaModel tiket}) async {
+    dropdownValue = tiket.particao!;
+    controllerQtd.text = tiket.quantidade.toString();
+    controllerTemp.text = tiket.temperatura.toString();
+    controllerCrio.text = tiket.crioscopia.toString();
+    controllerMotivoNC.text = tiket.observacao.toString() == 'null'
+        ? ''
+        : tiket.observacao.toString();
+    showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateDialog) =>
+                SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Informações sobre a coleta',
+                    style:
+                        AppTheme.textStyles.titleCharts.copyWith(fontSize: 20),
+                  ),
+                  Divider(),
+                  Column(
+                    children: [
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Quantidade LT',
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Temperatura',
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              focusNode: temp,
-
-                              onFieldSubmitted: (value) {
-                                crio.requestFocus();
-                              },
-                              controller: controllerTemp,
-                              onTap: () => controllerTemp.selectAll(),
-                              style: AppTheme.textStyles.title.copyWith(
-                                  fontSize: 16,
-                                  color: AppTheme.colors.secondaryColor),
-                              onChanged: (value) {
-                                tiket.temperatura = double.tryParse(value);
-                              },
-                              keyboardType: TextInputType.number,
-                              //initialValue: tiket.temperatura!.toString(),
-                              textAlign: TextAlign.start,
-                              cursorColor: AppTheme.colors.secondaryColor,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppTheme.colors.secondaryColor),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Crioscopia',
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              focusNode: crio,
-                              onFieldSubmitted: (value) {
-                                tanque.requestFocus();
-                              },
-                              controller: controllerCrio,
-                              onTap: () => controllerCrio.selectAll(),
-                              style: AppTheme.textStyles.title.copyWith(
-                                  fontSize: 16,
-                                  color: AppTheme.colors.secondaryColor),
-                              onChanged: (value) {
-                                tiket.crioscopia = double.tryParse(value);
-                              },
-                              keyboardType: TextInputType.number,
-                              //initialValue: tiket.crioscopia!.toString(),
-                              textAlign: TextAlign.start,
-                              cursorColor: AppTheme.colors.secondaryColor,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppTheme.colors.secondaryColor),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Tanque',
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: 54,
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                color: Colors.white,
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            onFieldSubmitted: (value) {
+                              temp.requestFocus();
+                            },
+                            controller: controllerQtd,
+                            onTap: () => controllerQtd.selectAll(),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: (value) {
+                              tiket.quantidade = int.tryParse(value);
+                            },
+                            keyboardType: TextInputType.number,
+                            //initialValue: tiket.quantidade!.toString(),
+                            cursorColor: AppTheme.colors.secondaryColor,
+                            style: AppTheme.textStyles.title.copyWith(
+                                fontSize: 16,
+                                color: AppTheme.colors.secondaryColor),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black),
                               ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: DropdownButton(
-                                  focusNode: tanque,
-                                  borderRadius: BorderRadius.circular(10),
-                                  value: tiket.particao,
-                                  isExpanded: true,
-                                  icon: Icon(
-                                    Icons.arrow_circle_down_sharp,
-                                  ),
-                                  iconSize: 30,
-                                  elevation: 8,
-                                  iconEnabledColor:
-                                      AppTheme.colors.secondaryColor,
-                                  style: AppTheme.textStyles.dropdownText,
-                                  underline: Container(),
-                                  onChanged: (int? newValue) {
-                                    setStateDialog(() {
-                                      tiket.particao = newValue!;
-                                    });
-                                  },
-                                  items: [1, 2, 3, 4].map((int value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value.toString()),
-                                    );
-                                  }).toList(),
-                                ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black),
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Motivo da Não Coleta',
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              focusNode: mnc,
-                              controller: controllerMotivoNC,
-                              onTap: () => controllerMotivoNC.selectAll(),
-                              onChanged: (value) {
-                                tiket.observacao = value;
-                              },
-                              //initialValue: tiket.observacao,
-                              textAlign: TextAlign.start,
-                              cursorColor: AppTheme.colors.secondaryColor,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: AppTheme.colors.secondaryColor),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: PhysicalModel(
-                            color: Colors.white,
-                            elevation: 8,
-                            shadowColor: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  'Cancelar',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                              height: 45,
-                              width: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: AppTheme.colors.secondaryColor),
                               ),
                             ),
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Temperatura',
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            focusNode: temp,
+                            controller: controllerTemp,
+                            onTap: () => controllerTemp.selectAll(),
+                            style: AppTheme.textStyles.title.copyWith(
+                                fontSize: 16,
+                                color: AppTheme.colors.secondaryColor),
+                            onChanged: (value) {
+                              tiket.temperatura = double.tryParse(value);
+                            },
+                            keyboardType: TextInputType.number,
+                            //initialValue: tiket.temperatura!.toString(),
+                            textAlign: TextAlign.start,
+                            cursorColor: AppTheme.colors.secondaryColor,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: AppTheme.colors.secondaryColor),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Alizarol',
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setStateDialog(() {
+                                tiket.alizarol = !tiket.alizarol!;
+                              });
+                            },
+                            child: Container(
+                              width: double.maxFinite,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    value: tiket.alizarol,
+                                    onChanged: (bool? value) {
+                                      setStateDialog(() {
+                                        tiket.alizarol = value;
+                                      });
+                                    },
+                                    activeColor: AppTheme.colors.secondaryColor,
+                                  ),
+                                  Text('Alizarol'),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Tanque',
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 54,
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: DropdownButton(
+                                focusNode: tanque,
+                                borderRadius: BorderRadius.circular(10),
+                                value: tiket.particao,
+                                isExpanded: true,
+                                icon: Icon(
+                                  Icons.arrow_circle_down_sharp,
+                                ),
+                                iconSize: 30,
+                                elevation: 8,
+                                iconEnabledColor:
+                                    AppTheme.colors.secondaryColor,
+                                style: AppTheme.textStyles.dropdownText,
+                                underline: Container(),
+                                onChanged: (int? newValue) {
+                                  setStateDialog(() {
+                                    tiket.particao = newValue!;
+                                  });
+                                },
+                                items: [1, 2, 3, 4].map((int value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value.toString()),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Motivo da Não Coleta',
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            focusNode: mnc,
+                            controller: controllerMotivoNC,
+                            onTap: () => controllerMotivoNC.selectAll(),
+                            onChanged: (value) {
+                              tiket.observacao = value;
+                            },
+                            //initialValue: tiket.observacao,
+                            textAlign: TextAlign.start,
+                            cursorColor: AppTheme.colors.secondaryColor,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: AppTheme.colors.secondaryColor),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                'Cancelar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            height: 45,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                         ),
-                        GestureDetector(
+                      ),
+                      Observer(builder: (_) {
+                        return GestureDetector(
                           onTap: () async {
                             await controller.atualizaTiket(coleta: tiket);
-                            controller.imprimirTicket(tiket: tiket);
+                            await controller.imprimirTicket(tiket: tiket);
                             Navigator.pop(context);
-                            setState(() {});
                           },
                           child: PhysicalModel(
                             color: Colors.white,
@@ -380,13 +376,24 @@ class _ColetasPageState extends State<ColetasPage> {
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               child: Center(
-                                child: Text(
-                                  'Salvar',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
+                                child: controller.status ==
+                                        TiketEntradaStatus.imprimindo
+                                    ? Container(
+                                        height: 25,
+                                        width: 25,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      )
+                                    : Text(
+                                        'Salvar',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
                               ),
                               height: 45,
                               width: 120,
@@ -396,176 +403,187 @@ class _ColetasPageState extends State<ColetasPage> {
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                        );
+                      }),
+                    ],
+                  )
+                ],
               ),
             ),
-          );
-        },
-      );
-    }
+          ),
+        );
+      },
+    );
+  }
 
-    void confirmaFinalizacao(
-        {required ColetasModel coleta, required BuildContext context}) {
-      showDialog(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          final GlobalKey<FormState> key = GlobalKey<FormState>();
-          return AlertDialog(
-            content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) =>
-                  SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+  Future<void> confirmaFinalizacao(
+      {required ColetasModel coleta, required BuildContext context}) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        final GlobalKey<FormState> key = GlobalKey<FormState>();
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Finalizar rota?',
+                  style: AppTheme.textStyles.titleCharts.copyWith(fontSize: 20),
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Finalizar rota?',
-                      style: AppTheme.textStyles.titleCharts
-                          .copyWith(fontSize: 20),
+                      'KM Final',
                     ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'KM Final',
-                        ),
-                      ],
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Form(
+                  key: key,
+                  child: TextFormField(
+                    autofocus: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Informe os KM finais.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      coleta.km_fim = int.tryParse(value);
+                    },
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    keyboardType: TextInputType.number,
+                    cursorColor: AppTheme.colors.secondaryColor,
+                    style: AppTheme.textStyles.title.copyWith(
+                        fontSize: 16, color: AppTheme.colors.secondaryColor),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            BorderSide(color: AppTheme.colors.secondaryColor),
+                      ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Form(
-                      key: key,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Informe os KM finais.';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          coleta.km_fim = int.tryParse(value);
-                        },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        cursorColor: AppTheme.colors.secondaryColor,
-                        style: AppTheme.textStyles.title.copyWith(
-                            fontSize: 16,
-                            color: AppTheme.colors.secondaryColor),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                Divider(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: PhysicalModel(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                                color: AppTheme.colors.secondaryColor),
+                          height: 45,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                       ),
                     ),
-                    Divider(),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: PhysicalModel(
-                            color: Colors.white,
-                            elevation: 8,
-                            shadowColor: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  'Cancelar',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                              height: 45,
-                              width: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Observer(builder: (_) {
+                      return GestureDetector(
+                        onTap: () async {
+                          if (key.currentState!.validate()) {
+                            await controllerColeta.finalizaColeta(
+                                coleta: widget.coleta);
+
+                            await controllerColeta.imprimirResumoColetas(
+                                coleta: coleta);
+
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                '/dashboard', (Route<dynamic> route) => false);
+
+                            MeuToast.toast(
+                                title: 'Sucesso',
+                                message: 'Rota Finalizada!',
+                                type: TypeToast.success,
+                                context: context);
+                          }
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: AppTheme.colors.secondaryColor,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: controllerColeta.status ==
+                                      ColetasStatus.imprimindo
+                                  ? Container(
+                                      height: 25,
+                                      width: 25,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  : Text(
+                                      'Finalizar',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                            ),
+                            height: 45,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: AppTheme.colors.secondaryColor,
+                              borderRadius: BorderRadius.circular(20),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            if (key.currentState!.validate()) {
-                              await controllerColeta.finalizaColeta(
-                                  coleta: widget.coleta);
-
-                              await controllerColeta.imprimirResumoColetas(
-                                  coleta: coleta);
-
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  '/dashboard',
-                                  (Route<dynamic> route) => false);
-
-                              MeuToast.toast(
-                                  title: 'Sucesso',
-                                  message: 'Rota Finalizada!',
-                                  type: TypeToast.success,
-                                  context: context);
-                            }
-                          },
-                          child: PhysicalModel(
-                            color: Colors.white,
-                            elevation: 8,
-                            shadowColor: AppTheme.colors.secondaryColor,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  'Finalizar',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                              height: 45,
-                              width: 120,
-                              decoration: BoxDecoration(
-                                color: AppTheme.colors.secondaryColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
+                      );
+                    }),
                   ],
-                ),
-              ),
+                )
+              ],
             ),
-          );
-        },
-      );
-    }
+          ),
+        );
+      },
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -573,97 +591,202 @@ class _ColetasPageState extends State<ColetasPage> {
         title: Text('Produtores'),
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
+            onPressed: () async {
+              await Navigator.pushNamedAndRemoveUntil(
                   context, '/dashboard', (Route<dynamic> route) => false);
             }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Observer(builder: (_) {
-          final ListColetas =
-              controller.tikets.where((e) => e.rota == widget.id_rota).toList();
-
-          ListColetas.sort((a, b) => ("${a.quantidade} ${a.temperatura}")
-              .toString()
-              .compareTo(("${b.quantidade} ${b.temperatura}").toString()));
-
-          return controller.status == TiketEntradaStatus.success
-              ? ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) =>
-                      SizedBox(
-                        height: 15,
-                      ),
-                  itemCount: ListColetas.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          color: ListColetas[index].quantidade! > 0 &&
-                                  ListColetas[index].temperatura! != 0
-                              ? Colors.green.shade500
-                              : ListColetas[index].quantidade! == 0 &&
-                                      ListColetas[index].temperatura! == 0
-                                  ? Colors.grey.shade400
-                                  : Colors.amber.shade400,
-                          border: Border.all(
-                              color: ListColetas[index].quantidade! > 0 &&
-                                      ListColetas[index].temperatura! != 0
-                                  ? Colors.green.shade500
-                                  : ListColetas[index].quantidade! == 0 &&
-                                          ListColetas[index].temperatura! == 0
-                                      ? Colors.grey.shade400
-                                      : Colors.amber.shade400),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                                color: ListColetas[index].quantidade! > 0 &&
-                                        ListColetas[index].temperatura! != 0
-                                    ? Colors.green.shade500
-                                    : ListColetas[index].quantidade! == 0 &&
-                                            ListColetas[index].temperatura! == 0
-                                        ? Colors.grey.shade400
-                                        : Colors.amber.shade400,
-                                blurRadius: 5,
-                                offset: Offset(0, 5))
-                          ]),
-                      child: ListTile(
-                        onTap: () {
-                          modalColeta(tiket: ListColetas[index]);
-                        },
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        leading: Container(
-                          height: double.maxFinite,
-                          child: Icon(
-                            Icons.person_outline,
-                            size: 30,
-                            color: Colors.black,
-                          ),
-                        ),
-                        minLeadingWidth: 10,
-                        title: Text(ListColetas[index].nome,
-                            style: AppTheme.textStyles.titleLogin
-                                .copyWith(fontSize: 16, color: Colors.black)),
-                        subtitle: Row(
-                          children: [
-                            Text(
-                              'Município: ',
-                              style: AppTheme.textStyles.titleLogin
-                                  .copyWith(fontSize: 14, color: Colors.black),
+        child: Column(
+          children: [
+            Theme(
+              data: ThemeData(
+                colorScheme: ThemeData().colorScheme.copyWith(
+                      primary: AppTheme.colors.secondaryColor,
+                    ),
+              ),
+              child: PhysicalModel(
+                color: Colors.white,
+                elevation: 8,
+                shadowColor: Colors.grey,
+                borderRadius: BorderRadius.circular(20),
+                child: TextFormField(
+                  controller: controllerInput,
+                  inputFormatters: [UpperCaseTextFormatter()],
+                  onChanged: (value) {
+                    _onSearchChanged(value);
+                  },
+                  cursorColor: AppTheme.colors.primaryColor,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    fillColor: Colors.grey.shade300,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: 25,
+                    ),
+                    suffixIcon: controllerInput.value.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              size: 25,
                             ),
-                            Text(ListColetas[index].municipios)
-                          ],
-                        ),
+                            onPressed: () {
+                              controllerInput.clear();
+                              _onSearchChanged('');
+                            },
+                          )
+                        : null,
+                    hintText: 'Digite o nome do produtor',
+                    alignLabelWithHint: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: AppTheme.colors.secondaryColor,
                       ),
-                    );
-                  })
-              : ListView.separated(
-                  itemBuilder: (_, __) => LoadingWidget(
-                      size: Size(double.maxFinite, 65), radius: 10),
-                  separatorBuilder: (_, __) => SizedBox(
-                        height: 15,
-                      ),
-                  itemCount: 10);
-        }),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Observer(builder: (_) {
+              final ListColetas =
+                  filteredProd.where((e) => e.rota == widget.id_rota).toList();
+
+              ListColetas.sort((a, b) => ("${a.quantidade} ${a.temperatura}")
+                  .toString()
+                  .compareTo(("${b.quantidade} ${b.temperatura}").toString()));
+
+              return controller.status == TiketEntradaStatus.success &&
+                      ListColetas.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                          separatorBuilder: (BuildContext context, int index) =>
+                              SizedBox(
+                                height: 15,
+                              ),
+                          itemCount: ListColetas.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: ListColetas[index].quantidade! > 0 &&
+                                          ListColetas[index].temperatura! !=
+                                              0 &&
+                                          ListColetas[index].crioscopia! != 0.0
+                                      ? Colors.green.shade500
+                                      : ListColetas[index].quantidade! == 0 &&
+                                              ListColetas[index].temperatura! ==
+                                                  0 &&
+                                              ListColetas[index].crioscopia! ==
+                                                  0.0
+                                          ? Colors.grey.shade400
+                                          : Colors.amber.shade400,
+                                  border: Border.all(
+                                      color: ListColetas[index].quantidade! >
+                                                  0 &&
+                                              ListColetas[index].temperatura! !=
+                                                  0 &&
+                                              ListColetas[index].crioscopia! !=
+                                                  0.0
+                                          ? Colors.green.shade500
+                                          : ListColetas[index].quantidade! ==
+                                                      0 &&
+                                                  ListColetas[index]
+                                                          .temperatura! ==
+                                                      0 &&
+                                                  ListColetas[index]
+                                                          .crioscopia! ==
+                                                      0.0
+                                              ? Colors.grey.shade400
+                                              : Colors.amber.shade400),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: ListColetas[index].quantidade! >
+                                                    0 &&
+                                                ListColetas[index]
+                                                        .temperatura! !=
+                                                    0 &&
+                                                ListColetas[index]
+                                                        .crioscopia! !=
+                                                    0.0
+                                            ? Colors.green.shade500
+                                            : ListColetas[index]
+                                                            .quantidade! ==
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .temperatura! ==
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .crioscopia! ==
+                                                        0.0
+                                                ? Colors.grey.shade400
+                                                : Colors.amber.shade400,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 5))
+                                  ]),
+                              child: ListTile(
+                                onTap: () async {
+                                  await modalColeta(tiket: ListColetas[index]);
+                                },
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 10),
+                                leading: Container(
+                                  height: double.maxFinite,
+                                  child: Icon(
+                                    Icons.person_outline,
+                                    size: 30,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                minLeadingWidth: 10,
+                                title: Text(ListColetas[index].nome,
+                                    style: AppTheme.textStyles.titleLogin
+                                        .copyWith(
+                                            fontSize: 16, color: Colors.black)),
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      'Município: ',
+                                      style: AppTheme.textStyles.titleLogin
+                                          .copyWith(
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                    ),
+                                    Text(ListColetas[index].municipios)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    )
+                  : controller.status == TiketEntradaStatus.loading
+                      ? Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (_, __) => LoadingWidget(
+                                  size: Size(double.maxFinite, 50), radius: 10),
+                              separatorBuilder: (_, __) => SizedBox(
+                                    height: 15,
+                                  ),
+                              itemCount: 10),
+                        )
+                      : Container(
+                          child: Center(
+                            child: Text('Nenhum produtor encontrado!'),
+                          ),
+                        );
+            }),
+          ],
+        ),
       ),
       bottomSheet: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -679,8 +802,9 @@ class _ColetasPageState extends State<ColetasPage> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {
-                  confirmaFinalizacao(coleta: widget.coleta, context: context);
+                onPressed: () async {
+                  await confirmaFinalizacao(
+                      coleta: widget.coleta, context: context);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
