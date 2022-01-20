@@ -345,6 +345,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
           children: [
             Text(
               '..: Ágil Coletas :..',
+              style: AppTheme.textStyles.title.copyWith(fontSize: 20),
             ),
           ],
         ),
@@ -531,32 +532,14 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              'KM Inicial: ',
+                                              'KM: ',
                                               style: AppTheme
                                                   .textStyles.dropdownText
                                                   .copyWith(fontSize: 16),
                                             ),
                                             Expanded(
                                               child: Text(
-                                                controller.ListaColetas[index]
-                                                    .km_inicio!
-                                                    .toString(),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Text(
-                                              'KM Final: ',
-                                              style: AppTheme
-                                                  .textStyles.dropdownText
-                                                  .copyWith(fontSize: 16),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                controller
-                                                    .ListaColetas[index].km_fim!
-                                                    .toString(),
+                                                '${controller.ListaColetas[index].km_inicio!} / ${controller.ListaColetas[index].km_fim!}',
                                               ),
                                             ),
                                           ],

@@ -66,183 +66,190 @@ class _TransportadorPageState extends State<TransportadorPage> {
       builder: (BuildContext context) {
         final GlobalKey<FormState> key = GlobalKey<FormState>();
         return AlertDialog(
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Informações',
-                  style: AppTheme.textStyles.titleCharts.copyWith(fontSize: 20),
-                ),
-                Divider(),
-                Column(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Rota: ',
-                              style: AppTheme.textStyles.dropdownText
-                                  .copyWith(fontSize: 16),
-                            ),
-                            Expanded(child: Text(widget.rota)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Motorista: ',
-                              style: AppTheme.textStyles.dropdownText
-                                  .copyWith(fontSize: 16),
-                            ),
-                            Expanded(child: Text(motorista!)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Caminhão: ',
-                              style: AppTheme.textStyles.dropdownText
-                                  .copyWith(fontSize: 16),
-                            ),
-                            Expanded(child: Text(caminhao)),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'KM Inicial',
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Form(
-                          key: key,
-                          child: TextFormField(
-                            autofocus: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Informe os KM iniciais.';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              setState(() {
-                                km_inicio = int.parse(value);
-                              });
-                            },
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateDialog) =>
+                SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Informações',
+                    style:
+                        AppTheme.textStyles.titleCharts.copyWith(fontSize: 20),
+                  ),
+                  Divider(),
+                  Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Rota: ',
+                                style: AppTheme.textStyles.dropdownText
+                                    .copyWith(fontSize: 16),
+                              ),
+                              Expanded(child: Text(widget.rota)),
                             ],
-                            keyboardType: TextInputType.number,
-                            cursorColor: AppTheme.colors.secondaryColor,
-                            style: AppTheme.textStyles.title.copyWith(
-                                fontSize: 16,
-                                color: AppTheme.colors.secondaryColor),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Motorista: ',
+                                style: AppTheme.textStyles.dropdownText
+                                    .copyWith(fontSize: 16),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                    color: AppTheme.colors.secondaryColor),
+                              Expanded(child: Text(motorista!)),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Caminhão: ',
+                                style: AppTheme.textStyles.dropdownText
+                                    .copyWith(fontSize: 16),
                               ),
-                            ),
+                              Expanded(child: Text(caminhao)),
+                            ],
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: PhysicalModel(
-                        color: Colors.white,
-                        elevation: 8,
-                        shadowColor: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              'Cancelar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
+                          SizedBox(
+                            height: 10,
                           ),
-                          height: 45,
-                          width: size.width * 0.28,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(20),
+                          Text(
+                            'KM Inicial',
                           ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        if (key.currentState!.validate()) {
-                          await controllerColetas.iniciaColeta(
-                              rota: widget.id_rota,
-                              rota_nome: widget.rota,
-                              motorista: motorista!,
-                              caminhao: caminhao,
-                              km_inicio: km_inicio,
-                              tanques: tanques);
-
-                          Navigator.pop(context);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => ColetasPage(
-                                  id_rota: widget.id_rota,
-                                  coleta: controllerColetas.coletas,
-                                  placa: caminhao,
-                                  tanques: tanques,
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Form(
+                            key: key,
+                            child: TextFormField(
+                              autofocus: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Informe os KM iniciais.';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                setStateDialog(() {
+                                  km_inicio = int.tryParse(value.toString())!;
+                                });
+                              },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              keyboardType: TextInputType.number,
+                              cursorColor: AppTheme.colors.secondaryColor,
+                              style: AppTheme.textStyles.title.copyWith(
+                                  fontSize: 16,
+                                  color: AppTheme.colors.secondaryColor),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: AppTheme.colors.secondaryColor),
                                 ),
                               ),
-                              (route) => false);
-                        }
-                      },
-                      child: PhysicalModel(
-                        color: Colors.white,
-                        elevation: 8,
-                        shadowColor: AppTheme.colors.secondaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              'Iniciar Rota',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
                             ),
                           ),
-                          height: 45,
-                          width: size.width * 0.28,
-                          decoration: BoxDecoration(
-                            color: AppTheme.colors.secondaryColor,
-                            borderRadius: BorderRadius.circular(20),
+                        ],
+                      )
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                'Cancelar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            height: 45,
+                            width: size.width * 0.28,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      GestureDetector(
+                        onTap: () async {
+                          if (key.currentState!.validate()) {
+                            key.currentState!.save();
+                            await controllerColetas.iniciaColeta(
+                                rota: widget.id_rota,
+                                rota_nome: widget.rota,
+                                motorista: motorista!,
+                                caminhao: caminhao,
+                                km_inicio: km_inicio,
+                                tanques: tanques);
+
+                            Navigator.pop(context);
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ColetasPage(
+                                    id_rota: widget.id_rota,
+                                    coleta: controllerColetas.coletas,
+                                    placa: caminhao,
+                                    tanques: tanques,
+                                  ),
+                                ),
+                                (route) => false);
+                          }
+                        },
+                        child: PhysicalModel(
+                          color: Colors.white,
+                          elevation: 8,
+                          shadowColor: AppTheme.colors.secondaryColor,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                'Iniciar Rota',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            height: 45,
+                            width: size.width * 0.28,
+                            decoration: BoxDecoration(
+                              color: AppTheme.colors.secondaryColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         );
