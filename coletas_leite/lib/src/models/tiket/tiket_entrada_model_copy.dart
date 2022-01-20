@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:coletas_leite/src/configs/global_settings.dart';
 
-class TiketEntradaModel {
+class TiketEntradaModelCopy {
   int rota;
   String? rota_nome;
   String nome;
@@ -24,9 +24,8 @@ class TiketEntradaModel {
   double? temperatura;
   int? id;
   int? id_coleta;
-  int? qtd_vezes_editado;
 
-  TiketEntradaModel({
+  TiketEntradaModelCopy({
     required this.rota,
     this.rota_nome,
     required this.nome,
@@ -48,10 +47,9 @@ class TiketEntradaModel {
     this.temperatura,
     this.id,
     this.id_coleta,
-    this.qtd_vezes_editado,
   });
 
-  TiketEntradaModel copyWith({
+  TiketEntradaModelCopy copyWith({
     int? rota,
     String? rota_nome,
     String? nome,
@@ -73,9 +71,8 @@ class TiketEntradaModel {
     double? temperatura,
     int? id,
     int? id_coleta,
-    int? qtd_vezes_editado,
   }) {
-    return TiketEntradaModel(
+    return TiketEntradaModelCopy(
       rota: rota ?? this.rota,
       rota_nome: rota_nome ?? this.rota_nome,
       nome: nome ?? this.nome,
@@ -97,7 +94,6 @@ class TiketEntradaModel {
       temperatura: temperatura ?? this.temperatura,
       id: id ?? this.id,
       id_coleta: id_coleta ?? this.id_coleta,
-      qtd_vezes_editado: qtd_vezes_editado ?? this.qtd_vezes_editado,
     );
   }
 
@@ -123,12 +119,11 @@ class TiketEntradaModel {
       'temperatura': temperatura,
       'id': id,
       'id_coleta': id_coleta,
-      'qtd_vezes_editado': qtd_vezes_editado,
     };
   }
 
-  factory TiketEntradaModel.fromMap(Map<String, dynamic> map) {
-    return TiketEntradaModel(
+  factory TiketEntradaModelCopy.fromMap(Map<String, dynamic> map) {
+    return TiketEntradaModelCopy(
       rota: map['rota']?.toInt() ?? 0,
       rota_nome: map['rota_nome'] ?? '',
       nome: map['nome'] ?? '',
@@ -151,25 +146,24 @@ class TiketEntradaModel {
       temperatura: map['temperatura']?.toDouble() ?? 0.0,
       id: map['id']?.toInt() ?? 0,
       id_coleta: map['id_coleta']?.toInt() ?? 0,
-      qtd_vezes_editado: map['qtd_vezes_editado']?.toInt() ?? 0,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory TiketEntradaModel.fromJson(String source) =>
-      TiketEntradaModel.fromMap(json.decode(source));
+  factory TiketEntradaModelCopy.fromJson(String source) =>
+      TiketEntradaModelCopy.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'TiketEntradaModel(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, alizarol: $alizarol, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
+    return 'TiketEntradaModelCopy(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, alizarol: $alizarol, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is TiketEntradaModel &&
+    return other is TiketEntradaModelCopy &&
         other.rota == rota &&
         other.rota_nome == rota_nome &&
         other.nome == nome &&
@@ -190,8 +184,7 @@ class TiketEntradaModel {
         other.placa == placa &&
         other.temperatura == temperatura &&
         other.id == id &&
-        other.id_coleta == id_coleta &&
-        other.qtd_vezes_editado == qtd_vezes_editado;
+        other.id_coleta == id_coleta;
   }
 
   @override
@@ -216,7 +209,6 @@ class TiketEntradaModel {
         placa.hashCode ^
         temperatura.hashCode ^
         id.hashCode ^
-        id_coleta.hashCode ^
-        qtd_vezes_editado.hashCode;
+        id_coleta.hashCode;
   }
 }

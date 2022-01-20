@@ -63,13 +63,15 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
       required String rota_nome,
       required String motorista,
       required String caminhao,
-      required int km_inicio}) {
+      required int km_inicio,
+      required int tanques}) {
     return _$iniciaColetaAsyncAction.run(() => super.iniciaColeta(
         rota: rota,
         rota_nome: rota_nome,
         motorista: motorista,
         caminhao: caminhao,
-        km_inicio: km_inicio));
+        km_inicio: km_inicio,
+        tanques: tanques));
   }
 
   final _$getColetasAsyncAction =

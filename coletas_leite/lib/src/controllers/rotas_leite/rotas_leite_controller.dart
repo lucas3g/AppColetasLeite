@@ -85,7 +85,6 @@ abstract class _RotasLeiteControllerBase with Store {
     });
 
     status = RotasLeiteStatus.success;
-    db.close();
   }
 
   @action
@@ -119,8 +118,6 @@ abstract class _RotasLeiteControllerBase with Store {
     } else {
       status = RotasLeiteStatus.error;
     }
-
-    db.close();
   }
 
   @action
@@ -140,7 +137,6 @@ abstract class _RotasLeiteControllerBase with Store {
         rotas[rotas.indexOf(rotaf)].rota_finalizada = 1;
       }
       status = RotasLeiteStatus.success;
-      db.close();
     } catch (e) {
       rethrow;
     }

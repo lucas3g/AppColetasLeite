@@ -65,11 +65,11 @@ class _SplashPageState extends State<SplashPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Coletas',
+                  Text('Ágil',
                       style: AppTheme.textStyles.titleLogin
                           .copyWith(fontSize: 70)),
                   Text(
-                    'Plus',
+                    'Coletas',
                     style: AppTheme.textStyles.titleLogin
                         .copyWith(color: Color(0xFF525252), fontSize: 50),
                   ),

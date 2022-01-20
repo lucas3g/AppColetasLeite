@@ -11,6 +11,7 @@ class ColetasModel {
   String? dt_hora_ini;
   String? dt_hora_fim;
   String? transportador;
+  int? tanques;
   String? motorista;
   int? ccusto;
   int? rota_finalizada;
@@ -25,6 +26,7 @@ class ColetasModel {
     this.dt_hora_ini,
     this.dt_hora_fim,
     this.transportador,
+    this.tanques,
     this.motorista,
     this.ccusto,
     this.rota_finalizada,
@@ -41,6 +43,7 @@ class ColetasModel {
     String? dt_hora_ini,
     String? dt_hora_fim,
     String? transportador,
+    int? tanques,
     String? motorista,
     int? ccusto,
     int? rota_finalizada,
@@ -56,6 +59,7 @@ class ColetasModel {
       dt_hora_ini: dt_hora_ini ?? this.dt_hora_ini,
       dt_hora_fim: dt_hora_fim ?? this.dt_hora_fim,
       transportador: transportador ?? this.transportador,
+      tanques: tanques ?? this.tanques,
       motorista: motorista ?? this.motorista,
       ccusto: ccusto ?? this.ccusto,
       rota_finalizada: rota_finalizada ?? this.rota_finalizada,
@@ -74,6 +78,7 @@ class ColetasModel {
       'dt_hora_ini': dt_hora_ini,
       'dt_hora_fim': dt_hora_fim,
       'transportador': transportador,
+      'tanques': tanques,
       'motorista': motorista,
       'ccusto': ccusto,
       'rota_finalizada': rota_finalizada,
@@ -92,6 +97,7 @@ class ColetasModel {
       dt_hora_ini: map['dt_hora_ini'],
       dt_hora_fim: map['dt_hora_fim'],
       transportador: map['transportador'],
+      tanques: map['tanques']?.toInt(),
       motorista: map['motorista'],
       ccusto:
           map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.ccusto,
@@ -108,7 +114,7 @@ class ColetasModel {
 
   @override
   String toString() {
-    return 'ColetasModel(data_mov: $data_mov, rota_coleta: $rota_coleta, rota_nome: $rota_nome, km_inicio: $km_inicio, km_fim: $km_fim, dt_hora_ini: $dt_hora_ini, dt_hora_fim: $dt_hora_fim, transportador: $transportador, motorista: $motorista, ccusto: $ccusto, rota_finalizada: $rota_finalizada, id: $id, enviada: $enviada)';
+    return 'ColetasModel(data_mov: $data_mov, rota_coleta: $rota_coleta, rota_nome: $rota_nome, km_inicio: $km_inicio, km_fim: $km_fim, dt_hora_ini: $dt_hora_ini, dt_hora_fim: $dt_hora_fim, transportador: $transportador, tanques: $tanques, motorista: $motorista, ccusto: $ccusto, rota_finalizada: $rota_finalizada, id: $id, enviada: $enviada)';
   }
 
   @override
@@ -124,6 +130,7 @@ class ColetasModel {
         other.dt_hora_ini == dt_hora_ini &&
         other.dt_hora_fim == dt_hora_fim &&
         other.transportador == transportador &&
+        other.tanques == tanques &&
         other.motorista == motorista &&
         other.ccusto == ccusto &&
         other.rota_finalizada == rota_finalizada &&
@@ -141,6 +148,7 @@ class ColetasModel {
         dt_hora_ini.hashCode ^
         dt_hora_fim.hashCode ^
         transportador.hashCode ^
+        tanques.hashCode ^
         motorista.hashCode ^
         ccusto.hashCode ^
         rota_finalizada.hashCode ^

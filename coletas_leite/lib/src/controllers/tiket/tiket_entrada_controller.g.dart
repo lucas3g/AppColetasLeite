@@ -63,18 +63,21 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
       AsyncAction('_TiketEntradaControllerBase.atualizaTiket');
 
   @override
-  Future<void> atualizaTiket({required TiketEntradaModel coleta}) {
+  Future<void> atualizaTiket(
+      {required TiketEntradaModel coleta,
+      required TiketEntradaModelCopy coletaCopy}) {
     return _$atualizaTiketAsyncAction
-        .run(() => super.atualizaTiket(coleta: coleta));
+        .run(() => super.atualizaTiket(coleta: coleta, coletaCopy: coletaCopy));
   }
 
   final _$imprimirTicketAsyncAction =
       AsyncAction('_TiketEntradaControllerBase.imprimirTicket');
 
   @override
-  Future<void> imprimirTicket({required TiketEntradaModel tiket}) {
+  Future<void> imprimirTicket(
+      {required TiketEntradaModel tiket, TiketEntradaModelCopy? tiketCopy}) {
     return _$imprimirTicketAsyncAction
-        .run(() => super.imprimirTicket(tiket: tiket));
+        .run(() => super.imprimirTicket(tiket: tiket, tiketCopy: tiketCopy));
   }
 
   final _$onSearchChangedAsyncAction =

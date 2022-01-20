@@ -27,16 +27,20 @@ class _TransportadorPageState extends State<TransportadorPage> {
   final controller = GlobalSettings().controllerTransp;
   final controllerColetas = GlobalSettings().controllerColetas;
   final motorista = GlobalSettings().appSettings.user.nome;
-
   final TextEditingController controllerInput = TextEditingController();
-
   List<TransportesModel> filteredTransp = [];
+  late String? ultPlaca;
 
   void getTransp() async {
     if (controller.transp.isEmpty) await controller.getTransp();
     setState(() {
       filteredTransp = controller.transp;
     });
+  }
+
+  void ultimaPlaca() async {
+    ultPlaca = (await controller.retornaUltimaCaminhao());
+    setState(() {});
   }
 
   void _onSearchChanged(String value) async {
@@ -46,15 +50,17 @@ class _TransportadorPageState extends State<TransportadorPage> {
 
   @override
   void initState() {
-    getTransp();
-
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      ultimaPlaca();
+      getTransp();
+    });
   }
 
-  void modalColeta({required String caminhao}) {
+  void modalColeta({required String caminhao, required int tanques}) async {
     late int km_inicio;
-
-    showDialog(
+    final Size size = MediaQuery.of(context).size;
+    await showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -177,7 +183,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
                             ),
                           ),
                           height: 45,
-                          width: 120,
+                          width: size.width * 0.28,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(20),
@@ -193,18 +199,21 @@ class _TransportadorPageState extends State<TransportadorPage> {
                               rota_nome: widget.rota,
                               motorista: motorista!,
                               caminhao: caminhao,
-                              km_inicio: km_inicio);
+                              km_inicio: km_inicio,
+                              tanques: tanques);
 
                           Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => ColetasPage(
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => ColetasPage(
                                   id_rota: widget.id_rota,
                                   coleta: controllerColetas.coletas,
-                                  placa: caminhao),
-                            ),
-                          );
+                                  placa: caminhao,
+                                  tanques: tanques,
+                                ),
+                              ),
+                              (route) => false);
                         }
                       },
                       child: PhysicalModel(
@@ -223,7 +232,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
                             ),
                           ),
                           height: 45,
-                          width: 120,
+                          width: size.width * 0.28,
                           decoration: BoxDecoration(
                             color: AppTheme.colors.secondaryColor,
                             borderRadius: BorderRadius.circular(20),
@@ -247,6 +256,13 @@ class _TransportadorPageState extends State<TransportadorPage> {
       appBar: AppBar(
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Selecione o Caminhão'),
+        // leading: IconButton(
+        //   onPressed: () async {
+        //     await Navigator.pushNamedAndRemoveUntil(
+        //         context, '/rotas_leite', (Route<dynamic> route) => false);
+        //   },
+        //   icon: Icon(Icons.arrow_back),
+        // ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -334,78 +350,81 @@ class _TransportadorPageState extends State<TransportadorPage> {
             SizedBox(
               height: 20,
             ),
-            Observer(
-                builder: (_) => controller.status ==
-                            TransportesStatus.success &&
-                        filteredTransp.isNotEmpty
-                    ? Expanded(
-                        child: ListView.separated(
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
-                                      height: 15,
-                                    ),
-                            itemCount: filteredTransp.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: ListTile(
-                                  onTap: () {
-                                    modalColeta(
-                                        caminhao: filteredTransp[index].placa);
-                                  },
-                                  minLeadingWidth: 10,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
-                                  leading: Container(
-                                    child: Icon(
-                                      Icons.local_shipping_outlined,
-                                      color: Colors.black,
-                                    ),
-                                    height: double.maxFinite,
+            Observer(builder: (_) {
+              return controller.status == TransportesStatus.success &&
+                      filteredTransp.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                          separatorBuilder: (BuildContext context, int index) =>
+                              SizedBox(
+                                height: 15,
+                              ),
+                          itemCount: filteredTransp.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: ultPlaca == filteredTransp[index].placa
+                                      ? Colors.green.shade400
+                                      : Colors.white),
+                              child: ListTile(
+                                onTap: () {
+                                  modalColeta(
+                                      caminhao: filteredTransp[index].placa,
+                                      tanques: filteredTransp[index].tanques);
+                                },
+                                minLeadingWidth: 10,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 10),
+                                leading: Container(
+                                  child: Icon(
+                                    Icons.local_shipping_outlined,
+                                    color: Colors.black,
                                   ),
-                                  title: Text(
-                                    filteredTransp[index].descricao,
-                                    style:
-                                        AppTheme.textStyles.titleLogin.copyWith(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(
-                                        'Placa: ',
-                                        style: AppTheme.textStyles.titleLogin
-                                            .copyWith(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                      ),
-                                      Text(filteredTransp[index].placa)
-                                    ],
+                                  height: double.maxFinite,
+                                ),
+                                title: Text(
+                                  filteredTransp[index].descricao,
+                                  style:
+                                      AppTheme.textStyles.titleLogin.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              );
-                            }),
-                      )
-                    : controller.status == TransportesStatus.loading
-                        ? Expanded(
-                            child: ListView.separated(
-                                itemBuilder: (_, __) => LoadingWidget(
-                                    size: Size(double.maxFinite, 50),
-                                    radius: 10),
-                                separatorBuilder: (_, __) => SizedBox(
-                                      height: 15,
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      'Placa: ',
+                                      style: AppTheme.textStyles.titleLogin
+                                          .copyWith(
+                                              fontSize: 14,
+                                              color: Colors.black),
                                     ),
-                                itemCount: 10),
-                          )
-                        : Container(
-                            child: Center(
-                              child: Text('Nenhum caminhão encontrado!'),
-                            ),
-                          )),
+                                    Text(filteredTransp[index].placa)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    )
+                  : controller.status == TransportesStatus.loading
+                      ? Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (_, __) => LoadingWidget(
+                                  size: Size(double.maxFinite, 50), radius: 10),
+                              separatorBuilder: (_, __) => SizedBox(
+                                    height: 15,
+                                  ),
+                              itemCount: 10),
+                        )
+                      : Container(
+                          child: Center(
+                            child: Text('Nenhum caminhão encontrado!'),
+                          ),
+                        );
+            }),
           ],
         ),
       ),

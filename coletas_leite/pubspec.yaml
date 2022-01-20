@@ -48,9 +48,10 @@ dependencies:
   flutter_app_name: ^0.1.1
   flutter_launcher_icons: ^0.9.2
   shimmer: ^2.0.0
+  bluetooth_enable_fork: ^0.1.4
 
 flutter_app_name:
-  name: "Coletas Plus"
+  name: "Ágil Coletas de Leite - EL Sistemas"
 
 flutter_icons:
   android: "launcher_icon"

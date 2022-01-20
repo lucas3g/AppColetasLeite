@@ -1,3 +1,5 @@
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,45 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
       : super(key: key);
 
   final motorista = GlobalSettings().appSettings.user.nome;
+  BlueThermalPrinter printer = BlueThermalPrinter.instance;
+
+  Future<void> enableBT() async {
+    BluetoothEnable.enableBluetooth.then((value) {
+      if (value == 'true') {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/configuracao', (Route<dynamic> route) => false);
+      }
+    });
+  }
+
+  Future<void> customEnableBT(BuildContext context) async {
+    await GlobalSettings().appSettings.removeImpressora();
+    await printer.disconnect();
+
+    String dialogTitle = "Hey! Please give me permission to use Bluetooth!";
+    bool displayDialogContent = true;
+    String dialogContent = "This app requires Bluetooth to connect to device.";
+    //or
+    // bool displayDialogContent = false;
+    // String dialogContent = "";
+    String cancelBtnText = "Nope";
+    String acceptBtnText = "Sure";
+    double dialogRadius = 10.0;
+    bool barrierDismissible = true; //
+
+    BluetoothEnable.customBluetoothRequest(
+            context,
+            dialogTitle,
+            displayDialogContent,
+            dialogContent,
+            cancelBtnText,
+            acceptBtnText,
+            dialogRadius,
+            barrierDismissible)
+        .then((value) {
+      print(value);
+    });
+  }
 
   void confirmarSair() {
     showDialog(
@@ -117,16 +158,19 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
   @override
   Widget get child => Stack(
         children: [
-          Container(
-            height: size.height * 0.13,
-            decoration: BoxDecoration(
-              color: AppTheme.colors.secondaryColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+          LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return Container(
+              height: constraints.maxHeight > 95 ? 110 : 95,
+              decoration: BoxDecoration(
+                color: AppTheme.colors.secondaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
               ),
-            ),
-          ),
+            );
+          }),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -138,11 +182,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/configuracao',
-                          );
+                        onPressed: () async {
+                          await enableBT();
                         },
                         icon: Icon(
                           Icons.settings_rounded,
@@ -178,7 +219,5 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
       );
 
   @override
-  Size get preferredSize => size.height >= 850.99
-      ? Size.fromHeight(size.height * 0.10)
-      : Size.fromHeight(size.height * 0.12);
+  Size get preferredSize => Size.fromHeight(size.height * 0.12);
 }

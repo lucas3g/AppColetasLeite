@@ -41,6 +41,7 @@ class DB {
       dt_hora_ini TEXT,
       dt_hora_fim TEXT,
       transportador TEXT,
+      tanques INT,
       placa TEXT,
       motorista TEXT,
       ccusto INT,
@@ -70,7 +71,8 @@ class DB {
       particao INT,
       observacao TEXT,
       placa TEXT,
-      temperatura REAL
+      temperatura REAL,
+      qtd_vezes_editado INT
     )
   ''';
 
@@ -86,7 +88,8 @@ class DB {
   String get _caminhoes => '''
     CREATE TABLE caminhoes(
       placa TEXT,
-      descricao TEXT
+      descricao TEXT,
+      tanques INT
     )
   ''';
 

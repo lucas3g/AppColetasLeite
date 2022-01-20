@@ -19,7 +19,7 @@ class AppSettigns extends ChangeNotifier {
   _startSettings() async {
     await _startPreferences();
     await _readLogado();
-    await _readImpressora();
+    await readImpressora();
     if (_prefs.getString('conectado') == 'S') await _readUser();
   }
 
@@ -43,7 +43,7 @@ class AppSettigns extends ChangeNotifier {
     notifyListeners();
   }
 
-  _readImpressora() {
+  readImpressora() {
     final impressora = _prefs.getString('impressora') ?? '';
 
     if (impressora.isNotEmpty)

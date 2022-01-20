@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
-import 'package:coletas_leite/src/pages/dashboard/widgets/app_bar_widget.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
@@ -12,7 +13,7 @@ import 'package:coletas_leite/src/utils/meu_toast.dart';
 import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DashBoardPage extends StatefulWidget {
   DashBoardPage({Key? key}) : super(key: key);
@@ -24,16 +25,46 @@ class DashBoardPage extends StatefulWidget {
 class _DashBoardPageState extends State<DashBoardPage> {
   final controller = GlobalSettings().controllerColetas;
   final controllerEnvio = GlobalSettings().controllerEnvio;
+  BlueThermalPrinter printer = BlueThermalPrinter.instance;
 
   void getColetas() async {
     await controller.getColetas();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      getColetas();
+  Future<void> enableBT() async {
+    BluetoothEnable.enableBluetooth.then((value) {
+      if (value == 'true') {
+        Navigator.pushReplacementNamed(context, '/configuracao');
+      }
+    });
+  }
+
+  Future<void> customEnableBT(BuildContext context) async {
+    await GlobalSettings().appSettings.removeImpressora();
+    await printer.disconnect();
+
+    String dialogTitle =
+        "Ei! Por favor, me dê permissão para usar o Bluetooth!";
+    bool displayDialogContent = true;
+    String dialogContent =
+        "Este aplicativo requer Bluetooth para se conectar ao dispositivo.";
+
+    String cancelBtnText = "Recusar";
+    String acceptBtnText = "Permitir";
+    double dialogRadius = 10.0;
+    bool barrierDismissible = true; //
+
+    BluetoothEnable.customBluetoothRequest(
+            context,
+            dialogTitle,
+            displayDialogContent,
+            dialogContent,
+            cancelBtnText,
+            acceptBtnText,
+            dialogRadius,
+            barrierDismissible)
+        .then((value) {
+      print(value);
     });
   }
 
@@ -42,6 +73,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        final Size size = MediaQuery.of(context).size;
         return AlertDialog(
           content: SingleChildScrollView(
             child: Column(
@@ -97,7 +129,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                             ),
                           ),
                           height: 45,
-                          width: 120,
+                          width: size.width * 0.28,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(20),
@@ -108,7 +140,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     Observer(builder: (_) {
                       return GestureDetector(
                         onTap: () async {
-                          final result = await controllerEnvio.enviar();
+                          if (!(await controllerEnvio
+                              .verificaFuncionarioAutorizado(
+                                  context: context))) {
+                            return;
+                          }
+                          final result =
+                              await controllerEnvio.enviar(context: context);
                           switch (result) {
                             case 200:
                               Navigator.pop(context);
@@ -172,7 +210,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         ),
                             ),
                             height: 45,
-                            width: 120,
+                            width: size.width * 0.28,
                             decoration: BoxDecoration(
                               color: AppTheme.colors.secondaryColor,
                               borderRadius: BorderRadius.circular(20),
@@ -191,13 +229,165 @@ class _DashBoardPageState extends State<DashBoardPage> {
     );
   }
 
+  Future<void> confirmarSair() async {
+    final Size size = MediaQuery.of(context).size;
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding:
+              EdgeInsets.only(bottom: 15, top: 20, right: 20, left: 20),
+          content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/images/sair.svg',
+                  height: 130,
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'Deseja realmente sair da aplicação?',
+                  style: AppTheme.textStyles.titleCharts.copyWith(fontSize: 16),
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: PhysicalModel(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              'Não',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                          ),
+                          height: 45,
+                          width: size.width * 0.28,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await GlobalSettings().appSettings.removeLogado();
+                        await Future.delayed(Duration(milliseconds: 150));
+                        Navigator.pop(context);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/login', (Route<dynamic> route) => false);
+                      },
+                      child: PhysicalModel(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: AppTheme.colors.secondaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child: Center(
+                              child: Text(
+                            'Sim',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          )),
+                          height: 45,
+                          width: size.width * 0.28,
+                          decoration: BoxDecoration(
+                            color: AppTheme.colors.secondaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      getColetas();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBarWidget(size: size, context: context),
+      appBar: AppBar(
+        backgroundColor: AppTheme.colors.secondaryColor,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '..: Ágil Coletas :..',
+            ),
+          ],
+        ),
+        leading: IconButton(
+          onPressed: () async {
+            await enableBT();
+          },
+          icon: Icon(
+            Icons.settings_rounded,
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              await confirmarSair();
+            },
+          )
+        ],
+        bottom: PreferredSize(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, bottom: 10),
+            child: Row(
+              children: [
+                Text(
+                  'Motorista: ${GlobalSettings().appSettings.user.nome}',
+                  style: AppTheme.textStyles.title.copyWith(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          preferredSize: Size(0, 30),
+        ),
+      ),
       body: Column(
         children: [
+          SizedBox(
+            height: 10,
+          ),
           Text(
             'Lista de Coletas',
             style: AppTheme.textStyles.titleLogin.copyWith(fontSize: 20),
@@ -220,8 +410,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 2,
-                                      color: Colors.grey.shade200,
-                                      offset: Offset(0, 7))
+                                      color: Colors.grey.shade300,
+                                      offset: Offset(5, 5))
                                 ],
                               ),
                               child: ClipRRect(
@@ -235,30 +425,42 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         ? Border(
                                             top: BorderSide(
                                                 width: 10, color: Colors.green),
+                                            bottom: BorderSide(
+                                                width: 10, color: Colors.green),
                                           )
-                                        : null,
+                                        : Border(
+                                            top: BorderSide(
+                                                width: 10,
+                                                color: AppTheme
+                                                    .colors.secondaryColor),
+                                            bottom: BorderSide(
+                                                width: 10,
+                                                color: AppTheme
+                                                    .colors.secondaryColor),
+                                          ),
                                   ),
                                   child: ListTile(
                                     onTap: () async {
                                       if (controller.ListaColetas[index]
                                               .rota_finalizada ==
                                           0) {
-                                        await Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => ColetasPage(
-                                                id_rota: controller
-                                                    .ListaColetas[index]
-                                                    .rota_coleta!,
-                                                coleta: controller
-                                                    .ListaColetas[index],
-                                                placa: controller
-                                                    .ListaColetas[index]
-                                                    .transportador!,
-                                              ),
+                                        await Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ColetasPage(
+                                              id_rota: controller
+                                                  .ListaColetas[index]
+                                                  .rota_coleta!,
+                                              coleta: controller
+                                                  .ListaColetas[index],
+                                              placa: controller
+                                                  .ListaColetas[index]
+                                                  .transportador!,
+                                              tanques: controller
+                                                  .ListaColetas[index].tanques!,
                                             ),
-                                            (Route<dynamic> route) =>
-                                                route.isFirst);
+                                          ),
+                                        );
                                       } else {
                                         MeuToast.toast(
                                             title: 'Rota Já Finalizada',
@@ -334,10 +536,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                                   .textStyles.dropdownText
                                                   .copyWith(fontSize: 16),
                                             ),
-                                            Text(
-                                              controller.ListaColetas[index]
-                                                  .km_inicio!
-                                                  .toString(),
+                                            Expanded(
+                                              child: Text(
+                                                controller.ListaColetas[index]
+                                                    .km_inicio!
+                                                    .toString(),
+                                              ),
                                             ),
                                             SizedBox(
                                               width: 15,
@@ -348,10 +552,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                                   .textStyles.dropdownText
                                                   .copyWith(fontSize: 16),
                                             ),
-                                            Text(
-                                              controller
-                                                  .ListaColetas[index].km_fim!
-                                                  .toString(),
+                                            Expanded(
+                                              child: Text(
+                                                controller
+                                                    .ListaColetas[index].km_fim!
+                                                    .toString(),
+                                              ),
                                             ),
                                           ],
                                         ),

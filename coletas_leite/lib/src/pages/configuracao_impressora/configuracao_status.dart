@@ -1,4 +1,4 @@
-enum ImprimirStatus {
+enum ConfiguracaoStatus {
   empty,
   loading,
   success,

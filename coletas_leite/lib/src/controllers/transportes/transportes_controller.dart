@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
@@ -41,6 +42,7 @@ abstract class _TransportesControllerBase with Store {
               .map<TransportesModel>(
                   (elemento) => TransportesModel.fromMap(elemento))
               .toList();
+
           transp = ObservableList.of(lista);
 
           await gravaCaminhoes(); //GRAVA AS CAMINHOES NO BANCO DO CELULAR
@@ -60,7 +62,7 @@ abstract class _TransportesControllerBase with Store {
       }
     } catch (e) {
       await buscaCaminhoes();
-      print('Eu sou erro das transp $e');
+      print('Eu sou erro das transp oi $e');
     }
   }
 
@@ -77,12 +79,12 @@ abstract class _TransportesControllerBase with Store {
           await txn.insert('caminhoes', {
             'placa': item.placa,
             'descricao': item.descricao,
+            'tanques': item.tanques,
           });
         }
       }
     });
     status = TransportesStatus.success;
-    db.close();
   }
 
   @action
@@ -98,13 +100,12 @@ abstract class _TransportesControllerBase with Store {
       for (var item in caminhao) {
         transp.add(
           TransportesModel(
-            placa: item['placa'],
-            descricao: item['descricao'],
-          ),
+              placa: item['placa'],
+              descricao: item['descricao'],
+              tanques: item['tanques']),
         );
       }
     status = TransportesStatus.success;
-    db.close();
   }
 
   @action
@@ -127,5 +128,23 @@ abstract class _TransportesControllerBase with Store {
       status = TransportesStatus.success;
     }
     return lista;
+  }
+
+  @action
+  Future<String> retornaUltimaCaminhao() async {
+    try {
+      db = await DB.instance.database;
+
+      List coletas = await db.query('agl_coleta',
+          columns: ['transportador'], limit: 1, orderBy: 'id desc');
+
+      if (coletas.isNotEmpty) {
+        return coletas[0]['transportador'];
+      } else {
+        return '';
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

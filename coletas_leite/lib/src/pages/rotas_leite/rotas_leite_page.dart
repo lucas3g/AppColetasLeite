@@ -5,6 +5,8 @@ import 'package:coletas_leite/src/pages/transportador/transportador_page.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -37,9 +39,11 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
 
   @override
   void initState() {
-    getRotas();
-
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      getRotas();
+    });
   }
 
   @override
@@ -131,23 +135,33 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                                             ? true
                                             : false)
                                         ? Colors.white
-                                        : Colors.grey,
+                                        : Colors.grey.shade400,
                                 border: Border.all(),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: ListTile(
                                 onTap: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          TransportadorPage(
-                                        rota: filteredRotas[index].descricao,
-                                        id_rota: filteredRotas[index].id,
+                                  if (filteredRotas[index].rota_finalizada ==
+                                      0) {
+                                    await MeuToast.toast(
+                                        title: 'Atenção',
+                                        message:
+                                            'Rota pendente de finalização.',
+                                        type: TypeToast.error,
+                                        context: context);
+                                  } else {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            TransportadorPage(
+                                          rota: filteredRotas[index].descricao,
+                                          id_rota: filteredRotas[index].id,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                  await controller.getRotas();
+                                    );
+                                    await controller.getRotas();
+                                  }
                                 },
                                 minLeadingWidth: 10,
                                 contentPadding:
@@ -169,10 +183,10 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                enabled:
-                                    (filteredRotas[index].rota_finalizada == 1
-                                        ? true
-                                        : false),
+                                // enabled:
+                                //     (filteredRotas[index].rota_finalizada == 1
+                                //         ? true
+                                //         : false),
                               ),
                             );
                           },

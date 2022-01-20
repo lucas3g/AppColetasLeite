@@ -30,7 +30,8 @@ abstract class _ColetasControllerBase with Store {
       required String rota_nome,
       required String motorista,
       required String caminhao,
-      required int km_inicio}) async {
+      required int km_inicio,
+      required int tanques}) async {
     try {
       status = ColetasStatus.loading;
 
@@ -61,6 +62,7 @@ abstract class _ColetasControllerBase with Store {
                 '"',
             'dt_hora_fim': '',
             'transportador': caminhao,
+            'tanques': tanques,
             'motorista': motorista,
             'ccusto': GlobalSettings().appSettings.user.ccusto,
             'rota_finalizada': 0,
@@ -68,8 +70,6 @@ abstract class _ColetasControllerBase with Store {
           });
         }
       });
-
-      db.close();
 
       db = await DB.instance.database;
 
@@ -83,6 +83,7 @@ abstract class _ColetasControllerBase with Store {
         coletas.dt_hora_ini = item['dt_hora_ini'];
         coletas.dt_hora_fim = item['dt_hora_fim'];
         coletas.transportador = item['transportador'];
+        coletas.tanques = item['tanques'];
         coletas.rota_finalizada = item['rota_finalizada'];
         coletas.rota_nome = item['rota_nome'];
         coletas.km_inicio = item['km_inicio'];
@@ -91,8 +92,6 @@ abstract class _ColetasControllerBase with Store {
         coletas.id = item['id'];
         coletas.enviada = item['enviada'];
       }
-
-      db.close();
 
       status = ColetasStatus.success;
     } catch (e) {
@@ -121,6 +120,7 @@ abstract class _ColetasControllerBase with Store {
             dt_hora_ini: item['dt_hora_ini'],
             dt_hora_fim: item['dt_hora_fim'],
             transportador: item['transportador'],
+            tanques: item['tanques'],
             rota_finalizada: item['rota_finalizada'],
             rota_nome: item['rota_nome'],
             km_inicio: item['km_inicio'],
@@ -206,72 +206,81 @@ abstract class _ColetasControllerBase with Store {
 
   @action
   Future<void> imprimirResumoColetas({required ColetasModel coleta}) async {
-    status = ColetasStatus.imprimindo;
+    try {
+      await GlobalSettings().appSettings.readImpressora();
 
-    await Future.delayed(Duration(milliseconds: 300));
+      device = GlobalSettings().appSettings.imp;
 
-    device = GlobalSettings().appSettings.imp;
-
-    if (!(await printer.isConnected)!) await printer.connect(device!);
-
-    if ((await printer.isConnected)!) {
-      db = await DB.instance.database;
-
-      List<dynamic> listaColetas = [];
-
-      List tikets = await db.query('agl_tiket_entrada',
-          where: 'id_coleta = ?', whereArgs: [coleta.id]);
-
-      if (tikets.isNotEmpty) {
-        listaColetas = tikets;
+      if (device == null) {
+        return;
+      } else {
+        if (!(await printer.isConnected)! && ((await printer.isOn)!))
+          await printer.connect(device!);
       }
 
-      db.close();
+      status = ColetasStatus.imprimindo;
 
-      late int total = 0;
+      await Future.delayed(Duration(milliseconds: 300));
 
-      printer.printCustom(
-          GlobalSettings()
-              .appSettings
-              .user
-              .descEmpresa
-              .toString()
-              .substring(0, 21)
-              .removeAcentos(),
-          1,
-          1);
-      printer.printNewLine();
-      printer.printCustom('..:Resumo das Coletas:..', 2, 1);
-      printer.printNewLine();
-      for (var item in listaColetas) {
+      if ((await printer.isConnected)!) {
+        db = await DB.instance.database;
+
+        List<dynamic> listaColetas = [];
+
+        List tikets = await db.query('agl_tiket_entrada',
+            where: 'id_coleta = ?', whereArgs: [coleta.id]);
+
+        if (tikets.isNotEmpty) {
+          listaColetas = tikets;
+        }
+
+        late int total = 0;
+
         printer.printCustom(
-            'Produtor: ' +
-                item['nome']
-                    .toString()
-                    .substring(
-                        0,
-                        item['nome'].toString().length > 20
-                            ? 17
-                            : item['nome'].toString().length)
-                    .removeAcentos() +
-                ' Qtd: ' +
-                item['quantidade'].toString(),
+            GlobalSettings()
+                .appSettings
+                .user
+                .descEmpresa
+                .toString()
+                .substring(0, 21)
+                .removeAcentos(),
             1,
-            0);
-        total = (total + item['quantidade']!) as int;
+            1);
+        printer.printNewLine();
+        printer.printCustom('..:Resumo das Coletas:..', 2, 1);
+        printer.printNewLine();
+        for (var item in listaColetas) {
+          printer.printCustom(
+              'Produtor: ' +
+                  item['nome']
+                      .toString()
+                      .substring(
+                          0,
+                          item['nome'].toString().length > 20
+                              ? 17
+                              : item['nome'].toString().length)
+                      .removeAcentos() +
+                  ' Qtd: ' +
+                  item['quantidade'].toString(),
+              1,
+              0);
+          total = (total + item['quantidade']!) as int;
+        }
+
+        printer.printCustom(
+            '------------------------------------------------', 1, 0);
+
+        printer.printCustom('Total: ' + total.toString(), 1, 0);
+
+        printer.printNewLine();
+        printer.printNewLine();
+        printer.printNewLine();
+        printer.printNewLine();
+        printer.printNewLine();
       }
-
-      printer.printCustom(
-          '------------------------------------------------', 1, 0);
-
-      printer.printCustom('Total: ' + total.toString(), 1, 0);
-
-      printer.printNewLine();
-      printer.printNewLine();
-      printer.printNewLine();
-      printer.printNewLine();
-      printer.printNewLine();
+      status = ColetasStatus.success;
+    } catch (e) {
+      status = ColetasStatus.error;
     }
-    status = ColetasStatus.success;
   }
 }

@@ -1,34 +1,35 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
-import 'package:coletas_leite/src/pages/imprimir_ticket/status_imprimir.dart';
+import 'package:coletas_leite/src/pages/configuracao_impressora/configuracao_status.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/meu_toast.dart';
 import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 
-class ImprimirPage extends StatefulWidget {
-  const ImprimirPage({Key? key}) : super(key: key);
+class ConfiguracaoImpressora extends StatefulWidget {
+  const ConfiguracaoImpressora({Key? key}) : super(key: key);
 
   @override
-  State<ImprimirPage> createState() => _ImprimirPageState();
+  State<ConfiguracaoImpressora> createState() => _ConfiguracaoImpressoraState();
 }
 
-class _ImprimirPageState extends State<ImprimirPage> {
+class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
   List<BluetoothDevice> devices = [];
   BluetoothDevice? selectedDevice = GlobalSettings().appSettings.imp;
   BlueThermalPrinter printer = BlueThermalPrinter.instance;
   final controller = GlobalSettings().appSettings;
 
-  late ImprimirStatus status = ImprimirStatus.empty;
+  late ConfiguracaoStatus status = ConfiguracaoStatus.empty;
 
   late bool conectada = false;
 
   Future<void> deviceConectado() async {
-    if ((await printer.isConnected)!) {
-      conectada = true;
-    } else {
-      conectada = false;
-    }
+    conectada = (await printer.isConnected)! && selectedDevice != null;
+    setState(() {});
+  }
+
+  void getDevices() async {
+    devices = await printer.getBondedDevices();
     setState(() {});
   }
 
@@ -37,11 +38,6 @@ class _ImprimirPageState extends State<ImprimirPage> {
     super.initState();
     getDevices();
     deviceConectado();
-  }
-
-  void getDevices() async {
-    devices = await printer.getBondedDevices();
-    setState(() {});
   }
 
   @override
@@ -85,12 +81,15 @@ class _ImprimirPageState extends State<ImprimirPage> {
               style: ElevatedButton.styleFrom(
                 primary: AppTheme.colors.secondaryColor,
               ),
-              onPressed: !conectada
+              onPressed: !conectada && selectedDevice != null
                   ? () async {
-                      status = ImprimirStatus.loading;
+                      status = ConfiguracaoStatus.loading;
                       setState(() {});
+                      if ((await printer.isConnected)!) {
+                        await printer.disconnect();
+                      }
                       await printer.connect(selectedDevice!);
-                      controller.setImp(device: selectedDevice!);
+                      await controller.setImp(device: selectedDevice!);
                       conectada = true;
                       setState(() {});
                       MeuToast.toast(
@@ -98,10 +97,10 @@ class _ImprimirPageState extends State<ImprimirPage> {
                           message: 'Impressora conectada!',
                           type: TypeToast.success,
                           context: context);
-                      status = ImprimirStatus.success;
+                      status = ConfiguracaoStatus.success;
                     }
                   : null,
-              child: status == ImprimirStatus.loading
+              child: status == ConfiguracaoStatus.loading
                   ? Container(
                       height: 25,
                       width: 25,
@@ -119,10 +118,10 @@ class _ImprimirPageState extends State<ImprimirPage> {
               ),
               onPressed: conectada
                   ? () async {
-                      status = ImprimirStatus.loading;
+                      status = ConfiguracaoStatus.loading;
                       setState(() {});
                       await printer.disconnect();
-                      controller.removeImpressora();
+                      await controller.removeImpressora();
                       conectada = false;
                       setState(() {});
                       MeuToast.toast(
@@ -130,7 +129,7 @@ class _ImprimirPageState extends State<ImprimirPage> {
                           message: 'Impressora desconectada!',
                           type: TypeToast.dadosInv,
                           context: context);
-                      status = ImprimirStatus.success;
+                      status = ConfiguracaoStatus.success;
                     }
                   : null,
               child: Text('Desconectar'),

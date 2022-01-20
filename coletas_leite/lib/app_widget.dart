@@ -1,5 +1,5 @@
+import 'package:coletas_leite/src/pages/configuracao_impressora/configuracao_impressora.dart';
 import 'package:coletas_leite/src/pages/dashboard/dashboard_page.dart';
-import 'package:coletas_leite/src/pages/imprimir_ticket/imprimir.dart';
 import 'package:coletas_leite/src/pages/login/login_page.dart';
 import 'package:coletas_leite/src/pages/rotas_leite/rotas_leite_page.dart';
 import 'package:coletas_leite/src/pages/splash/splash_page.dart';
@@ -12,14 +12,14 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: AppTheme.colors.secondaryColor),
-      title: 'Coletas Plus', //1. call BotToastInit
+      title: 'Ágil Coletas de Leite - EL Sistemas',
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => SplashPage(),
         '/login': (context) => LoginPage(),
         '/dashboard': (context) => DashBoardPage(),
         '/rotas_leite': (context) => RotasLeitePage(),
-        '/configuracao': (context) => ImprimirPage(),
+        '/configuracao': (context) => ConfiguracaoImpressora(),
       },
     );
   }

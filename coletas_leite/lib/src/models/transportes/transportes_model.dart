@@ -3,18 +3,23 @@ import 'dart:convert';
 class TransportesModel {
   String placa;
   String descricao;
+  int tanques;
+
   TransportesModel({
     required this.placa,
     required this.descricao,
+    required this.tanques,
   });
 
   TransportesModel copyWith({
     String? placa,
     String? descricao,
+    int? tanques,
   }) {
     return TransportesModel(
       placa: placa ?? this.placa,
       descricao: descricao ?? this.descricao,
+      tanques: tanques ?? this.tanques,
     );
   }
 
@@ -22,6 +27,7 @@ class TransportesModel {
     return {
       'placa': placa,
       'descricao': descricao,
+      'tanques': tanques,
     };
   }
 
@@ -29,6 +35,7 @@ class TransportesModel {
     return TransportesModel(
       placa: map['placa'] ?? '',
       descricao: map['descricao'] ?? '',
+      tanques: map['tanques']?.toInt() ?? 0,
     );
   }
 
@@ -38,7 +45,8 @@ class TransportesModel {
       TransportesModel.fromMap(json.decode(source));
 
   @override
-  String toString() => 'TransportesModel(placa: $placa, descricao: $descricao)';
+  String toString() =>
+      'TransportesModel(placa: $placa, descricao: $descricao, tanques: $tanques)';
 
   @override
   bool operator ==(Object other) {
@@ -46,9 +54,10 @@ class TransportesModel {
 
     return other is TransportesModel &&
         other.placa == placa &&
-        other.descricao == descricao;
+        other.descricao == descricao &&
+        other.tanques == tanques;
   }
 
   @override
-  int get hashCode => placa.hashCode ^ descricao.hashCode;
+  int get hashCode => placa.hashCode ^ descricao.hashCode ^ tanques.hashCode;
 }

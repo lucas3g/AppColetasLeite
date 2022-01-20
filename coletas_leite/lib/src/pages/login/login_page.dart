@@ -9,24 +9,18 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppTheme.colors.backgroundPrimary,
-        title: Column(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 20),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Coletas', style: AppTheme.textStyles.titleLogin),
-                Text(
-                  ' Plus',
-                  style: AppTheme.textStyles.titleLogin.copyWith(
-                    color: Color(0xFF525252),
-                  ),
-                ),
-              ],
+            Text('Ágil', style: AppTheme.textStyles.titleLogin),
+            Text(
+              ' Coletas',
+              style: AppTheme.textStyles.titleLogin.copyWith(
+                color: Color(0xFF525252),
+              ),
             ),
           ],
         ),

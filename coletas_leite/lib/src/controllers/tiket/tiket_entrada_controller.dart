@@ -6,6 +6,7 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_status.dart';
 import 'package:coletas_leite/src/database/db.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
+import 'package:coletas_leite/src/models/tiket/tiket_entrada_model_copy.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:mobx/mobx.dart';
@@ -112,7 +113,6 @@ abstract class _TiketEntradaControllerBase with Store {
       }
     });
 
-    db.close();
     status = TiketEntradaStatus.success;
   }
 
@@ -132,7 +132,6 @@ abstract class _TiketEntradaControllerBase with Store {
           .toList();
       tikets = ObservableList.of(lista);
     }
-    db.close();
     status = TiketEntradaStatus.success;
   }
 
@@ -178,12 +177,12 @@ abstract class _TiketEntradaControllerBase with Store {
             'observacao': item.observacao,
             'placa': placa,
             'temperatura': item.temperatura,
+            'qtd_vezes_editado': item.qtd_vezes_editado,
           });
         }
       }
     });
 
-    db.close();
     status = TiketEntradaStatus.success;
   }
 
@@ -221,17 +220,23 @@ abstract class _TiketEntradaControllerBase with Store {
             temperatura: tik['temperatura'],
             id_coleta: tik['id_coleta'],
             tiket: tik['tiket'],
+            qtd_vezes_editado: tik['qtd_vezes_editado'],
           ),
         );
       }
 
-    db.close();
     status = TiketEntradaStatus.success;
   }
 
   @action
-  Future<void> atualizaTiket({required TiketEntradaModel coleta}) async {
+  Future<void> atualizaTiket(
+      {required TiketEntradaModel coleta,
+      required TiketEntradaModelCopy coletaCopy}) async {
     try {
+      if (coleta.quantidade! != coletaCopy.quantidade! ||
+          coleta.temperatura! != coletaCopy.temperatura!) {
+        coleta.qtd_vezes_editado = coleta.qtd_vezes_editado! + 1;
+      }
       db = await DB.instance.database;
       await db.transaction((txn) async {
         final tiket = await txn.query('agl_tiket_entrada',
@@ -245,28 +250,49 @@ abstract class _TiketEntradaControllerBase with Store {
                 'temperatura': coleta.temperatura,
                 'alizarol': coleta.alizarol! ? 1 : 0,
                 'particao': coleta.particao, //TANQUE DO CAMINHAO
-                'observacao': coleta.observacao //MOTIVO DA NAO COLETA
+                'observacao': coleta.observacao,
+                'qtd_vezes_editado':
+                    coleta.qtd_vezes_editado, //MOTIVO DA NAO COLETA
               },
               where: 'id = ?',
               whereArgs: [coleta.id]);
         }
       });
-      // status = TiketEntradaStatus.loading;
-      // status = TiketEntradaStatus.success;
     } catch (e) {
       print('eu sou o erro ao atualizar $e');
     }
   }
 
   @action
-  Future<void> imprimirTicket({required TiketEntradaModel tiket}) async {
-    status = TiketEntradaStatus.imprimindo;
-
-    await Future.delayed(Duration(milliseconds: 300));
+  Future<void> imprimirTicket(
+      {required TiketEntradaModel tiket,
+      TiketEntradaModelCopy? tiketCopy}) async {
+    await GlobalSettings().appSettings.readImpressora();
 
     device = GlobalSettings().appSettings.imp;
 
-    if (!(await printer.isConnected)!) await printer.connect(device!);
+    if (device == null) {
+      return;
+    } else {
+      if (!(await printer.isConnected)! && ((await printer.isOn)!))
+        await printer.connect(device!);
+    }
+
+    if (tiket.quantidade == 0 && tiket.observacao.toString().trim().isEmpty) {
+      return;
+    }
+
+    if (tiket.quantidade == tiketCopy?.quantidade &&
+        tiket.temperatura == tiketCopy?.temperatura &&
+        tiket.alizarol == tiketCopy?.alizarol &&
+        tiket.particao == tiketCopy?.particao &&
+        tiket.observacao == tiketCopy?.observacao) {
+      return;
+    }
+
+    status = TiketEntradaStatus.imprimindo;
+
+    await Future.delayed(Duration(milliseconds: 300));
 
     if ((await printer.isConnected)!) {
       printer.printCustom(
@@ -299,7 +325,7 @@ abstract class _TiketEntradaControllerBase with Store {
           'Alizarol: ' + (tiket.alizarol! ? 'Positivo' : 'Negativo'), 1, 0);
       printer.printCustom('Tanque: ' + tiket.particao.toString(), 1, 0);
       printer.printCustom('Placa: ' + tiket.placa!, 1, 0);
-      if (tiket.observacao.toString() != '')
+      if (tiket.observacao.toString().trim().isNotEmpty)
         printer.printCustom(
             'Motivo da Nao Coleta: ' +
                 tiket.observacao.toString().removeAcentos(),

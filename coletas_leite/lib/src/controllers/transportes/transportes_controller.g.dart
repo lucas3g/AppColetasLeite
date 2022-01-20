@@ -73,6 +73,15 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
+  final _$retornaUltimaCaminhaoAsyncAction =
+      AsyncAction('_TransportesControllerBase.retornaUltimaCaminhao');
+
+  @override
+  Future<String> retornaUltimaCaminhao() {
+    return _$retornaUltimaCaminhaoAsyncAction
+        .run(() => super.retornaUltimaCaminhao());
+  }
+
   @override
   String toString() {
     return '''
