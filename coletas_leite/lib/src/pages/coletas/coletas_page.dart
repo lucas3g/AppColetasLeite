@@ -697,7 +697,7 @@ class _ColetasPageState extends State<ColetasPage> {
             icon: Icon(Icons.arrow_back),
             onPressed: () async {
               await Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard', (Route<dynamic> route) => true);
+                  context, '/dashboard', (Route<dynamic> route) => false);
             }),
       ),
       body: Padding(
@@ -865,12 +865,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                             })
                                     : null,
                                 minLeadingWidth: 10,
-                                title: Text(
-                                    ListColetas[index].nome +
-                                        'x: ' +
-                                        ListColetas[index]
-                                            .qtd_vezes_editado
-                                            .toString(),
+                                title: Text(ListColetas[index].nome,
                                     style: AppTheme.textStyles.titleLogin
                                         .copyWith(
                                             fontSize: 16, color: Colors.black)),

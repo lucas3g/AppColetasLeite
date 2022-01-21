@@ -3,4 +3,6 @@ enum ConfiguracaoStatus {
   loading,
   success,
   error,
+  conectando,
+  desconectando,
 }

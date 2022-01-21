@@ -90,6 +90,22 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
+  final _$deletaProdutoresAsyncAction =
+      AsyncAction('_TiketEntradaControllerBase.deletaProdutores');
+
+  @override
+  Future<void> deletaProdutores() {
+    return _$deletaProdutoresAsyncAction.run(() => super.deletaProdutores());
+  }
+
+  final _$getProdutoresAsyncAction =
+      AsyncAction('_TiketEntradaControllerBase.getProdutores');
+
+  @override
+  Future<void> getProdutores() {
+    return _$getProdutoresAsyncAction.run(() => super.getProdutores());
+  }
+
   @override
   String toString() {
     return '''

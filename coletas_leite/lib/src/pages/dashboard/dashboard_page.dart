@@ -445,23 +445,24 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                       if (controller.ListaColetas[index]
                                               .rota_finalizada ==
                                           0) {
-                                        await Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => ColetasPage(
-                                              id_rota: controller
-                                                  .ListaColetas[index]
-                                                  .rota_coleta!,
-                                              coleta: controller
-                                                  .ListaColetas[index],
-                                              placa: controller
-                                                  .ListaColetas[index]
-                                                  .transportador!,
-                                              tanques: controller
-                                                  .ListaColetas[index].tanques!,
+                                        await Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => ColetasPage(
+                                                id_rota: controller
+                                                    .ListaColetas[index]
+                                                    .rota_coleta!,
+                                                coleta: controller
+                                                    .ListaColetas[index],
+                                                placa: controller
+                                                    .ListaColetas[index]
+                                                    .transportador!,
+                                                tanques: controller
+                                                    .ListaColetas[index]
+                                                    .tanques!,
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                            (Route<dynamic> route) => false);
                                       } else {
                                         MeuToast.toast(
                                             title: 'Rota Já Finalizada',

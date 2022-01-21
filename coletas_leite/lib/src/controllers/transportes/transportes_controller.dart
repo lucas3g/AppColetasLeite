@@ -147,4 +147,19 @@ abstract class _TransportesControllerBase with Store {
       rethrow;
     }
   }
+
+  @action
+  Future<void> deletaCaminhoes() async {
+    try {
+      status = TransportesStatus.loading;
+
+      db = await DB.instance.database;
+
+      await db.delete('caminhoes');
+
+      status = TransportesStatus.success;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

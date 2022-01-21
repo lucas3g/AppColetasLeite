@@ -1,6 +1,8 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/components/el_input_widget.dart';
 import 'package:coletas_leite/src/controllers/login/login_controller.dart';
+import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_controller.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/meu_toast.dart';
@@ -19,6 +21,7 @@ class LoginInputButtonWidget extends StatefulWidget {
 
 class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   final controllerLogin = LoginController();
+  final SincronizarController controllerSincronizar = SincronizarController();
   late Map<String, String> logado;
   var visiblePassword = false;
 
@@ -29,7 +32,13 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   void initState() {
     autorun((_) async {
       if (controllerLogin.status == LoginStatus.success) {
+        BotToast.showLoading();
+        BotToast.showText(text: 'Buscando dados do Servidor');
         await Future.delayed(Duration(seconds: 1));
+        await controllerSincronizar.baixaTodas();
+        await Future.delayed(Duration(seconds: 1));
+        BotToast.closeAllLoading();
+        BotToast.cleanAll();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else if (controllerLogin.status == LoginStatus.error) {
         MeuToast.toast(

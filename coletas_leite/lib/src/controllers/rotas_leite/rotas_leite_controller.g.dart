@@ -82,6 +82,14 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
+  final _$deletaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.deletaRotas');
+
+  @override
+  Future<void> deletaRotas() {
+    return _$deletaRotasAsyncAction.run(() => super.deletaRotas());
+  }
+
   @override
   String toString() {
     return '''

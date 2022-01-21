@@ -49,6 +49,9 @@ dependencies:
   flutter_launcher_icons: ^0.9.2
   shimmer: ^2.0.0
   bluetooth_enable_fork: ^0.1.4
+  bot_toast: ^4.0.1
+  flutter_easyhub: ^1.0.2+1
+
 
 flutter_app_name:
   name: "Ágil Coletas de Leite - EL Sistemas"

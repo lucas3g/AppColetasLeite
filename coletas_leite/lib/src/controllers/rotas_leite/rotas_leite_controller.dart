@@ -163,4 +163,19 @@ abstract class _RotasLeiteControllerBase with Store {
     }
     return lista;
   }
+
+  @action
+  Future<void> deletaRotas() async {
+    try {
+      status = RotasLeiteStatus.loading;
+
+      db = await DB.instance.database;
+
+      await db.delete('rotas');
+
+      status = RotasLeiteStatus.success;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

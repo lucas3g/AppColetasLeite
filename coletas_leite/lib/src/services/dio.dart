@@ -6,6 +6,7 @@ class MeuDio {
   static Dio dio() {
     BaseOptions options = BaseOptions(
       baseUrl: 'http://192.168.254.10/firebird/AppColetaLeite',
+      connectTimeout: 2000,
     );
 
     final Dio dio = Dio(options);

@@ -366,4 +366,48 @@ abstract class _TiketEntradaControllerBase with Store {
     }
     return lista;
   }
+
+  @action
+  Future<void> deletaProdutores() async {
+    try {
+      status = TiketEntradaStatus.loading;
+
+      db = await DB.instance.database;
+
+      await db.delete('produtores');
+
+      status = TiketEntradaStatus.success;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @action
+  Future<void> getProdutores() async {
+    try {
+      status = TiketEntradaStatus.loading;
+
+      final cnpj = UtilBrasilFields.removeCaracteres(
+          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+
+      final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/clientes');
+
+      final lista = jsonDecode(response.data)
+          .map<TiketEntradaModel>(
+              (elemento) => TiketEntradaModel.fromMap(elemento))
+          .toList();
+
+      tikets = ObservableList.of(lista);
+
+      await insertProdutores(produtores: tikets);
+
+      if (tikets.isNotEmpty) {
+        status = TiketEntradaStatus.success;
+      } else {
+        status = TiketEntradaStatus.error;
+      }
+    } catch (e) {
+      print('Eu sou erro dos produtores $e');
+    }
+  }
 }

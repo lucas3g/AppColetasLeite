@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:coletas_leite/app_widget.dart';
 import 'package:coletas_leite/src/configs/app_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_controller.dart';
+import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_controller.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_controller.dart';
+import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_controller.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_controller.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_controller.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ void main() async {
       getIt.registerSingleton<ColetasController>(ColetasController());
       getIt.registerSingleton<TiketEntradaController>(TiketEntradaController());
       getIt.registerSingleton<EnvioController>(EnvioController());
+      getIt.registerSingleton<ConfiguracaoController>(ConfiguracaoController());
 
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent, // status bar color

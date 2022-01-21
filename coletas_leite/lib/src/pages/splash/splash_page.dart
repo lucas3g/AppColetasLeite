@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
+import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
+import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_controller.dart';
+import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +16,9 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final SincronizarController controllerSincronizar = SincronizarController();
+  final ConfiguracaoController controllerConfig = ConfiguracaoController();
+
   void verificaInternet() async {
     await Future.delayed(Duration(seconds: 1));
     inicializar();
@@ -24,6 +31,21 @@ class _SplashPageState extends State<SplashPage> {
     if (conectado == 'N') {
       Navigator.pushReplacementNamed(context, '/login');
     } else {
+      try {
+        await controllerConfig.conectaImpressora();
+        final result = await InternetAddress.lookup(MeuDio.baseUrl);
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          BotToast.showLoading();
+          BotToast.showText(text: 'Buscando dados do Servidor');
+          await Future.delayed(Duration(seconds: 1));
+          await controllerSincronizar.baixaTodas();
+          await Future.delayed(Duration(seconds: 1));
+          BotToast.closeAllLoading();
+          BotToast.cleanAll();
+        }
+      } on SocketException catch (_) {
+        print('Sem Internet Para Sincronizar');
+      }
       Navigator.pushReplacementNamed(context, '/dashboard');
     }
   }

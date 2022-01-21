@@ -82,6 +82,14 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.retornaUltimaCaminhao());
   }
 
+  final _$deletaCaminhoesAsyncAction =
+      AsyncAction('_TransportesControllerBase.deletaCaminhoes');
+
+  @override
+  Future<void> deletaCaminhoes() {
+    return _$deletaCaminhoesAsyncAction.run(() => super.deletaCaminhoes());
+  }
+
   @override
   String toString() {
     return '''
