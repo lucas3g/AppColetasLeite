@@ -1,5 +1,3 @@
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model_copy.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
@@ -15,7 +13,6 @@ import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_status.dart';
 import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
-import 'package:intl/intl.dart';
 
 class ColetasPage extends StatefulWidget {
   final int id_rota;

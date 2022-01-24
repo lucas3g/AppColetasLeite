@@ -51,8 +51,8 @@ abstract class _LoginControllerBase with Store {
 
         await Future.delayed(Duration(seconds: 2));
 
-        final authConfig =
-            jsonEncode({'USUARIO': user.login, 'SENHA': user.senha});
+        final authConfig = jsonEncode(
+            {'USUARIO': user.login.trim(), 'SENHA': user.senha.trim()});
 
         final Response<dynamic> response =
             await GlobalSettings.recursiveFunction(

@@ -5,7 +5,7 @@ class MeuDio {
 
   static Dio dio() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://192.168.254.10/firebird/AppColetaLeite',
+      baseUrl: 'http://elinfo2.jelastic.saveincloud.net/AppColetaLeite',
       connectTimeout: 2000,
     );
 
