@@ -1,5 +1,6 @@
 import 'package:coletas_leite/src/configs/app_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_controller.dart';
+import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_controller.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_controller.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_controller.dart';
@@ -13,6 +14,7 @@ class GlobalSettings {
   final controllerColetas = GetIt.I.get<ColetasController>();
   final controllerTiket = GetIt.I.get<TiketEntradaController>();
   final controllerEnvio = GetIt.I.get<EnvioController>();
+  final controllerConfig = GetIt.I.get<ConfiguracaoController>();
 
   static recursiveFunction(
       {required Function function,

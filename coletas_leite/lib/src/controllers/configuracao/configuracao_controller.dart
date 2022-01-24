@@ -13,7 +13,7 @@ abstract class _ConfiguracaoControllerBase with Store {
   ObservableList<BluetoothDevice> devices = ObservableList.of([]);
 
   @observable
-  BluetoothDevice? selectedDevice = GlobalSettings().appSettings.imp;
+  BluetoothDevice? selectedDevice;
 
   @observable
   BlueThermalPrinter printer = BlueThermalPrinter.instance;
@@ -25,11 +25,21 @@ abstract class _ConfiguracaoControllerBase with Store {
   late bool conectada = false;
 
   @observable
-  late String id = selectedDevice != null ? selectedDevice!.address! : '';
+  late String id = '';
 
   @action
   Future<void> deviceConectado() async {
+    status = ConfiguracaoStatus.loading;
+    await GlobalSettings().appSettings.readImpressora();
+    selectedDevice = await GlobalSettings().appSettings.imp;
+    id = selectedDevice != null ? selectedDevice!.address! : '';
+    printer = BlueThermalPrinter.instance;
     conectada = (await printer.isConnected)! && selectedDevice != null;
+    if (!(await printer.isConnected)! && selectedDevice != null) {
+      await printer.connect(selectedDevice!);
+      conectada = true;
+    }
+    status = ConfiguracaoStatus.success;
   }
 
   @action
@@ -41,28 +51,38 @@ abstract class _ConfiguracaoControllerBase with Store {
 
   @action
   Future<void> conectaImpressora() async {
-    if (selectedDevice != null) {
-      if ((await printer.isConnected)!) {
-        await printer.disconnect();
+    try {
+      await GlobalSettings().appSettings.readImpressora();
+      selectedDevice = await GlobalSettings().appSettings.imp;
+      printer = BlueThermalPrinter.instance;
+      if (selectedDevice != null) {
+        if ((await printer.isConnected)!) {
+          await printer.disconnect();
+        }
+        id = selectedDevice!.address!;
+        await printer.connect(selectedDevice!);
+        conectada = true;
       }
-      id = selectedDevice!.address!;
-      await printer.connect(selectedDevice!);
-      conectada = true;
+    } catch (e) {
+      status = ConfiguracaoStatus.error;
     }
   }
 
   @action
   Future<void> conecta(
       {required BluetoothDevice device, required BuildContext context}) async {
-    status = ConfiguracaoStatus.conectando;
-    id = device.address!;
-    //await Future.delayed(Duration(seconds: 2));
-    await printer.connect(device);
-    await GlobalSettings().appSettings.setImp(device: device);
-    await GlobalSettings().appSettings.readImpressora();
-    selectedDevice = device;
-    conectada = true;
-    status = ConfiguracaoStatus.success;
+    try {
+      status = ConfiguracaoStatus.conectando;
+      id = device.address!;
+      await printer.connect(device);
+      await GlobalSettings().appSettings.setImp(device: device);
+      await GlobalSettings().appSettings.readImpressora();
+      selectedDevice = device;
+      conectada = true;
+      status = ConfiguracaoStatus.success;
+    } catch (e) {
+      status = ConfiguracaoStatus.error;
+    }
   }
 
   @action

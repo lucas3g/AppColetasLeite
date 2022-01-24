@@ -17,7 +17,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final SincronizarController controllerSincronizar = SincronizarController();
-  final ConfiguracaoController controllerConfig = ConfiguracaoController();
+  final controllerConfig = GlobalSettings().controllerConfig;
 
   void verificaInternet() async {
     await Future.delayed(Duration(seconds: 1));

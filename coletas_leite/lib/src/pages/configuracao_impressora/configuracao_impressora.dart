@@ -1,8 +1,6 @@
-import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
+import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/configuracao/configuracao_status.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
-import 'package:coletas_leite/src/utils/meu_toast.dart';
-import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -14,16 +12,20 @@ class ConfiguracaoImpressora extends StatefulWidget {
 }
 
 class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
-  final controller = ConfiguracaoController();
+  final controller = GlobalSettings().controllerConfig;
 
   Future<void> deviceConectado() async {
     await controller.deviceConectado();
   }
 
+  Future<void> getDevices() async {
+    await controller.getDevices();
+  }
+
   @override
   void initState() {
     super.initState();
-    controller.getDevices();
+    getDevices();
     deviceConectado();
   }
 
@@ -95,8 +97,11 @@ class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
                                           ],
                                         ),
                                       )
-                                    : controller.id ==
-                                            controller.devices[index].address
+                                    : controller.conectada &&
+                                            controller.selectedDevice != null &&
+                                            controller.id ==
+                                                controller
+                                                    .devices[index].address
                                         ? Text(
                                             'Impressora Conectada!',
                                             style: AppTheme

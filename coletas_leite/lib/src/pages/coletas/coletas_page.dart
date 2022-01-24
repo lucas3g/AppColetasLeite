@@ -37,14 +37,14 @@ class ColetasPage extends StatefulWidget {
 class _ColetasPageState extends State<ColetasPage> {
   final controller = GlobalSettings().controllerTiket;
   final controllerColeta = GlobalSettings().controllerColetas;
+  final controllerConfig = GlobalSettings().controllerConfig;
   final controllerQtd = TextEditingController();
   final controllerTemp = TextEditingController();
   final controllerCrio = TextEditingController();
   final controllerMotivoNC = TextEditingController();
-  BlueThermalPrinter printer = BlueThermalPrinter.instance;
   final TextEditingController controllerInput = TextEditingController();
   List<TiketEntradaModel> filteredProd = [];
-  late bool impressora_conectada = false;
+  late bool conectada = false;
 
   FocusNode temp = FocusNode();
   FocusNode tanque = FocusNode();
@@ -63,19 +63,14 @@ class _ColetasPageState extends State<ColetasPage> {
     });
   }
 
-  Future<void> enableBT() async {
-    impressora_conectada =
-        ((await printer.isOn)!) && (await printer.isConnected)!;
-
-    if ((await printer.isConnected)! && (!(await printer.isOn)!)) {
-      printer.disconnect();
-      impressora_conectada = false;
-    }
+  void _onSearchChanged(String value) async {
+    filteredProd = await controller.onSearchChanged(value: value);
     setState(() {});
   }
 
-  void _onSearchChanged(String value) async {
-    filteredProd = await controller.onSearchChanged(value: value);
+  Future<void> deviceConectado() async {
+    await controllerConfig.deviceConectado();
+    conectada = controllerConfig.conectada;
     setState(() {});
   }
 
@@ -83,9 +78,10 @@ class _ColetasPageState extends State<ColetasPage> {
   void initState() {
     super.initState();
 
+    deviceConectado();
+
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       gravaTikets();
-      enableBT();
     });
 
     temp.addListener(() {
@@ -839,7 +835,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                trailing: impressora_conectada
+                                trailing: conectada
                                     ? controller.status ==
                                                 TiketEntradaStatus.imprimindo &&
                                             id_tiket == ListColetas[index].id
