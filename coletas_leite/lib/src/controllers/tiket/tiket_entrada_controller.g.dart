@@ -106,6 +106,20 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     return _$getProdutoresAsyncAction.run(() => super.getProdutores());
   }
 
+  final _$_TiketEntradaControllerBaseActionController =
+      ActionController(name: '_TiketEntradaControllerBase');
+
+  @override
+  dynamic limpaDados() {
+    final _$actionInfo = _$_TiketEntradaControllerBaseActionController
+        .startAction(name: '_TiketEntradaControllerBase.limpaDados');
+    try {
+      return super.limpaDados();
+    } finally {
+      _$_TiketEntradaControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

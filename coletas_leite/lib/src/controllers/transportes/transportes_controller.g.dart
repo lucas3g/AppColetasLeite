@@ -90,6 +90,20 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
     return _$deletaCaminhoesAsyncAction.run(() => super.deletaCaminhoes());
   }
 
+  final _$_TransportesControllerBaseActionController =
+      ActionController(name: '_TransportesControllerBase');
+
+  @override
+  dynamic limpaDados() {
+    final _$actionInfo = _$_TransportesControllerBaseActionController
+        .startAction(name: '_TransportesControllerBase.limpaDados');
+    try {
+      return super.limpaDados();
+    } finally {
+      _$_TransportesControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

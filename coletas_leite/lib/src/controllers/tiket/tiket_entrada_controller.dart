@@ -410,4 +410,10 @@ abstract class _TiketEntradaControllerBase with Store {
       print('Eu sou erro dos produtores $e');
     }
   }
+
+  @action
+  limpaDados() {
+    status = TiketEntradaStatus.loading;
+    tikets.clear();
+  }
 }

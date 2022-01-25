@@ -109,6 +109,20 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.imprimirResumoColetas(coleta: coleta));
   }
 
+  final _$_ColetasControllerBaseActionController =
+      ActionController(name: '_ColetasControllerBase');
+
+  @override
+  dynamic limpaDados() {
+    final _$actionInfo = _$_ColetasControllerBaseActionController.startAction(
+        name: '_ColetasControllerBase.limpaDados');
+    try {
+      return super.limpaDados();
+    } finally {
+      _$_ColetasControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

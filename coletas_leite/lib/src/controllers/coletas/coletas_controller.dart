@@ -283,4 +283,10 @@ abstract class _ColetasControllerBase with Store {
       status = ColetasStatus.error;
     }
   }
+
+  @action
+  limpaDados() {
+    status = ColetasStatus.loading;
+    ListaColetas.clear();
+  }
 }

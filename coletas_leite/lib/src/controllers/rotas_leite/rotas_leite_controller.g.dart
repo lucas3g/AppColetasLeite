@@ -90,6 +90,20 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
     return _$deletaRotasAsyncAction.run(() => super.deletaRotas());
   }
 
+  final _$_RotasLeiteControllerBaseActionController =
+      ActionController(name: '_RotasLeiteControllerBase');
+
+  @override
+  dynamic limpaDados() {
+    final _$actionInfo = _$_RotasLeiteControllerBaseActionController
+        .startAction(name: '_RotasLeiteControllerBase.limpaDados');
+    try {
+      return super.limpaDados();
+    } finally {
+      _$_RotasLeiteControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

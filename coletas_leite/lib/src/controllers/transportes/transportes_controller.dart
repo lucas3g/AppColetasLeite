@@ -162,4 +162,10 @@ abstract class _TransportesControllerBase with Store {
       rethrow;
     }
   }
+
+  @action
+  limpaDados() {
+    status = TransportesStatus.loading;
+    transp.clear();
+  }
 }

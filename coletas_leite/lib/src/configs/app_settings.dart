@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:coletas_leite/src/models/login/user_model.dart';
+import 'package:coletas_leite/src/utils/limpa_dados.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,11 +72,11 @@ class AppSettigns extends ChangeNotifier {
   }
 
   removeLogado() async {
-    //final controller = LimpaDadosController();
+    final controller = LimpaDados();
     await _prefs.remove('conectado');
     await _prefs.remove('user');
     await _prefs.remove('impressora');
-    //controller.limpaDados();
+    controller.limpaDados();
     await _readLogado();
   }
 

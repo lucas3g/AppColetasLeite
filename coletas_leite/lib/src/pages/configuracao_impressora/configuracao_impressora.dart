@@ -1,8 +1,11 @@
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/configuracao/configuracao_status.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
+import 'package:coletas_leite/src/utils/meu_toast.dart';
+import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 class ConfiguracaoImpressora extends StatefulWidget {
   const ConfiguracaoImpressora({Key? key}) : super(key: key);
@@ -27,6 +30,16 @@ class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
     super.initState();
     getDevices();
     deviceConectado();
+    autorun((_) {
+      if (controller.status == ConfiguracaoStatus.error) {
+        MeuToast.toast(
+            title: 'Erro',
+            message:
+                'Não foi possivel conectar na impressora. \nTente novamente.',
+            type: TypeToast.error,
+            context: context);
+      }
+    });
   }
 
   @override
@@ -51,7 +64,8 @@ class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
               child: Observer(builder: (context) {
                 return controller.status == ConfiguracaoStatus.success ||
                         controller.status == ConfiguracaoStatus.conectando ||
-                        controller.status == ConfiguracaoStatus.desconectando
+                        controller.status == ConfiguracaoStatus.desconectando ||
+                        controller.status == ConfiguracaoStatus.error
                     ? ListView.separated(
                         itemBuilder: (context, index) {
                           return Container(
@@ -147,87 +161,6 @@ class _ConfiguracaoImpressoraState extends State<ConfiguracaoImpressora> {
                       );
               }),
             ),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // ElevatedButton(
-            //   style: ElevatedButton.styleFrom(
-            //     primary: AppTheme.colors.secondaryColor,
-            //   ),
-            //   onPressed: !conectada && selectedDevice != null
-            //       ? () async {
-            //           status = ConfiguracaoStatus.loading;
-            //           setState(() {});
-            //           if ((await printer.isConnected)!) {
-            //             await printer.disconnect();
-            //           }
-            //           await printer.connect(selectedDevice!);
-            //           await controller.setImp(device: selectedDevice!);
-            //           conectada = true;
-            //           setState(() {});
-            //           MeuToast.toast(
-            //               title: 'Sucesso',
-            //               message: 'Impressora conectada!',
-            //               type: TypeToast.success,
-            //               context: context);
-            //           status = ConfiguracaoStatus.success;
-            //         }
-            //       : null,
-            //   child: status == ConfiguracaoStatus.loading
-            //       ? Container(
-            //           height: 25,
-            //           width: 25,
-            //           child: Center(
-            //             child: CircularProgressIndicator(
-            //               color: Colors.white,
-            //             ),
-            //           ),
-            //         )
-            //       : Text('Conectar'),
-            // ),
-            // ElevatedButton(
-            //   style: ElevatedButton.styleFrom(
-            //     primary: AppTheme.colors.secondaryColor,
-            //   ),
-            //   onPressed: conectada
-            //       ? () async {
-            //           status = ConfiguracaoStatus.loading;
-            //           setState(() {});
-            //           await printer.disconnect();
-            //           await controller.removeImpressora();
-            //           conectada = false;
-            //           setState(() {});
-            //           MeuToast.toast(
-            //               title: 'Atençao',
-            //               message: 'Impressora desconectada!',
-            //               type: TypeToast.dadosInv,
-            //               context: context);
-            //           status = ConfiguracaoStatus.success;
-            //         }
-            //       : null,
-            //   child: Text('Desconectar'),
-            // ),
-            // ElevatedButton(
-            //   style: ElevatedButton.styleFrom(
-            //     primary: AppTheme.colors.secondaryColor,
-            //   ),
-            //   onPressed: conectada
-            //       ? () async {
-            // if ((await printer.isConnected)!) {
-            //   printer.printNewLine();
-            //   printer.printCustom(
-            //       "Sucesso voce configurou a impressora!!", 1, 1);
-            //   printer.printNewLine();
-            //   printer.printNewLine();
-            //   printer.printNewLine();
-            //   printer.printNewLine();
-            //   printer.printNewLine();
-            //   printer.printNewLine();
-            // }
-            //         }
-            //       : null,
-            //   child: Text('Testar Impressão'),
-            // ),
           ],
         ),
       ),

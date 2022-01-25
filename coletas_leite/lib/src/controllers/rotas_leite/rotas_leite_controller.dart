@@ -178,4 +178,10 @@ abstract class _RotasLeiteControllerBase with Store {
       rethrow;
     }
   }
+
+  @action
+  limpaDados() {
+    status = RotasLeiteStatus.loading;
+    rotas.clear();
+  }
 }

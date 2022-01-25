@@ -44,6 +44,7 @@ class _ColetasPageState extends State<ColetasPage> {
   late bool conectada = false;
 
   FocusNode temp = FocusNode();
+  FocusNode qtd = FocusNode();
   FocusNode tanque = FocusNode();
   FocusNode mnc = FocusNode();
 
@@ -83,6 +84,13 @@ class _ColetasPageState extends State<ColetasPage> {
 
     temp.addListener(() {
       if (temp.hasFocus) {
+        controllerTemp.selection = TextSelection(
+            baseOffset: 0, extentOffset: controllerTemp.text.length);
+      }
+    });
+
+    qtd.addListener(() {
+      if (qtd.hasFocus) {
         controllerTemp.selection = TextSelection(
             baseOffset: 0, extentOffset: controllerTemp.text.length);
       }
@@ -411,6 +419,12 @@ class _ColetasPageState extends State<ColetasPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          if (tiket.alizarol != tiketCopy.alizarol) {
+                            tiket.alizarol = tiketCopy.alizarol;
+                          }
+                          if (tiket.particao != tiketCopy.particao) {
+                            tiket.particao = tiketCopy.particao;
+                          }
                           Navigator.pop(context);
                         },
                         child: PhysicalModel(
@@ -827,7 +841,15 @@ class _ColetasPageState extends State<ColetasPage> {
                                 leading: Container(
                                   height: double.maxFinite,
                                   child: Icon(
-                                    Icons.person_outline,
+                                    ListColetas[index].quantidade! > 0 &&
+                                            ListColetas[index].temperatura! != 0
+                                        ? Icons.check_circle_outline
+                                        : ListColetas[index].quantidade! == 0 &&
+                                                ListColetas[index]
+                                                        .temperatura! ==
+                                                    0
+                                            ? Icons.person_outline
+                                            : Icons.warning_amber_rounded,
                                     size: 30,
                                     color: Colors.black,
                                   ),
@@ -871,7 +893,8 @@ class _ColetasPageState extends State<ColetasPage> {
                                               fontSize: 14,
                                               color: Colors.black),
                                     ),
-                                    Text(ListColetas[index].municipios)
+                                    Text(ListColetas[index].municipios,
+                                        style: TextStyle(color: Colors.black))
                                   ],
                                 ),
                               ),
