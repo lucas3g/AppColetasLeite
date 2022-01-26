@@ -313,7 +313,7 @@ abstract class _TiketEntradaControllerBase with Store {
               tiket.hora.toString().replaceAll('"', ''),
           1,
           0);
-      printer.printCustom('Produtor: ' + tiket.nome, 1, 0);
+      printer.printCustom('Produtor: ' + tiket.nome.trim(), 1, 0);
       printer.printCustom(
           'Quantidade: ' +
               tiket.quantidade.toString() +
@@ -328,7 +328,7 @@ abstract class _TiketEntradaControllerBase with Store {
       if (tiket.observacao.toString().trim().isNotEmpty)
         printer.printCustom(
             'Motivo da Nao Coleta: ' +
-                tiket.observacao.toString().removeAcentos(),
+                tiket.observacao.toString().removeAcentos().trim(),
             1,
             0);
       printer.printNewLine();

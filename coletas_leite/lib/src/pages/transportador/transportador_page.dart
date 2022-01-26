@@ -2,6 +2,7 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_status.dart';
 import 'package:coletas_leite/src/models/transportes/transportes_model.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
+import 'package:coletas_leite/src/pages/transportador/widgets/card_transportador_widget.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
   final motorista = GlobalSettings().appSettings.user.nome;
   final TextEditingController controllerInput = TextEditingController();
   List<TransportesModel> filteredTransp = [];
-  late String? ultPlaca;
+  late String? ultPlaca = '';
 
   void getTransp() async {
     if (controller.transp.isEmpty) await controller.getTransp();
@@ -338,7 +339,8 @@ class _TransportadorPageState extends State<TransportadorPage> {
                             },
                           )
                         : null,
-                    hintText: 'Digite a placa do caminhão',
+                    hintText: 'Digite a placa ou descrição do caminhão',
+                    hintStyle: TextStyle(fontSize: 14),
                     alignLabelWithHint: true,
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -368,52 +370,11 @@ class _TransportadorPageState extends State<TransportadorPage> {
                               ),
                           itemCount: filteredTransp.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: ultPlaca == filteredTransp[index].placa
-                                      ? Colors.green.shade400
-                                      : Colors.white),
-                              child: ListTile(
-                                onTap: () {
-                                  modalColeta(
-                                      caminhao: filteredTransp[index].placa,
-                                      tanques: filteredTransp[index].tanques);
-                                },
-                                minLeadingWidth: 10,
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                                leading: Container(
-                                  child: Icon(
-                                    Icons.local_shipping_outlined,
-                                    color: Colors.black,
-                                  ),
-                                  height: double.maxFinite,
-                                ),
-                                title: Text(
-                                  filteredTransp[index].descricao,
-                                  style:
-                                      AppTheme.textStyles.titleLogin.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                subtitle: Row(
-                                  children: [
-                                    Text(
-                                      'Placa: ',
-                                      style: AppTheme.textStyles.titleLogin
-                                          .copyWith(
-                                              fontSize: 14,
-                                              color: Colors.black),
-                                    ),
-                                    Text(filteredTransp[index].placa)
-                                  ],
-                                ),
-                              ),
-                            );
+                            return CardTransportadorWidget(
+                                filteredTransp: filteredTransp,
+                                ultPlaca: ultPlaca,
+                                index: index,
+                                modalColeta: modalColeta);
                           }),
                     )
                   : controller.status == TransportesStatus.loading

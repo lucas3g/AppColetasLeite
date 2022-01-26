@@ -1,6 +1,7 @@
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_status.dart';
 import 'package:coletas_leite/src/models/rotas_leite/rotas_leite_model.dart';
+import 'package:coletas_leite/src/pages/rotas_leite/widgets/card_rotas_widget.dart';
 import 'package:coletas_leite/src/pages/transportador/transportador_page.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
@@ -29,11 +30,13 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
     await controller.getRotas();
     setState(() {
       filteredRotas = controller.rotas;
+      filteredRotas.sort((a, b) => a.id.compareTo(b.id));
     });
   }
 
   void _onSearchChanged(String value) async {
     filteredRotas = await controller.onSearchChanged(value: value);
+    filteredRotas.sort((a, b) => a.id.compareTo(b.id));
     setState(() {});
   }
 
@@ -127,68 +130,10 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
                   ? Expanded(
                       child: ListView.separated(
                           itemBuilder: (_, int index) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                color:
-                                    (filteredRotas[index].rota_finalizada == 1
-                                            ? true
-                                            : false)
-                                        ? Colors.white
-                                        : Colors.grey.shade400,
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ListTile(
-                                onTap: () async {
-                                  if (filteredRotas[index].rota_finalizada ==
-                                      0) {
-                                    await MeuToast.toast(
-                                        title: 'Atenção',
-                                        message:
-                                            'Rota pendente de finalização.',
-                                        type: TypeToast.error,
-                                        context: context);
-                                  } else {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            TransportadorPage(
-                                          rota: filteredRotas[index].descricao,
-                                          id_rota: filteredRotas[index].id,
-                                        ),
-                                      ),
-                                    );
-                                    await controller.getRotas();
-                                  }
-                                },
-                                minLeadingWidth: 10,
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                                leading: Container(
-                                  height: double.maxFinite,
-                                  child: Icon(
-                                    Icons.directions_outlined,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                title: Text(
-                                  filteredRotas[index].id.toString() +
-                                      ' - ' +
-                                      filteredRotas[index].descricao,
-                                  style:
-                                      AppTheme.textStyles.titleLogin.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                // enabled:
-                                //     (filteredRotas[index].rota_finalizada == 1
-                                //         ? true
-                                //         : false),
-                              ),
-                            );
+                            return CardRotasWidget(
+                                controller: controller,
+                                filteredRotas: filteredRotas,
+                                index: index);
                           },
                           separatorBuilder: (_, int index) => SizedBox(
                                 height: 15,

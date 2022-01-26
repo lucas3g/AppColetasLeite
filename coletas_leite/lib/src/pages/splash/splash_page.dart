@@ -19,13 +19,8 @@ class _SplashPageState extends State<SplashPage> {
   final SincronizarController controllerSincronizar = SincronizarController();
   final controllerConfig = GlobalSettings().controllerConfig;
 
-  void verificaInternet() async {
-    await Future.delayed(Duration(seconds: 1));
-    inicializar();
-  }
-
-  void inicializar() async {
-    await Future.delayed(Duration(seconds: 2));
+  Future<void> inicializar() async {
+    await Future.delayed(Duration(milliseconds: 500));
     final String conectado = GlobalSettings().appSettings.logado['conectado']!;
 
     if (conectado == 'N') {
@@ -50,10 +45,14 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
+  void verificaInternet() async {
+    await inicializar();
+  }
+
   @override
   void initState() {
-    verificaInternet();
     super.initState();
+    verificaInternet();
   }
 
   @override

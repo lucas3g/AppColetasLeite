@@ -72,6 +72,14 @@ class _ColetasPageState extends State<ColetasPage> {
     setState(() {});
   }
 
+  int somaLitros() {
+    int result = 0;
+    for (var item in filteredProd) {
+      result += item.quantidade!;
+    }
+    return result;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -175,9 +183,12 @@ class _ColetasPageState extends State<ColetasPage> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Digite uma quantidade.';
+                                } else if (int.tryParse(value) == null) {
+                                  return 'Quantidade Incorreta';
                                 }
                                 return null;
                               },
+                              autovalidateMode: AutovalidateMode.always,
                               controller: controllerQtd,
                               onTap: () => controllerQtd.selectAll(),
                               inputFormatters: [
@@ -386,7 +397,6 @@ class _ColetasPageState extends State<ColetasPage> {
                             child: TextFormField(
                               focusNode: mnc,
                               controller: controllerMotivoNC,
-                              onTap: () => controllerMotivoNC.selectAll(),
                               onSaved: (value) {
                                 tiket.observacao = value;
                               },
@@ -769,6 +779,20 @@ class _ColetasPageState extends State<ColetasPage> {
             SizedBox(
               height: 15,
             ),
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    'Litros: ${somaLitros()}',
+                    style:
+                        AppTheme.textStyles.titleLogin.copyWith(fontSize: 25),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 15,
+            ),
             Observer(builder: (_) {
               final ListColetas =
                   filteredProd.where((e) => e.rota == widget.id_rota).toList();
@@ -796,22 +820,13 @@ class _ColetasPageState extends State<ColetasPage> {
                                       ? Colors.green.shade500
                                       : ListColetas[index].quantidade! == 0 &&
                                               ListColetas[index].temperatura! ==
-                                                  0
-                                          ? Colors.grey.shade400
-                                          : Colors.amber.shade400,
-                                  border: Border.all(
-                                      color: ListColetas[index].quantidade! >
                                                   0 &&
-                                              ListColetas[index].temperatura! !=
-                                                  0
-                                          ? Colors.green.shade500
-                                          : ListColetas[index].quantidade! ==
-                                                      0 &&
-                                                  ListColetas[index]
-                                                          .temperatura! ==
-                                                      0
-                                              ? Colors.grey.shade400
-                                              : Colors.amber.shade400),
+                                              ListColetas[index].observacao ==
+                                                  ''
+                                          ? Colors.grey.shade400
+                                          : ListColetas[index].observacao != ''
+                                              ? AppTheme.colors.secondaryColor
+                                              : Colors.amber.shade400,
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
@@ -825,9 +840,17 @@ class _ColetasPageState extends State<ColetasPage> {
                                                         0 &&
                                                     ListColetas[index]
                                                             .temperatura! ==
-                                                        0
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .observacao ==
+                                                        ''
                                                 ? Colors.grey.shade400
-                                                : Colors.amber.shade400,
+                                                : ListColetas[index]
+                                                            .observacao !=
+                                                        ''
+                                                    ? AppTheme
+                                                        .colors.secondaryColor
+                                                    : Colors.amber.shade400,
                                         blurRadius: 5,
                                         offset: Offset(0, 5))
                                   ]),
@@ -847,9 +870,14 @@ class _ColetasPageState extends State<ColetasPage> {
                                         : ListColetas[index].quantidade! == 0 &&
                                                 ListColetas[index]
                                                         .temperatura! ==
-                                                    0
+                                                    0 &&
+                                                ListColetas[index].observacao ==
+                                                    ''
                                             ? Icons.person_outline
-                                            : Icons.warning_amber_rounded,
+                                            : ListColetas[index].observacao !=
+                                                    ''
+                                                ? Icons.error_outline_rounded
+                                                : Icons.warning_amber_rounded,
                                     size: 30,
                                     color: Colors.black,
                                   ),

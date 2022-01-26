@@ -116,8 +116,9 @@ abstract class _TransportesControllerBase with Store {
     }
 
     ObservableList<TransportesModel> lista = ObservableList.of(transp
-        .where(
-            (rota) => (rota.placa.toLowerCase().contains(value.toLowerCase())))
+        .where((rota) =>
+            (rota.placa.toLowerCase().contains(value.toLowerCase())) ||
+            (rota.descricao.toLowerCase().contains(value.toLowerCase())))
         .toList());
 
     if (value.isEmpty) {
