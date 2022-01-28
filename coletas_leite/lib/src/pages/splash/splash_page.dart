@@ -27,7 +27,8 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.pushReplacementNamed(context, '/login');
     } else {
       try {
-        await controllerConfig.conectaImpressora();
+        if ((await controllerConfig.printer.isOn)!)
+          await controllerConfig.conectaImpressora();
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
           BotToast.showLoading();

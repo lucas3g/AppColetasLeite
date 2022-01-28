@@ -53,6 +53,11 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Selecione uma Rota'),
         leading: IconButton(

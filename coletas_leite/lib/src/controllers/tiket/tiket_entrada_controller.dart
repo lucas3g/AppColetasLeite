@@ -171,7 +171,7 @@ abstract class _TiketEntradaControllerBase with Store {
             'hora': '"' +
                 DateTime.now().hour.toString() +
                 ':' +
-                DateTime.now().minute.toString() +
+                DateTime.now().minute.toString().padLeft(2, '0') +
                 '"',
             'particao': 1,
             'observacao': item.observacao,
@@ -251,8 +251,12 @@ abstract class _TiketEntradaControllerBase with Store {
                 'alizarol': coleta.alizarol! ? 1 : 0,
                 'particao': coleta.particao, //TANQUE DO CAMINHAO
                 'observacao': coleta.observacao,
-                'qtd_vezes_editado':
-                    coleta.qtd_vezes_editado, //MOTIVO DA NAO COLETA
+                'qtd_vezes_editado': coleta.qtd_vezes_editado,
+                'hora': '"' +
+                    DateTime.now().hour.toString() +
+                    ':' +
+                    DateTime.now().minute.toString().padLeft(2, '0') +
+                    '"', //MOTIVO DA NAO COLETA
               },
               where: 'id = ?',
               whereArgs: [coleta.id]);

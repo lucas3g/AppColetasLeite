@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
@@ -132,7 +131,7 @@ abstract class _TransportesControllerBase with Store {
   }
 
   @action
-  Future<String> retornaUltimaCaminhao() async {
+  Future<String> retornaUltimaPlaca() async {
     try {
       db = await DB.instance.database;
 
@@ -168,5 +167,20 @@ abstract class _TransportesControllerBase with Store {
   limpaDados() {
     status = TransportesStatus.loading;
     transp.clear();
+  }
+
+  @action
+  Future<List<TransportesModel>> jogaPlacaParaPrimeiro(
+      {required List<TransportesModel> lista}) async {
+    status = TransportesStatus.loading;
+    final ultPlaca = await retornaUltimaPlaca();
+    if (ultPlaca.isNotEmpty) {
+      final indexAux = lista.indexWhere((e) => e.placa == ultPlaca);
+      final aux = lista[indexAux];
+      lista.removeAt(indexAux);
+      lista.insert(0, aux);
+    }
+    status = TransportesStatus.success;
+    return lista;
   }
 }

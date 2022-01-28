@@ -73,13 +73,13 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
-  final _$retornaUltimaCaminhaoAsyncAction =
-      AsyncAction('_TransportesControllerBase.retornaUltimaCaminhao');
+  final _$retornaUltimaPlacaAsyncAction =
+      AsyncAction('_TransportesControllerBase.retornaUltimaPlaca');
 
   @override
-  Future<String> retornaUltimaCaminhao() {
-    return _$retornaUltimaCaminhaoAsyncAction
-        .run(() => super.retornaUltimaCaminhao());
+  Future<String> retornaUltimaPlaca() {
+    return _$retornaUltimaPlacaAsyncAction
+        .run(() => super.retornaUltimaPlaca());
   }
 
   final _$deletaCaminhoesAsyncAction =
@@ -88,6 +88,16 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
   @override
   Future<void> deletaCaminhoes() {
     return _$deletaCaminhoesAsyncAction.run(() => super.deletaCaminhoes());
+  }
+
+  final _$jogaPlacaParaPrimeiroAsyncAction =
+      AsyncAction('_TransportesControllerBase.jogaPlacaParaPrimeiro');
+
+  @override
+  Future<List<TransportesModel>> jogaPlacaParaPrimeiro(
+      {required List<TransportesModel> lista}) {
+    return _$jogaPlacaParaPrimeiroAsyncAction
+        .run(() => super.jogaPlacaParaPrimeiro(lista: lista));
   }
 
   final _$_TransportesControllerBaseActionController =

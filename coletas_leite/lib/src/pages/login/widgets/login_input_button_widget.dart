@@ -61,7 +61,8 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
       } else if (controllerLogin.status == LoginStatus.naoAutorizado) {
         MeuToast.toast(
             title: 'Ops... :(',
-            message: 'Seu usuário não tem permissão para acessar o aplicativo.',
+            message:
+                'Seu usuário não tem permissão para acessar o aplicativo.\nVerifique seu usuário e/ou senha.',
             type: TypeToast.dadosInv,
             context: context);
       }

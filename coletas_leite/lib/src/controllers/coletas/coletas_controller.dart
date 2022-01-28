@@ -58,7 +58,7 @@ abstract class _ColetasControllerBase with Store {
                 ' ' +
                 DateTime.now().hour.toString() +
                 ':' +
-                DateTime.now().minute.toString() +
+                DateTime.now().minute.toString().padLeft(2, '0') +
                 '"',
             'dt_hora_fim': '',
             'transportador': caminhao,
@@ -168,7 +168,7 @@ abstract class _ColetasControllerBase with Store {
                     ' ' +
                     DateTime.now().hour.toString() +
                     ':' +
-                    DateTime.now().minute.toString() +
+                    DateTime.now().minute.toString().padLeft(2, '0') +
                     '"',
                 'km_fim': coleta.km_fim
               },

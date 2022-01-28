@@ -53,7 +53,7 @@ abstract class _ConfiguracaoControllerBase with Store {
   Future<void> conectaImpressora() async {
     try {
       await GlobalSettings().appSettings.readImpressora();
-      selectedDevice = await GlobalSettings().appSettings.imp;
+      selectedDevice = GlobalSettings().appSettings.imp;
       printer = BlueThermalPrinter.instance;
       if (selectedDevice != null) {
         if ((await printer.isConnected)!) {

@@ -32,15 +32,16 @@ class _TransportadorPageState extends State<TransportadorPage> {
   List<TransportesModel> filteredTransp = [];
   late String? ultPlaca = '';
 
-  void getTransp() async {
-    if (controller.transp.isEmpty) await controller.getTransp();
-    setState(() {
-      filteredTransp = controller.transp;
-    });
+  void ultimaPlaca() async {
+    ultPlaca = (await controller.retornaUltimaPlaca());
+    setState(() {});
   }
 
-  void ultimaPlaca() async {
-    ultPlaca = (await controller.retornaUltimaCaminhao());
+  void getTransp() async {
+    if (controller.transp.isEmpty) await controller.getTransp();
+    filteredTransp = controller.transp;
+    filteredTransp =
+        await controller.jogaPlacaParaPrimeiro(lista: filteredTransp);
     setState(() {});
   }
 
@@ -262,6 +263,11 @@ class _TransportadorPageState extends State<TransportadorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Selecione o Caminhão'),
         // leading: IconButton(

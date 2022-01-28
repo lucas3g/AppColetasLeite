@@ -475,6 +475,15 @@ class _ColetasPageState extends State<ColetasPage> {
 
                             await controller.atualizaTiket(
                                 coleta: tiket, coletaCopy: tiketCopy);
+
+                            tiket.hora = DateTime.now().hour.toString() +
+                                ':' +
+                                DateTime.now()
+                                    .minute
+                                    .toString()
+                                    .padLeft(2, '0') +
+                                '"';
+
                             await controller.imprimirTicket(
                                 tiket: tiket, tiketCopy: tiketCopy);
                             Navigator.pop(context);
@@ -708,6 +717,11 @@ class _ColetasPageState extends State<ColetasPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Produtores'),
         leading: IconButton(
@@ -817,7 +831,7 @@ class _ColetasPageState extends State<ColetasPage> {
                               decoration: BoxDecoration(
                                   color: ListColetas[index].quantidade! > 0 &&
                                           ListColetas[index].temperatura! != 0
-                                      ? Colors.green.shade500
+                                      ? Colors.green.shade400
                                       : ListColetas[index].quantidade! == 0 &&
                                               ListColetas[index].temperatura! ==
                                                   0 &&
@@ -825,8 +839,8 @@ class _ColetasPageState extends State<ColetasPage> {
                                                   ''
                                           ? Colors.grey.shade400
                                           : ListColetas[index].observacao != ''
-                                              ? AppTheme.colors.secondaryColor
-                                              : Colors.amber.shade400,
+                                              ? Colors.red.shade400
+                                              : Colors.amber.shade300,
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
@@ -835,7 +849,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                                 ListColetas[index]
                                                         .temperatura! !=
                                                     0
-                                            ? Colors.green.shade500
+                                            ? Colors.green.shade300
                                             : ListColetas[index].quantidade! ==
                                                         0 &&
                                                     ListColetas[index]
@@ -848,9 +862,8 @@ class _ColetasPageState extends State<ColetasPage> {
                                                 : ListColetas[index]
                                                             .observacao !=
                                                         ''
-                                                    ? AppTheme
-                                                        .colors.secondaryColor
-                                                    : Colors.amber.shade400,
+                                                    ? Colors.red.shade300
+                                                    : Colors.amber.shade200,
                                         blurRadius: 5,
                                         offset: Offset(0, 5))
                                   ]),
@@ -956,12 +969,13 @@ class _ColetasPageState extends State<ColetasPage> {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(300, 50),
-                  primary: AppTheme.colors.secondaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
+                    fixedSize: Size(300, 50),
+                    primary: AppTheme.colors.secondaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    elevation: 5,
+                    shadowColor: AppTheme.colors.secondaryColor),
                 onPressed: () async {
                   await confirmaFinalizacao(
                       coleta: widget.coleta, context: context);

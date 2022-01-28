@@ -339,6 +339,11 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -631,10 +636,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     ),
                   )
                 : controller.status == ColetasStatus.empty
-                    ? Container(
-                        child: Center(
-                          child: Text('Nenhuma coleta encontrada!'),
-                        ),
+                    ? Center(
+                        child: Text('Nenhuma coleta encontrada!'),
                       )
                     : Expanded(
                         child: Column(
