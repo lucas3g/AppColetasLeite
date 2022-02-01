@@ -145,7 +145,7 @@ class TiketEntradaModel {
       crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
       alizarol: map['alizarol'] ?? false,
       hora: map['hora'] ?? '',
-      particao: map['particao']?.toInt() ?? 0,
+      particao: map['particao']?.toInt() ?? 1,
       observacao: map['observacao'] ?? '',
       placa: map['placa'] ?? '',
       temperatura: map['temperatura']?.toDouble() ?? 0.0,

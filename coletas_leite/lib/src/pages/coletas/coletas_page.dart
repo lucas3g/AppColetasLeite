@@ -110,6 +110,7 @@ class _ColetasPageState extends State<ColetasPage> {
     for (var i = 1; i <= widget.tanques; i++) {
       listaTanques.add(i);
     }
+    setState(() {});
     final GlobalKey<FormState> keyQtd = GlobalKey<FormState>();
     final GlobalKey<FormState> keyTemp = GlobalKey<FormState>();
     final GlobalKey<FormState> keyObs = GlobalKey<FormState>();
@@ -583,21 +584,26 @@ class _ColetasPageState extends State<ColetasPage> {
                     Observer(builder: (_) {
                       return GestureDetector(
                         onTap: () async {
-                          if (key.currentState!.validate()) {
-                            await controllerColeta.finalizaColeta(
-                                coleta: widget.coleta);
+                          if (controllerColeta.status ==
+                              ColetasStatus.success) {
+                            if (key.currentState!.validate()) {
+                              await controllerColeta.finalizaColeta(
+                                  coleta: widget.coleta);
 
-                            await controllerColeta.imprimirResumoColetas(
-                                coleta: coleta);
+                              await controllerColeta.imprimirResumoColetas(
+                                  coleta: coleta);
 
-                            Navigator.pushNamedAndRemoveUntil(context,
-                                '/dashboard', (Route<dynamic> route) => false);
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/dashboard',
+                                  (Route<dynamic> route) => false);
 
-                            MeuToast.toast(
-                                title: 'Sucesso',
-                                message: 'Rota Finalizada!',
-                                type: TypeToast.success,
-                                context: context);
+                              MeuToast.toast(
+                                  title: 'Sucesso',
+                                  message: 'Rota Finalizada!',
+                                  type: TypeToast.success,
+                                  context: context);
+                            }
                           }
                         },
                         child: PhysicalModel(

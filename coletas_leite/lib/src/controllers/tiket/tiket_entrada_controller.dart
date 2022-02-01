@@ -144,12 +144,8 @@ abstract class _TiketEntradaControllerBase with Store {
 
     await db.transaction((txn) async {
       final List tiket = await txn.query('agl_tiket_entrada',
-          where: 'rota_coleta = ? and data = ? and id_coleta = ?',
-          whereArgs: [
-            rota,
-            '"' + DateTime.now().DiaMesAnoDB() + '"',
-            id_coleta
-          ]);
+          where: 'rota_coleta = ?  and id_coleta = ?',
+          whereArgs: [rota, id_coleta]);
 
       if (tiket.isEmpty) {
         for (var item in tikets) {
@@ -193,8 +189,8 @@ abstract class _TiketEntradaControllerBase with Store {
     tikets.clear();
 
     List tiketsdb = await db.query('agl_tiket_entrada',
-        where: 'rota_coleta = ? and data = ? and id_coleta = ?',
-        whereArgs: [rota, '"' + DateTime.now().DiaMesAnoDB() + '"', id_coleta]);
+        where: 'rota_coleta = ? and id_coleta = ?',
+        whereArgs: [rota, id_coleta]);
 
     if (tiketsdb.isNotEmpty)
       for (var tik in tiketsdb) {
