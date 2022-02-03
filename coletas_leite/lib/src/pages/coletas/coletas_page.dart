@@ -731,240 +731,264 @@ class _ColetasPageState extends State<ColetasPage> {
         backgroundColor: AppTheme.colors.secondaryColor,
         title: Text('Produtores'),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () async {
-              await Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard', (Route<dynamic> route) => false);
-            }),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            await Navigator.pushNamedAndRemoveUntil(
+                context, '/dashboard', (Route<dynamic> route) => false);
+          },
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Theme(
-              data: ThemeData(
-                colorScheme: ThemeData().colorScheme.copyWith(
-                      primary: AppTheme.colors.secondaryColor,
-                    ),
-              ),
-              child: PhysicalModel(
-                color: Colors.white,
-                elevation: 8,
-                shadowColor: Colors.grey,
-                borderRadius: BorderRadius.circular(20),
-                child: TextFormField(
-                  controller: controllerInput,
-                  inputFormatters: [UpperCaseTextFormatter()],
-                  onChanged: (value) {
-                    _onSearchChanged(value);
-                  },
-                  cursorColor: AppTheme.colors.primaryColor,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    fillColor: Colors.grey.shade300,
-                    filled: true,
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      size: 25,
-                    ),
-                    suffixIcon: controllerInput.value.text.isNotEmpty
-                        ? IconButton(
-                            icon: Icon(
-                              Icons.clear,
-                              size: 25,
-                            ),
-                            onPressed: () {
-                              controllerInput.clear();
-                              _onSearchChanged('');
-                            },
-                          )
-                        : null,
-                    hintText: 'Digite o nome do produtor',
-                    alignLabelWithHint: true,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: AppTheme.colors.secondaryColor,
+      body: WillPopScope(
+        onWillPop: () async {
+          await Navigator.pushNamedAndRemoveUntil(
+              context, '/dashboard', (Route<dynamic> route) => false);
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Theme(
+                data: ThemeData(
+                  colorScheme: ThemeData().colorScheme.copyWith(
+                        primary: AppTheme.colors.secondaryColor,
+                      ),
+                ),
+                child: PhysicalModel(
+                  color: Colors.white,
+                  elevation: 8,
+                  shadowColor: Colors.grey,
+                  borderRadius: BorderRadius.circular(20),
+                  child: TextFormField(
+                    controller: controllerInput,
+                    inputFormatters: [UpperCaseTextFormatter()],
+                    onChanged: (value) {
+                      _onSearchChanged(value);
+                    },
+                    cursorColor: AppTheme.colors.primaryColor,
+                    textAlignVertical: TextAlignVertical.top,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      fillColor: Colors.grey.shade300,
+                      filled: true,
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        size: 25,
+                      ),
+                      suffixIcon: controllerInput.value.text.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                size: 25,
+                              ),
+                              onPressed: () {
+                                controllerInput.clear();
+                                _onSearchChanged('');
+                              },
+                            )
+                          : null,
+                      hintText: 'Digite o nome do produtor',
+                      alignLabelWithHint: true,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                          color: AppTheme.colors.secondaryColor,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
-                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    'Litros: ${somaLitros()}',
-                    style:
-                        AppTheme.textStyles.titleLogin.copyWith(fontSize: 25),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      'Litros: ${somaLitros()}',
+                      style:
+                          AppTheme.textStyles.titleLogin.copyWith(fontSize: 25),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Observer(builder: (_) {
-              final ListColetas =
-                  filteredProd.where((e) => e.rota == widget.id_rota).toList();
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Observer(builder: (_) {
+                final ListColetas = filteredProd
+                    .where((e) => e.rota == widget.id_rota)
+                    .toList();
 
-              ListColetas.sort((a, b) => ("${a.quantidade} ${a.temperatura}")
-                  .toString()
-                  .compareTo(("${b.quantidade} ${b.temperatura}").toString()));
+                ListColetas.sort((a, b) => ("${a.quantidade} ${a.temperatura}")
+                    .toString()
+                    .compareTo(
+                        ("${b.quantidade} ${b.temperatura}").toString()));
 
-              return (controller.status == TiketEntradaStatus.success ||
-                          controller.status == TiketEntradaStatus.imprimindo) &&
-                      ListColetas.isNotEmpty
-                  ? Expanded(
-                      child: ListView.separated(
-                          key: UniqueKey(),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              SizedBox(
-                                height: 15,
-                              ),
-                          itemCount: ListColetas.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: ListColetas[index].quantidade! > 0 &&
-                                          ListColetas[index].temperatura! != 0
-                                      ? Colors.green.shade400
-                                      : ListColetas[index].quantidade! == 0 &&
-                                              ListColetas[index].temperatura! ==
-                                                  0 &&
-                                              ListColetas[index].observacao ==
-                                                  ''
-                                          ? Colors.grey.shade400
-                                          : ListColetas[index].observacao != ''
-                                              ? Colors.red.shade400
-                                              : Colors.amber.shade300,
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: ListColetas[index].quantidade! >
-                                                    0 &&
-                                                ListColetas[index]
-                                                        .temperatura! !=
-                                                    0
-                                            ? Colors.green.shade300
-                                            : ListColetas[index].quantidade! ==
-                                                        0 &&
-                                                    ListColetas[index]
-                                                            .temperatura! ==
-                                                        0 &&
-                                                    ListColetas[index]
-                                                            .observacao ==
-                                                        ''
-                                                ? Colors.grey.shade400
-                                                : ListColetas[index]
-                                                            .observacao !=
-                                                        ''
-                                                    ? Colors.red.shade300
-                                                    : Colors.amber.shade200,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 5))
-                                  ]),
-                              child: ListTile(
-                                key: UniqueKey(),
-                                onTap: () async {
-                                  await modalColeta(tiket: ListColetas[index]);
-                                },
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                                leading: Container(
-                                  height: double.maxFinite,
-                                  child: Icon(
-                                    ListColetas[index].quantidade! > 0 &&
+                return (controller.status == TiketEntradaStatus.success ||
+                            controller.status ==
+                                TiketEntradaStatus.imprimindo) &&
+                        ListColetas.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                            key: UniqueKey(),
+                            separatorBuilder:
+                                (BuildContext context, int index) => SizedBox(
+                                      height: 15,
+                                    ),
+                            itemCount: ListColetas.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: ListColetas[index].quantidade! > 0 &&
                                             ListColetas[index].temperatura! != 0
-                                        ? Icons.check_circle_outline
+                                        ? Colors.green.shade400
                                         : ListColetas[index].quantidade! == 0 &&
                                                 ListColetas[index]
                                                         .temperatura! ==
                                                     0 &&
                                                 ListColetas[index].observacao ==
                                                     ''
-                                            ? Icons.person_outline
+                                            ? Colors.grey.shade400
                                             : ListColetas[index].observacao !=
                                                     ''
-                                                ? Icons.error_outline_rounded
-                                                : Icons.warning_amber_rounded,
-                                    size: 30,
-                                    color: Colors.black,
+                                                ? Colors.red.shade400
+                                                : Colors.amber.shade300,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: ListColetas[index]
+                                                          .quantidade! >
+                                                      0 &&
+                                                  ListColetas[index]
+                                                          .temperatura! !=
+                                                      0
+                                              ? Colors.green.shade300
+                                              : ListColetas[index]
+                                                              .quantidade! ==
+                                                          0 &&
+                                                      ListColetas[index]
+                                                              .temperatura! ==
+                                                          0 &&
+                                                      ListColetas[index]
+                                                              .observacao ==
+                                                          ''
+                                                  ? Colors.grey.shade400
+                                                  : ListColetas[index]
+                                                              .observacao !=
+                                                          ''
+                                                      ? Colors.red.shade300
+                                                      : Colors.amber.shade200,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 5))
+                                    ]),
+                                child: ListTile(
+                                  key: UniqueKey(),
+                                  onTap: () async {
+                                    await modalColeta(
+                                        tiket: ListColetas[index]);
+                                  },
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                  leading: Container(
+                                    height: double.maxFinite,
+                                    child: Icon(
+                                      ListColetas[index].quantidade! > 0 &&
+                                              ListColetas[index].temperatura! !=
+                                                  0
+                                          ? Icons.check_circle_outline
+                                          : ListColetas[index].quantidade! ==
+                                                      0 &&
+                                                  ListColetas[index]
+                                                          .temperatura! ==
+                                                      0 &&
+                                                  ListColetas[index]
+                                                          .observacao ==
+                                                      ''
+                                              ? Icons.person_outline
+                                              : ListColetas[index].observacao !=
+                                                      ''
+                                                  ? Icons.error_outline_rounded
+                                                  : Icons.warning_amber_rounded,
+                                      size: 30,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                trailing: conectada
-                                    ? controller.status ==
-                                                TiketEntradaStatus.imprimindo &&
-                                            id_tiket == ListColetas[index].id
-                                        ? Container(
-                                            height: 25,
-                                            width: 25,
-                                            child: Center(
-                                              child: CircularProgressIndicator(
-                                                color: Colors.black,
+                                  trailing: conectada
+                                      ? controller.status ==
+                                                  TiketEntradaStatus
+                                                      .imprimindo &&
+                                              id_tiket == ListColetas[index].id
+                                          ? Container(
+                                              height: 25,
+                                              width: 25,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : IconButton(
-                                            icon: Icon(Icons.print_rounded,
-                                                color: Colors.black),
-                                            onPressed: () async {
-                                              setState(() {
-                                                id_tiket =
-                                                    ListColetas[index].id!;
-                                              });
-                                              await controller.imprimirTicket(
-                                                  tiket: ListColetas[index]);
-                                            })
-                                    : null,
-                                minLeadingWidth: 10,
-                                title: Text(ListColetas[index].nome,
-                                    style: AppTheme.textStyles.titleLogin
-                                        .copyWith(
-                                            fontSize: 16, color: Colors.black)),
-                                subtitle: Row(
-                                  children: [
-                                    Text(
-                                      'Município: ',
+                                            )
+                                          : IconButton(
+                                              icon: Icon(Icons.print_rounded,
+                                                  color: Colors.black),
+                                              onPressed: () async {
+                                                setState(() {
+                                                  id_tiket =
+                                                      ListColetas[index].id!;
+                                                });
+
+                                                await controller.imprimirTicket(
+                                                    tiket: ListColetas[index]);
+                                              })
+                                      : null,
+                                  minLeadingWidth: 10,
+                                  title: Text(ListColetas[index].nome,
                                       style: AppTheme.textStyles.titleLogin
                                           .copyWith(
-                                              fontSize: 14,
-                                              color: Colors.black),
-                                    ),
-                                    Text(ListColetas[index].municipios,
-                                        style: TextStyle(color: Colors.black))
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    )
-                  : controller.status == TiketEntradaStatus.loading
-                      ? Expanded(
-                          child: ListView.separated(
-                              itemBuilder: (_, __) => LoadingWidget(
-                                  size: Size(double.maxFinite, 50), radius: 10),
-                              separatorBuilder: (_, __) => SizedBox(
-                                    height: 15,
+                                              fontSize: 16,
+                                              color: Colors.black)),
+                                  subtitle: Row(
+                                    children: [
+                                      Text(
+                                        'Município: ',
+                                        style: AppTheme.textStyles.titleLogin
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: Colors.black),
+                                      ),
+                                      Text(ListColetas[index].municipios,
+                                          style: TextStyle(color: Colors.black))
+                                    ],
                                   ),
-                              itemCount: 5),
-                        )
-                      : Container(
-                          child: Center(
-                            child: Text('Nenhum produtor encontrado!'),
-                          ),
-                        );
-            }),
-          ],
+                                ),
+                              );
+                            }),
+                      )
+                    : controller.status == TiketEntradaStatus.loading
+                        ? Expanded(
+                            child: ListView.separated(
+                                itemBuilder: (_, __) => LoadingWidget(
+                                    size: Size(double.maxFinite, 50),
+                                    radius: 10),
+                                separatorBuilder: (_, __) => SizedBox(
+                                      height: 15,
+                                    ),
+                                itemCount: 5),
+                          )
+                        : Container(
+                            child: Center(
+                              child: Text('Nenhum produtor encontrado!'),
+                            ),
+                          );
+              }),
+            ],
+          ),
         ),
       ),
       bottomSheet: Row(

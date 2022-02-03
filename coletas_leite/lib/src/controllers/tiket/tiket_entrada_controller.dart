@@ -9,6 +9,10 @@ import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model_copy.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
+import 'package:coletas_leite/src/utils/toast_imprimir.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 part 'tiket_entrada_controller.g.dart';
@@ -291,6 +295,8 @@ abstract class _TiketEntradaControllerBase with Store {
     }
 
     status = TiketEntradaStatus.imprimindo;
+
+    ToastImprimir.show();
 
     await Future.delayed(Duration(milliseconds: 300));
 

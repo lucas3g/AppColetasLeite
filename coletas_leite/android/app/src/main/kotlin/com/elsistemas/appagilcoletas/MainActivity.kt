@@ -1,4 +1,4 @@
-package com.example.coletas_leite
+package com.elsistemas.appagilcoletas
 
 import io.flutter.embedding.android.FlutterActivity
 

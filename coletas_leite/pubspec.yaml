@@ -51,6 +51,7 @@ dependencies:
   bluetooth_enable_fork: ^0.1.4
   bot_toast: ^4.0.1
   flutter_easyhub: ^1.0.2+1
+  fluttertoast: ^8.0.8
 
 
 flutter_app_name:

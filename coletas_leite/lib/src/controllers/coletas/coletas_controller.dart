@@ -4,6 +4,7 @@ import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/database/db.dart';
 import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
+import 'package:coletas_leite/src/utils/toast_imprimir.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 part 'coletas_controller.g.dart';
@@ -219,6 +220,8 @@ abstract class _ColetasControllerBase with Store {
       }
 
       status = ColetasStatus.imprimindo;
+
+      ToastImprimir.show();
 
       await Future.delayed(Duration(milliseconds: 300));
 

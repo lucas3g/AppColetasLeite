@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/configuracao/configuracao_status.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
