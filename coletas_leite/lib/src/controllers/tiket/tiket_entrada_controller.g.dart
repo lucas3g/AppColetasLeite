@@ -24,6 +24,22 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     });
   }
 
+  final _$tiketsColetasAtom =
+      Atom(name: '_TiketEntradaControllerBase.tiketsColetas');
+
+  @override
+  ObservableList<TiketEntradaModel> get tiketsColetas {
+    _$tiketsColetasAtom.reportRead();
+    return super.tiketsColetas;
+  }
+
+  @override
+  set tiketsColetas(ObservableList<TiketEntradaModel> value) {
+    _$tiketsColetasAtom.reportWrite(value, super.tiketsColetas, () {
+      super.tiketsColetas = value;
+    });
+  }
+
   final _$statusAtom = Atom(name: '_TiketEntradaControllerBase.status');
 
   @override
@@ -106,6 +122,15 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     return _$getProdutoresAsyncAction.run(() => super.getProdutores());
   }
 
+  final _$buscaTiketPorIDAsyncAction =
+      AsyncAction('_TiketEntradaControllerBase.buscaTiketPorID');
+
+  @override
+  Future<void> buscaTiketPorID({required int id_coleta}) {
+    return _$buscaTiketPorIDAsyncAction
+        .run(() => super.buscaTiketPorID(id_coleta: id_coleta));
+  }
+
   final _$_TiketEntradaControllerBaseActionController =
       ActionController(name: '_TiketEntradaControllerBase');
 
@@ -124,6 +149,7 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
   String toString() {
     return '''
 tikets: ${tikets},
+tiketsColetas: ${tiketsColetas},
 status: ${status}
     ''';
   }

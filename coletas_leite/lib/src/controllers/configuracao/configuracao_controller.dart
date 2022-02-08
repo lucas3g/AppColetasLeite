@@ -54,12 +54,13 @@ abstract class _ConfiguracaoControllerBase with Store {
     try {
       await GlobalSettings().appSettings.readImpressora();
       selectedDevice = GlobalSettings().appSettings.imp;
-      printer = BlueThermalPrinter.instance;
+
       if (selectedDevice != null) {
         if ((await printer.isConnected)!) {
           await printer.disconnect();
         }
         id = selectedDevice!.address!;
+        await Future.delayed(Duration(milliseconds: 500));
         await printer.connect(selectedDevice!);
         conectada = true;
       }

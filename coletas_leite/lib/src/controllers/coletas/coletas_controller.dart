@@ -221,11 +221,11 @@ abstract class _ColetasControllerBase with Store {
 
       status = ColetasStatus.imprimindo;
 
-      ToastImprimir.show();
-
-      await Future.delayed(Duration(milliseconds: 300));
-
       if ((await printer.isConnected)!) {
+        ToastImprimir.show();
+
+        await Future.delayed(Duration(milliseconds: 300));
+
         db = await DB.instance.database;
 
         List<dynamic> listaColetas = [];

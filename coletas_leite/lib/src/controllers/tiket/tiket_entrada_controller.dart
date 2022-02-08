@@ -10,9 +10,6 @@ import 'package:coletas_leite/src/models/tiket/tiket_entrada_model_copy.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/toast_imprimir.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite/sqflite.dart';
 part 'tiket_entrada_controller.g.dart';
@@ -27,6 +24,9 @@ abstract class _TiketEntradaControllerBase with Store {
 
   @observable
   ObservableList<TiketEntradaModel> tikets = ObservableList.of([]);
+
+  @observable
+  ObservableList<TiketEntradaModel> tiketsColetas = ObservableList.of([]);
 
   @observable
   TiketEntradaStatus status = TiketEntradaStatus.empty;
@@ -296,11 +296,10 @@ abstract class _TiketEntradaControllerBase with Store {
 
     status = TiketEntradaStatus.imprimindo;
 
-    ToastImprimir.show();
-
-    await Future.delayed(Duration(milliseconds: 300));
-
     if ((await printer.isConnected)!) {
+      ToastImprimir.show();
+
+      await Future.delayed(Duration(milliseconds: 300));
       printer.printCustom(
           GlobalSettings()
               .appSettings
@@ -421,5 +420,47 @@ abstract class _TiketEntradaControllerBase with Store {
   limpaDados() {
     status = TiketEntradaStatus.loading;
     tikets.clear();
+  }
+
+  @action
+  Future<void> buscaTiketPorID({required int id_coleta}) async {
+    status = TiketEntradaStatus.loading;
+    db = await DB.instance.database;
+
+    tiketsColetas.clear();
+
+    List tiketsdb = await db.query('agl_tiket_entrada',
+        where: 'id_coleta = ?', whereArgs: [id_coleta]);
+
+    if (tiketsdb.isNotEmpty)
+      for (var tik in tiketsdb) {
+        tiketsColetas.add(
+          TiketEntradaModel(
+            clifor: tik['clifor'],
+            uf: tik['uf'],
+            municipios: tik['municipios'],
+            rota: tik['rota_coleta'],
+            nome: tik['nome'],
+            ccusto: tik['ccusto'],
+            crioscopia: tik['crioscopia'],
+            alizarol: tik['alizarol'] == 1 ? true : false,
+            data: tik['data'],
+            hora: tik['hora'],
+            observacao: tik['observacao'],
+            placa: tik['placa'],
+            id: tik['id'],
+            particao: tik['particao'],
+            per_desconto: tik['per_desconto'],
+            produto: tik['produto'],
+            quantidade: tik['quantidade'],
+            temperatura: tik['temperatura'],
+            id_coleta: tik['id_coleta'],
+            tiket: tik['tiket'],
+            qtd_vezes_editado: tik['qtd_vezes_editado'],
+          ),
+        );
+      }
+
+    status = TiketEntradaStatus.success;
   }
 }

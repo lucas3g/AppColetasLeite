@@ -52,8 +52,8 @@ android {
         applicationId "com.elsistemas.appagilcoletas"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 3
+        versionName '3.0.0'
     }
 
     signingConfigs {
@@ -65,8 +65,8 @@ android {
        }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
+        release {
+            signingConfig signingConfigs.release
         }
     }
 }

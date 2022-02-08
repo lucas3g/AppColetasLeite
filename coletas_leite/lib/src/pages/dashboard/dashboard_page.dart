@@ -6,6 +6,7 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
+import 'package:coletas_leite/src/pages/dashboard/widgets/expasion_tikets_widget.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
@@ -428,22 +429,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     border: controller.ListaColetas[index]
                                                 .rota_finalizada ==
                                             1
-                                        ? Border(
-                                            top: BorderSide(
-                                                width: 10, color: Colors.green),
-                                            bottom: BorderSide(
-                                                width: 10, color: Colors.green),
-                                          )
-                                        : Border(
-                                            top: BorderSide(
-                                                width: 10,
-                                                color: AppTheme
-                                                    .colors.secondaryColor),
-                                            bottom: BorderSide(
-                                                width: 10,
-                                                color: AppTheme
-                                                    .colors.secondaryColor),
-                                          ),
+                                        ? AppTheme.borderStyle.borderGreen
+                                        : AppTheme.borderStyle.borderRed,
                                   ),
                                   child: ListTile(
                                     onTap: () async {
@@ -619,6 +606,11 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                           ],
                                         ),
+                                        // ExpasionTiketsWidget(
+                                        //   key: UniqueKey(),
+                                        //   id_coleta: controller
+                                        //       .ListaColetas[index].id!,
+                                        // ),
                                         SizedBox(
                                           height: 5,
                                         ),
