@@ -6,7 +6,6 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_status.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
-import 'package:coletas_leite/src/pages/dashboard/widgets/expasion_tikets_widget.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';

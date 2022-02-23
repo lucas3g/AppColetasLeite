@@ -835,73 +835,20 @@ class _ColetasPageState extends State<ColetasPage> {
                                 TiketEntradaStatus.imprimindo) &&
                         ListColetas.isNotEmpty
                     ? Expanded(
-                        child: ListView.separated(
-                            key: UniqueKey(),
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
-                                      height: 15,
-                                    ),
-                            itemCount: ListColetas.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    color: ListColetas[index].quantidade! > 0 &&
-                                            ListColetas[index].temperatura! != 0
-                                        ? Colors.green.shade400
-                                        : ListColetas[index].quantidade! == 0 &&
-                                                ListColetas[index]
-                                                        .temperatura! ==
-                                                    0 &&
-                                                ListColetas[index].observacao ==
-                                                    ''
-                                            ? Colors.grey.shade400
-                                            : ListColetas[index].observacao !=
-                                                    ''
-                                                ? Colors.red.shade400
-                                                : Colors.amber.shade300,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: ListColetas[index]
-                                                          .quantidade! >
-                                                      0 &&
-                                                  ListColetas[index]
-                                                          .temperatura! !=
-                                                      0
-                                              ? Colors.green.shade300
-                                              : ListColetas[index]
-                                                              .quantidade! ==
-                                                          0 &&
-                                                      ListColetas[index]
-                                                              .temperatura! ==
-                                                          0 &&
-                                                      ListColetas[index]
-                                                              .observacao ==
-                                                          ''
-                                                  ? Colors.grey.shade400
-                                                  : ListColetas[index]
-                                                              .observacao !=
-                                                          ''
-                                                      ? Colors.red.shade300
-                                                      : Colors.amber.shade200,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 5))
-                                    ]),
-                                child: ListTile(
-                                  key: UniqueKey(),
-                                  onTap: () async {
-                                    await modalColeta(
-                                        tiket: ListColetas[index]);
-                                  },
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
-                                  leading: Container(
-                                    height: double.maxFinite,
-                                    child: Icon(
-                                      ListColetas[index].quantidade! > 0 &&
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 60),
+                          child: ListView.builder(
+                              key: UniqueKey(),
+                              itemCount: ListColetas.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 15),
+                                  decoration: BoxDecoration(
+                                      color: ListColetas[index].quantidade! >
+                                                  0 &&
                                               ListColetas[index].temperatura! !=
                                                   0
-                                          ? Icons.check_circle_outline
+                                          ? Colors.green.shade400
                                           : ListColetas[index].quantidade! ==
                                                       0 &&
                                                   ListColetas[index]
@@ -910,65 +857,135 @@ class _ColetasPageState extends State<ColetasPage> {
                                                   ListColetas[index]
                                                           .observacao ==
                                                       ''
-                                              ? Icons.person_outline
+                                              ? Colors.grey.shade400
                                               : ListColetas[index].observacao !=
                                                       ''
-                                                  ? Icons.error_outline_rounded
-                                                  : Icons.warning_amber_rounded,
-                                      size: 30,
-                                      color: Colors.black,
+                                                  ? Colors.red.shade400
+                                                  : Colors.amber.shade300,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: ListColetas[index]
+                                                            .quantidade! >
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .temperatura! !=
+                                                        0
+                                                ? Colors.green.shade300
+                                                : ListColetas[index]
+                                                                .quantidade! ==
+                                                            0 &&
+                                                        ListColetas[index]
+                                                                .temperatura! ==
+                                                            0 &&
+                                                        ListColetas[index]
+                                                                .observacao ==
+                                                            ''
+                                                    ? Colors.grey.shade400
+                                                    : ListColetas[index]
+                                                                .observacao !=
+                                                            ''
+                                                        ? Colors.red.shade300
+                                                        : Colors.amber.shade200,
+                                            blurRadius: 3,
+                                            offset: Offset(0, 5))
+                                      ]),
+                                  child: ListTile(
+                                    key: UniqueKey(),
+                                    onTap: () async {
+                                      await modalColeta(
+                                          tiket: ListColetas[index]);
+                                    },
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    leading: Container(
+                                      height: double.maxFinite,
+                                      child: Icon(
+                                        ListColetas[index].quantidade! > 0 &&
+                                                ListColetas[index]
+                                                        .temperatura! !=
+                                                    0
+                                            ? Icons.check_circle_outline
+                                            : ListColetas[index].quantidade! ==
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .temperatura! ==
+                                                        0 &&
+                                                    ListColetas[index]
+                                                            .observacao ==
+                                                        ''
+                                                ? Icons.person_outline
+                                                : ListColetas[index]
+                                                            .observacao !=
+                                                        ''
+                                                    ? Icons
+                                                        .error_outline_rounded
+                                                    : Icons
+                                                        .warning_amber_rounded,
+                                        size: 30,
+                                        color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                  trailing: conectada
-                                      ? controller.status ==
-                                                  TiketEntradaStatus
-                                                      .imprimindo &&
-                                              id_tiket == ListColetas[index].id
-                                          ? Container(
-                                              height: 25,
-                                              width: 25,
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  color: Colors.black,
+                                    trailing: conectada
+                                        ? controller.status ==
+                                                    TiketEntradaStatus
+                                                        .imprimindo &&
+                                                id_tiket ==
+                                                    ListColetas[index].id
+                                            ? Container(
+                                                height: 25,
+                                                width: 25,
+                                                child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
-                                              ),
-                                            )
-                                          : IconButton(
-                                              icon: Icon(Icons.print_rounded,
-                                                  color: Colors.black),
-                                              onPressed: () async {
-                                                setState(() {
-                                                  id_tiket =
-                                                      ListColetas[index].id!;
-                                                });
+                                              )
+                                            : IconButton(
+                                                icon: Icon(Icons.print_rounded,
+                                                    color: Colors.black),
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    id_tiket =
+                                                        ListColetas[index].id!;
+                                                  });
 
-                                                await controller.imprimirTicket(
-                                                    tiket: ListColetas[index]);
-                                              })
-                                      : null,
-                                  minLeadingWidth: 10,
-                                  title: Text(ListColetas[index].nome,
-                                      style: AppTheme.textStyles.titleLogin
-                                          .copyWith(
-                                              fontSize: 16,
-                                              color: Colors.black)),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(
-                                        'Município: ',
+                                                  await controller
+                                                      .imprimirTicket(
+                                                          tiket: ListColetas[
+                                                              index]);
+                                                })
+                                        : null,
+                                    minLeadingWidth: 10,
+                                    title: Text(ListColetas[index].nome,
                                         style: AppTheme.textStyles.titleLogin
                                             .copyWith(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                      ),
-                                      Text(ListColetas[index].municipios,
-                                          style: TextStyle(color: Colors.black))
-                                    ],
+                                                fontSize: 16,
+                                                color: Colors.black)),
+                                    subtitle: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Município: ',
+                                          style: AppTheme.textStyles.titleLogin
+                                              .copyWith(
+                                                  fontSize: 14,
+                                                  color: Colors.black),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                              ListColetas[index].municipios,
+                                              style: TextStyle(
+                                                  color: Colors.black)),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
+                                );
+                              }),
+                        ),
                       )
                     : controller.status == TiketEntradaStatus.loading
                         ? Expanded(

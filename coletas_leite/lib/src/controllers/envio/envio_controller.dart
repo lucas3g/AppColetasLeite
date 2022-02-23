@@ -91,7 +91,9 @@ abstract class _EnvioControllerBase with Store {
       if (coletas.isNotEmpty) {
         for (var coleta in coletas) {
           List tikets = await db2.query('agl_tiket_entrada',
-              where: 'id_coleta = ?', whereArgs: [coleta['id']]);
+              where:
+                  'id_coleta = ? and (quantidade > 0 or temperatura != 0 or observacao != ?) ',
+              whereArgs: [coleta['id'], '']);
 
           if (tikets.isNotEmpty) {
             listaColetas = [
