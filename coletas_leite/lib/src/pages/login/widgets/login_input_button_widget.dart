@@ -173,7 +173,7 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
                   width: controllerLogin.status == LoginStatus.loading ||
                           controllerLogin.status == LoginStatus.success
                       ? 45
-                      : double.maxFinite,
+                      : MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: controllerLogin.status == LoginStatus.success

@@ -145,42 +145,47 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   context: context))) {
                             return;
                           }
-                          final result =
-                              await controllerEnvio.enviar(context: context);
-                          switch (result) {
-                            case 200:
-                              Navigator.pop(context);
-                              MeuToast.toast(
-                                  title: 'Sucesso',
-                                  message: 'Coletas enviadas para o servidor',
-                                  type: TypeToast.success,
-                                  context: context);
-                              await controller.getColetas();
-                              break;
-                            case 1:
-                              Navigator.pop(context);
-                              MeuToast.toast(
-                                  title: 'Atenção',
-                                  message: 'Celular sem internet',
-                                  type: TypeToast.noNet,
-                                  context: context);
-                              break;
-                            case 0:
-                              Navigator.pop(context);
-                              MeuToast.toast(
-                                  title: 'Atenção',
-                                  message: 'Todas as coletas já foram enviadas',
-                                  type: TypeToast.dadosInv,
-                                  context: context);
-                              break;
-                            default:
-                              Navigator.pop(context);
-                              MeuToast.toast(
-                                  title: 'Erro',
-                                  message:
-                                      'Não foi possível enviar os arquivos para o servidor',
-                                  type: TypeToast.error,
-                                  context: context);
+                          if (controllerEnvio.status == EnvioStatus.empty ||
+                              controllerEnvio.status == EnvioStatus.success ||
+                              controllerEnvio.status == EnvioStatus.error) {
+                            final result =
+                                await controllerEnvio.enviar(context: context);
+                            switch (result) {
+                              case 200:
+                                Navigator.pop(context);
+                                MeuToast.toast(
+                                    title: 'Sucesso',
+                                    message: 'Coletas enviadas para o servidor',
+                                    type: TypeToast.success,
+                                    context: context);
+                                await controller.getColetas();
+                                break;
+                              case 1:
+                                Navigator.pop(context);
+                                MeuToast.toast(
+                                    title: 'Atenção',
+                                    message: 'Celular sem internet',
+                                    type: TypeToast.noNet,
+                                    context: context);
+                                break;
+                              case 0:
+                                Navigator.pop(context);
+                                MeuToast.toast(
+                                    title: 'Atenção',
+                                    message:
+                                        'Todas as coletas já foram enviadas',
+                                    type: TypeToast.dadosInv,
+                                    context: context);
+                                break;
+                              default:
+                                Navigator.pop(context);
+                                MeuToast.toast(
+                                    title: 'Erro',
+                                    message:
+                                        'Não foi possível enviar os arquivos para o servidor',
+                                    type: TypeToast.error,
+                                    context: context);
+                            }
                           }
                         },
                         child: PhysicalModel(
