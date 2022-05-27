@@ -86,7 +86,7 @@ class _ColetasPageState extends State<ColetasPage> {
 
     deviceConectado();
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       gravaTikets();
     });
 
@@ -238,10 +238,12 @@ class _ColetasPageState extends State<ColetasPage> {
                           Form(
                             key: keyTemp,
                             child: TextFormField(
-                              maxLength: 6,
+                              autovalidateMode: AutovalidateMode.always,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Digite uma temperatura.';
+                                } else if (double.tryParse(value) == null) {
+                                  return 'Temperatura Incorreta';
                                 }
                                 return null;
                               },

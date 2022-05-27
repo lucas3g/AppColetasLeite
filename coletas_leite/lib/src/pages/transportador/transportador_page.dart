@@ -53,7 +53,7 @@ class _TransportadorPageState extends State<TransportadorPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ultimaPlaca();
       getTransp();
     });

@@ -44,7 +44,7 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getRotas();
     });
   }

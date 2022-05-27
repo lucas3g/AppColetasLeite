@@ -24,7 +24,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       buscaTikets();
     });
   }
