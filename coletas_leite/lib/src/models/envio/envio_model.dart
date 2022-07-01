@@ -6,37 +6,37 @@ import 'package:coletas_leite/src/models/coletas/coletas_model.dart';
 import 'package:coletas_leite/src/models/tiket/tiket_entrada_model.dart';
 
 class EnvioModel {
-  ColetasModel? coletas;
-  List<TiketEntradaModel>? tikets;
+  ColetasModel? COLETAS;
+  List<TiketEntradaModel>? TIKETS;
   EnvioModel({
-    this.coletas,
-    this.tikets,
+    this.COLETAS,
+    this.TIKETS,
   });
 
   EnvioModel copyWith({
-    ColetasModel? coletas,
-    List<TiketEntradaModel>? tikets,
+    ColetasModel? COLETAS,
+    List<TiketEntradaModel>? TIKETS,
   }) {
     return EnvioModel(
-      coletas: coletas ?? this.coletas,
-      tikets: tikets ?? this.tikets,
+      COLETAS: COLETAS ?? this.COLETAS,
+      TIKETS: TIKETS ?? this.TIKETS,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'coletas': coletas?.toMap(),
-      'tikets': tikets?.map((x) => x.toMap()).toList(),
+      'COLETAS': COLETAS?.toMap(),
+      'TIKETS': TIKETS?.map((x) => x.toMap()).toList(),
     };
   }
 
   factory EnvioModel.fromMap(Map<String, dynamic> map) {
     return EnvioModel(
-      coletas:
-          map['coletas'] != null ? ColetasModel.fromMap(map['coletas']) : null,
-      tikets: map['tikets'] != null
+      COLETAS:
+          map['COLETAS'] != null ? ColetasModel.fromMap(map['COLETAS']) : null,
+      TIKETS: map['TIKETS'] != null
           ? List<TiketEntradaModel>.from(
-              map['tikets']?.map((x) => TiketEntradaModel.fromMap(x)))
+              map['TIKETS']?.map((x) => TiketEntradaModel.fromMap(x)))
           : null,
     );
   }
@@ -47,17 +47,17 @@ class EnvioModel {
       EnvioModel.fromMap(json.decode(source));
 
   @override
-  String toString() => 'EnvioModel(coletas: $coletas, tikets: $tikets)';
+  String toString() => 'EnvioModel(COLETAS: $COLETAS, TIKETS: $TIKETS)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is EnvioModel &&
-        other.coletas == coletas &&
-        listEquals(other.tikets, tikets);
+        other.COLETAS == COLETAS &&
+        listEquals(other.TIKETS, TIKETS);
   }
 
   @override
-  int get hashCode => coletas.hashCode ^ tikets.hashCode;
+  int get hashCode => COLETAS.hashCode ^ TIKETS.hashCode;
 }

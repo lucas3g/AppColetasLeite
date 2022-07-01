@@ -23,14 +23,14 @@ class CardTransportadorWidget extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(),
           borderRadius: BorderRadius.circular(10),
-          color: ultPlaca == filteredTransp[index].placa
+          color: ultPlaca == filteredTransp[index].PLACA
               ? Colors.green.shade400
               : Colors.white),
       child: ListTile(
         onTap: () {
           modalColeta(
-              caminhao: filteredTransp[index].placa,
-              tanques: filteredTransp[index].tanques);
+              caminhao: filteredTransp[index].PLACA,
+              tanques: filteredTransp[index].TANQUES);
         },
         minLeadingWidth: 10,
         contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -42,7 +42,7 @@ class CardTransportadorWidget extends StatelessWidget {
           height: double.maxFinite,
         ),
         title: Text(
-          filteredTransp[index].descricao,
+          filteredTransp[index].DESCRICAO,
           style: AppTheme.textStyles.titleLogin.copyWith(
             fontSize: 16,
             color: Colors.black,
@@ -55,7 +55,7 @@ class CardTransportadorWidget extends StatelessWidget {
               style: AppTheme.textStyles.titleLogin
                   .copyWith(fontSize: 14, color: Colors.black),
             ),
-            Text(filteredTransp[index].placa)
+            Text(filteredTransp[index].PLACA)
           ],
         ),
       ),

@@ -385,7 +385,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
             child: Row(
               children: [
                 Text(
-                  'Motorista: ${GlobalSettings().appSettings.user.nome}',
+                  'Motorista: ${GlobalSettings().appSettings.user.NOME}',
                   style: AppTheme.textStyles.title.copyWith(fontSize: 16),
                 ),
               ],
@@ -431,7 +431,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade300,
                                     border: controller.ListaColetas[index]
-                                                .rota_finalizada ==
+                                                .ROTA_FINALIZADA ==
                                             1
                                         ? AppTheme.borderStyle.borderGreen
                                         : AppTheme.borderStyle.borderRed,
@@ -439,7 +439,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   child: ListTile(
                                     onTap: () async {
                                       if (controller.ListaColetas[index]
-                                              .rota_finalizada ==
+                                              .ROTA_FINALIZADA ==
                                           0) {
                                         await Navigator.pushAndRemoveUntil(
                                             context,
@@ -447,15 +447,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                               builder: (_) => ColetasPage(
                                                 id_rota: controller
                                                     .ListaColetas[index]
-                                                    .rota_coleta!,
+                                                    .ROTA_COLETA!,
                                                 coleta: controller
                                                     .ListaColetas[index],
                                                 placa: controller
                                                     .ListaColetas[index]
-                                                    .transportador!,
+                                                    .TRANSPORTADOR!,
                                                 tanques: controller
                                                     .ListaColetas[index]
-                                                    .tanques!,
+                                                    .TANQUES!,
                                               ),
                                             ),
                                             (Route<dynamic> route) => false);
@@ -463,7 +463,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         MeuToast.toast(
                                             title: 'Rota Já Finalizada',
                                             message: controller
-                                                .ListaColetas[index].rota_nome!,
+                                                .ListaColetas[index].ROTA_NOME!,
                                             type: TypeToast.dadosInv,
                                             context: context);
                                       }
@@ -473,7 +473,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                       height: 20,
                                       decoration: BoxDecoration(
                                           color: controller.ListaColetas[index]
-                                                      .enviada ==
+                                                      .ENVIADA ==
                                                   0
                                               ? AppTheme.colors.secondaryColor
                                               : Colors.green,
@@ -492,12 +492,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             Expanded(
                                               child: Text(
                                                 controller.ListaColetas[index]
-                                                        .rota_coleta
+                                                        .ROTA_COLETA
                                                         .toString() +
                                                     ' - ' +
                                                     controller
                                                         .ListaColetas[index]
-                                                        .rota_nome!,
+                                                        .ROTA_NOME!,
                                                 style: AppTheme
                                                     .textStyles.dropdownText
                                                     .copyWith(fontSize: 16),
@@ -518,7 +518,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                             Text(
                                               controller
-                                                  .ListaColetas[index].data_mov!
+                                                  .ListaColetas[index].DATA_MOV!
                                                   .replaceAll('"', ''),
                                             ),
                                           ],
@@ -536,7 +536,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                             Expanded(
                                               child: Text(
-                                                '${controller.ListaColetas[index].km_inicio!} / ${controller.ListaColetas[index].km_fim!}',
+                                                '${controller.ListaColetas[index].KM_INICIO!} / ${controller.ListaColetas[index].KM_FIM!}',
                                               ),
                                             ),
                                           ],
@@ -554,7 +554,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                             Text(
                                               controller.ListaColetas[index]
-                                                  .transportador!,
+                                                  .TRANSPORTADOR!,
                                             ),
                                           ],
                                         ),
@@ -575,7 +575,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                             Text(
                                               controller.ListaColetas[index]
-                                                          .rota_finalizada! ==
+                                                          .ROTA_FINALIZADA! ==
                                                       0
                                                   ? 'Não'
                                                   : 'Sim',
@@ -599,7 +599,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             ),
                                             Text(
                                               controller.ListaColetas[index]
-                                                          .enviada! ==
+                                                          .ENVIADA! ==
                                                       0
                                                   ? 'Não'
                                                   : 'Sim',

@@ -2,12 +2,9 @@ import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_status.dart';
 import 'package:coletas_leite/src/models/rotas_leite/rotas_leite_model.dart';
 import 'package:coletas_leite/src/pages/rotas_leite/widgets/card_rotas_widget.dart';
-import 'package:coletas_leite/src/pages/transportador/transportador_page.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:coletas_leite/src/utils/formatters.dart';
 import 'package:coletas_leite/src/utils/loading_widget.dart';
-import 'package:coletas_leite/src/utils/meu_toast.dart';
-import 'package:coletas_leite/src/utils/types_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -30,13 +27,13 @@ class _RotasLeitePageState extends State<RotasLeitePage> {
     await controller.getRotas();
     setState(() {
       filteredRotas = controller.rotas;
-      filteredRotas.sort((a, b) => a.id.compareTo(b.id));
+      filteredRotas.sort((a, b) => a.ID.compareTo(b.ID));
     });
   }
 
   void _onSearchChanged(String value) async {
     filteredRotas = await controller.onSearchChanged(value: value);
-    filteredRotas.sort((a, b) => a.id.compareTo(b.id));
+    filteredRotas.sort((a, b) => a.ID.compareTo(b.ID));
     setState(() {});
   }
 

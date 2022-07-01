@@ -19,7 +19,7 @@ abstract class _LoginControllerBase with Store {
 
   @action
   void onChanged({String? cnpj, String? login, String? senha}) {
-    user = user.copyWith(cnpj: cnpj, login: login, senha: senha);
+    user = user.copyWith(CNPJ: cnpj, LOGIN: login, SENHA: senha);
   }
 
   @observable
@@ -28,12 +28,12 @@ abstract class _LoginControllerBase with Store {
   @action
   Future<void> login() async {
     try {
-      if (user.cnpj.isNotEmpty &&
-          user.login.isNotEmpty &&
-          user.senha.isNotEmpty) {
+      if (user.CNPJ.isNotEmpty &&
+          user.LOGIN.isNotEmpty &&
+          user.SENHA.isNotEmpty) {
         status = LoginStatus.loading;
 
-        if (!UtilBrasilFields.isCNPJValido(user.cnpj)) {
+        if (!UtilBrasilFields.isCNPJValido(user.CNPJ)) {
           status = LoginStatus.invalidCNPJ;
           return;
         }
@@ -52,14 +52,14 @@ abstract class _LoginControllerBase with Store {
         await Future.delayed(Duration(seconds: 2));
 
         final authConfig = jsonEncode(
-            {'USUARIO': user.login.trim(), 'SENHA': user.senha.trim()});
+            {'USUARIO': user.LOGIN.trim(), 'SENHA': user.SENHA.trim()});
 
         final Response<dynamic> response =
             await GlobalSettings.recursiveFunction(
                 function: () {
                   try {
                     final response = MeuDio.dio().post(
-                      '/login/${UtilBrasilFields.removeCaracteres(user.cnpj.substring(0, 10))}',
+                      '/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
                       data: authConfig,
                     );
                     return response;
@@ -76,15 +76,15 @@ abstract class _LoginControllerBase with Store {
         late String autorizado = 'N';
 
         if (response.data.trim().isNotEmpty) {
-          autorizado = jsonDecode(response.data)['app_coleta'];
+          autorizado = jsonDecode(response.data)['APP_COLETA'];
         } else {
           autorizado = 'N';
         }
 
         if (autorizado == 'S') {
-          user.nome = jsonDecode(response.data)['nome'];
-          user.ccusto = jsonDecode(response.data)['ccusto'];
-          user.descEmpresa = jsonDecode(response.data)['descEmpresa'];
+          user.NOME = jsonDecode(response.data)['NOME'];
+          user.CCUSTO = jsonDecode(response.data)['CCUSTO'];
+          user.DESC_EMPRESA = jsonDecode(response.data)['DESC_EMPRESA'];
 
           await GlobalSettings().appSettings.setLogado(conectado: 'S');
           await GlobalSettings().appSettings.setUser(user: user);

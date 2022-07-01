@@ -54,7 +54,7 @@ class _ColetasPageState extends State<ColetasPage> {
   void gravaTikets() async {
     await controller.geraTiketEntrada(
         rota: widget.id_rota,
-        id_coleta: widget.coleta.id!,
+        id_coleta: widget.coleta.ID!,
         placa: widget.placa);
     setState(() {
       filteredProd = controller.tikets;
@@ -75,7 +75,7 @@ class _ColetasPageState extends State<ColetasPage> {
   int somaLitros() {
     int result = 0;
     for (var item in filteredProd) {
-      result += item.quantidade!;
+      result += item.QUANTIDADE!;
     }
     return result;
   }
@@ -114,35 +114,35 @@ class _ColetasPageState extends State<ColetasPage> {
     final GlobalKey<FormState> keyQtd = GlobalKey<FormState>();
     final GlobalKey<FormState> keyTemp = GlobalKey<FormState>();
     final GlobalKey<FormState> keyObs = GlobalKey<FormState>();
-    dropdownValue = tiket.particao!;
-    controllerQtd.text = tiket.quantidade.toString();
-    controllerTemp.text = tiket.temperatura.toString();
-    controllerCrio.text = tiket.crioscopia.toString();
-    controllerMotivoNC.text = tiket.observacao.toString() == 'null'
+    dropdownValue = tiket.PARTICAO!;
+    controllerQtd.text = tiket.QUANTIDADE.toString();
+    controllerTemp.text = tiket.TEMPERATURA.toString();
+    controllerCrio.text = tiket.CRIOSCOPIA.toString();
+    controllerMotivoNC.text = tiket.OBSERVACAO.toString() == 'null'
         ? ''
-        : tiket.observacao.toString();
+        : tiket.OBSERVACAO.toString();
     final TiketEntradaModelCopy tiketCopy = TiketEntradaModelCopy(
-        municipios: tiket.municipios,
-        nome: tiket.nome,
-        rota: tiket.rota,
-        uf: tiket.uf,
-        alizarol: tiket.alizarol,
-        ccusto: tiket.ccusto,
-        clifor: tiket.clifor,
-        crioscopia: tiket.crioscopia,
-        data: tiket.data,
-        hora: tiket.hora,
-        id: tiket.id,
-        id_coleta: tiket.id_coleta,
-        observacao: tiket.observacao,
-        particao: tiket.particao,
-        per_desconto: tiket.per_desconto,
-        placa: tiket.placa,
-        produto: tiket.produto,
-        quantidade: tiket.quantidade,
-        rota_nome: tiket.rota_nome,
-        temperatura: tiket.temperatura,
-        tiket: tiket.tiket);
+        MUNICIPIOS: tiket.MUNICIPIOS,
+        NOME: tiket.NOME,
+        ROTA: tiket.ROTA,
+        UF: tiket.UF,
+        ALIZAROL: tiket.ALIZAROL,
+        CCUSTO: tiket.CCUSTO,
+        CLIFOR: tiket.CLIFOR,
+        CRIOSCOPIA: tiket.CRIOSCOPIA,
+        DATA: tiket.DATA,
+        HORA: tiket.HORA,
+        ID: tiket.ID,
+        ID_COLETA: tiket.ID_COLETA,
+        OBSERVACAO: tiket.OBSERVACAO,
+        PARTICAO: tiket.PARTICAO,
+        PER_DESCONTO: tiket.PER_DESCONTO,
+        PLACA: tiket.PLACA,
+        PRODUTO: tiket.PRODUTO,
+        QUANTIDADE: tiket.QUANTIDADE,
+        ROTA_NOME: tiket.ROTA_NOME,
+        TEMPERATURA: tiket.TEMPERATURA,
+        TIKET: tiket.TIKET);
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -196,7 +196,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
                               onSaved: (value) {
-                                tiket.quantidade =
+                                tiket.QUANTIDADE =
                                     int.tryParse(value.toString());
                               },
                               keyboardType: TextInputType.number,
@@ -254,7 +254,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                   fontSize: 16,
                                   color: AppTheme.colors.secondaryColor),
                               onSaved: (value) {
-                                tiket.temperatura = double.tryParse(value!);
+                                tiket.TEMPERATURA = double.tryParse(value!);
                               },
                               onChanged: (value) {
                                 setStateDialog(() {
@@ -302,7 +302,7 @@ class _ColetasPageState extends State<ColetasPage> {
                           GestureDetector(
                             onTap: () {
                               setStateDialog(() {
-                                tiket.alizarol = !tiket.alizarol!;
+                                tiket.ALIZAROL = !tiket.ALIZAROL!;
                               });
                             },
                             child: Container(
@@ -315,10 +315,10 @@ class _ColetasPageState extends State<ColetasPage> {
                               child: Row(
                                 children: [
                                   Checkbox(
-                                    value: tiket.alizarol,
+                                    value: tiket.ALIZAROL,
                                     onChanged: (bool? value) {
                                       setStateDialog(() {
-                                        tiket.alizarol = value;
+                                        tiket.ALIZAROL = value;
                                       });
                                     },
                                     activeColor: AppTheme.colors.secondaryColor,
@@ -356,7 +356,7 @@ class _ColetasPageState extends State<ColetasPage> {
                               child: DropdownButton(
                                 focusNode: tanque,
                                 borderRadius: BorderRadius.circular(10),
-                                value: tiket.particao,
+                                value: tiket.PARTICAO,
                                 isExpanded: true,
                                 icon: Icon(
                                   Icons.arrow_circle_down_sharp,
@@ -369,7 +369,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                 underline: Container(),
                                 onChanged: (int? newValue) {
                                   setStateDialog(() {
-                                    tiket.particao = newValue!;
+                                    tiket.PARTICAO = newValue!;
                                   });
                                 },
                                 items: listaTanques.map((int value) {
@@ -401,7 +401,7 @@ class _ColetasPageState extends State<ColetasPage> {
                               focusNode: mnc,
                               controller: controllerMotivoNC,
                               onSaved: (value) {
-                                tiket.observacao = value;
+                                tiket.OBSERVACAO = value;
                               },
                               textAlign: TextAlign.start,
                               cursorColor: AppTheme.colors.secondaryColor,
@@ -432,11 +432,11 @@ class _ColetasPageState extends State<ColetasPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (tiket.alizarol != tiketCopy.alizarol) {
-                            tiket.alizarol = tiketCopy.alizarol;
+                          if (tiket.ALIZAROL != tiketCopy.ALIZAROL) {
+                            tiket.ALIZAROL = tiketCopy.ALIZAROL;
                           }
-                          if (tiket.particao != tiketCopy.particao) {
-                            tiket.particao = tiketCopy.particao;
+                          if (tiket.PARTICAO != tiketCopy.PARTICAO) {
+                            tiket.PARTICAO = tiketCopy.PARTICAO;
                           }
                           Navigator.pop(context);
                         },
@@ -479,7 +479,7 @@ class _ColetasPageState extends State<ColetasPage> {
                             await controller.atualizaTiket(
                                 coleta: tiket, coletaCopy: tiketCopy);
 
-                            tiket.hora = DateTime.now().hour.toString() +
+                            tiket.HORA = DateTime.now().hour.toString() +
                                 ':' +
                                 DateTime.now()
                                     .minute
@@ -679,14 +679,14 @@ class _ColetasPageState extends State<ColetasPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Informe a KM final.';
-                      } else if (int.parse(value) < coleta.km_inicio!) {
+                      } else if (int.parse(value) < coleta.KM_INICIO!) {
                         return 'KM final deve ser maior que a KM inicial. \nKM inicial: ' +
-                            coleta.km_inicio!.toString();
+                            coleta.KM_INICIO!.toString();
                       }
                       return null;
                     },
                     onChanged: (value) {
-                      coleta.km_fim = int.tryParse(value);
+                      coleta.KM_FIM = int.tryParse(value);
                     },
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -824,13 +824,13 @@ class _ColetasPageState extends State<ColetasPage> {
               ),
               Observer(builder: (_) {
                 final ListColetas = filteredProd
-                    .where((e) => e.rota == widget.id_rota)
+                    .where((e) => e.ROTA == widget.id_rota)
                     .toList();
 
-                ListColetas.sort((a, b) => ("${a.quantidade} ${a.temperatura}")
+                ListColetas.sort((a, b) => ("${a.QUANTIDADE} ${a.TEMPERATURA}")
                     .toString()
                     .compareTo(
-                        ("${b.quantidade} ${b.temperatura}").toString()));
+                        ("${b.QUANTIDADE} ${b.TEMPERATURA}").toString()));
 
                 return (controller.status == TiketEntradaStatus.success ||
                             controller.status ==
@@ -846,21 +846,21 @@ class _ColetasPageState extends State<ColetasPage> {
                                 return Container(
                                   margin: const EdgeInsets.only(bottom: 15),
                                   decoration: BoxDecoration(
-                                      color: ListColetas[index].quantidade! >
+                                      color: ListColetas[index].QUANTIDADE! >
                                                   0 &&
-                                              ListColetas[index].temperatura! !=
+                                              ListColetas[index].TEMPERATURA! !=
                                                   0
                                           ? Colors.green.shade400
-                                          : ListColetas[index].quantidade! ==
+                                          : ListColetas[index].QUANTIDADE! ==
                                                       0 &&
                                                   ListColetas[index]
-                                                          .temperatura! ==
+                                                          .TEMPERATURA! ==
                                                       0 &&
                                                   ListColetas[index]
-                                                          .observacao ==
+                                                          .OBSERVACAO ==
                                                       ''
                                               ? Colors.grey.shade400
-                                              : ListColetas[index].observacao !=
+                                              : ListColetas[index].OBSERVACAO !=
                                                       ''
                                                   ? Colors.red.shade400
                                                   : Colors.amber.shade300,
@@ -868,24 +868,24 @@ class _ColetasPageState extends State<ColetasPage> {
                                       boxShadow: [
                                         BoxShadow(
                                             color: ListColetas[index]
-                                                            .quantidade! >
+                                                            .QUANTIDADE! >
                                                         0 &&
                                                     ListColetas[index]
-                                                            .temperatura! !=
+                                                            .TEMPERATURA! !=
                                                         0
                                                 ? Colors.green.shade300
                                                 : ListColetas[index]
-                                                                .quantidade! ==
+                                                                .QUANTIDADE! ==
                                                             0 &&
                                                         ListColetas[index]
-                                                                .temperatura! ==
+                                                                .TEMPERATURA! ==
                                                             0 &&
                                                         ListColetas[index]
-                                                                .observacao ==
+                                                                .OBSERVACAO ==
                                                             ''
                                                     ? Colors.grey.shade400
                                                     : ListColetas[index]
-                                                                .observacao !=
+                                                                .OBSERVACAO !=
                                                             ''
                                                         ? Colors.red.shade300
                                                         : Colors.amber.shade200,
@@ -903,22 +903,22 @@ class _ColetasPageState extends State<ColetasPage> {
                                     leading: Container(
                                       height: double.maxFinite,
                                       child: Icon(
-                                        ListColetas[index].quantidade! > 0 &&
+                                        ListColetas[index].QUANTIDADE! > 0 &&
                                                 ListColetas[index]
-                                                        .temperatura! !=
+                                                        .TEMPERATURA! !=
                                                     0
                                             ? Icons.check_circle_outline
-                                            : ListColetas[index].quantidade! ==
+                                            : ListColetas[index].QUANTIDADE! ==
                                                         0 &&
                                                     ListColetas[index]
-                                                            .temperatura! ==
+                                                            .TEMPERATURA! ==
                                                         0 &&
                                                     ListColetas[index]
-                                                            .observacao ==
+                                                            .OBSERVACAO ==
                                                         ''
                                                 ? Icons.person_outline
                                                 : ListColetas[index]
-                                                            .observacao !=
+                                                            .OBSERVACAO !=
                                                         ''
                                                     ? Icons
                                                         .error_outline_rounded
@@ -933,7 +933,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                                     TiketEntradaStatus
                                                         .imprimindo &&
                                                 id_tiket ==
-                                                    ListColetas[index].id
+                                                    ListColetas[index].ID
                                             ? Container(
                                                 height: 25,
                                                 width: 25,
@@ -950,7 +950,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                                 onPressed: () async {
                                                   setState(() {
                                                     id_tiket =
-                                                        ListColetas[index].id!;
+                                                        ListColetas[index].ID!;
                                                   });
 
                                                   await controller
@@ -960,7 +960,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                                 })
                                         : null,
                                     minLeadingWidth: 10,
-                                    title: Text(ListColetas[index].nome,
+                                    title: Text(ListColetas[index].NOME,
                                         style: AppTheme.textStyles.titleLogin
                                             .copyWith(
                                                 fontSize: 16,
@@ -978,7 +978,7 @@ class _ColetasPageState extends State<ColetasPage> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                              ListColetas[index].municipios,
+                                              ListColetas[index].MUNICIPIOS,
                                               style: TextStyle(
                                                   color: Colors.black)),
                                         )

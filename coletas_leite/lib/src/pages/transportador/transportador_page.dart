@@ -27,7 +27,7 @@ class TransportadorPage extends StatefulWidget {
 class _TransportadorPageState extends State<TransportadorPage> {
   final controller = GlobalSettings().controllerTransp;
   final controllerColetas = GlobalSettings().controllerColetas;
-  final motorista = GlobalSettings().appSettings.user.nome;
+  final motorista = GlobalSettings().appSettings.user.NOME;
   final TextEditingController controllerInput = TextEditingController();
   List<TransportesModel> filteredTransp = [];
   late String? ultPlaca = '';

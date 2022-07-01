@@ -1,69 +1,69 @@
 import 'dart:convert';
 
 class UserModel {
-  final String cnpj;
-  final String login;
-  final String senha;
-  String? nome;
-  int? ccusto;
-  String? descEmpresa;
+  final String CNPJ;
+  final String LOGIN;
+  final String SENHA;
+  String? NOME;
+  int? CCUSTO;
+  String? DESC_EMPRESA;
   UserModel({
-    this.cnpj = '',
-    this.login = '',
-    this.senha = '',
-    this.nome,
-    this.ccusto,
-    this.descEmpresa,
+    this.CNPJ = '',
+    this.LOGIN = '',
+    this.SENHA = '',
+    this.NOME,
+    this.CCUSTO,
+    this.DESC_EMPRESA,
   });
 
-  factory UserModel.login(UserModel account) {
+  factory UserModel.LOGIN(UserModel account) {
     return UserModel(
-      cnpj: account.cnpj,
-      login: account.login,
-      senha: account.senha,
-      nome: account.nome,
-      ccusto: account.ccusto,
-      descEmpresa: account.descEmpresa,
+      CNPJ: account.CNPJ,
+      LOGIN: account.LOGIN,
+      SENHA: account.SENHA,
+      NOME: account.NOME,
+      CCUSTO: account.CCUSTO,
+      DESC_EMPRESA: account.DESC_EMPRESA,
     );
   }
 
   UserModel copyWith({
-    String? cnpj,
-    String? login,
-    String? senha,
-    String? nome,
-    int? ccusto,
-    String? descEmpresa,
+    String? CNPJ,
+    String? LOGIN,
+    String? SENHA,
+    String? NOME,
+    int? CCUSTO,
+    String? DESC_EMPRESA,
   }) {
     return UserModel(
-      cnpj: cnpj ?? this.cnpj,
-      login: login ?? this.login,
-      senha: senha ?? this.senha,
-      nome: nome ?? this.nome,
-      ccusto: ccusto ?? this.ccusto,
-      descEmpresa: descEmpresa ?? this.descEmpresa,
+      CNPJ: CNPJ ?? this.CNPJ,
+      LOGIN: LOGIN ?? this.LOGIN,
+      SENHA: SENHA ?? this.SENHA,
+      NOME: NOME ?? this.NOME,
+      CCUSTO: CCUSTO ?? this.CCUSTO,
+      DESC_EMPRESA: DESC_EMPRESA ?? this.DESC_EMPRESA,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'cnpj': cnpj,
-      'login': login,
-      'senha': senha,
-      'nome': nome,
-      'ccusto': ccusto,
-      'descEmpresa': descEmpresa,
+      'CNPJ': CNPJ,
+      'LOGIN': LOGIN,
+      'SENHA': SENHA,
+      'NOME': NOME,
+      'CCUSTO': CCUSTO,
+      'DESC_EMPRESA': DESC_EMPRESA,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      cnpj: map['cnpj'] ?? '',
-      login: map['login'] ?? '',
-      senha: map['senha'] ?? '',
-      nome: map['nome'],
-      ccusto: map['ccusto']?.toInt(),
-      descEmpresa: map['descEmpresa'],
+      CNPJ: map['CNPJ'] ?? '',
+      LOGIN: map['LOGIN'] ?? '',
+      SENHA: map['SENHA'] ?? '',
+      NOME: map['NOME'],
+      CCUSTO: map['CCUSTO']?.toInt(),
+      DESC_EMPRESA: map['DESC_EMPRESA'],
     );
   }
 
@@ -74,7 +74,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(cnpj: $cnpj, login: $login, senha: $senha, nome: $nome, ccusto: $ccusto, descEmpresa: $descEmpresa)';
+    return 'UserModel(CNPJ: $CNPJ, LOGIN: $LOGIN, SENHA: $SENHA, NOME: $NOME, CCUSTO: $CCUSTO, DESC_EMPRESA: $DESC_EMPRESA)';
   }
 
   @override
@@ -82,21 +82,21 @@ class UserModel {
     if (identical(this, other)) return true;
 
     return other is UserModel &&
-        other.cnpj == cnpj &&
-        other.login == login &&
-        other.senha == senha &&
-        other.nome == nome &&
-        other.ccusto == ccusto &&
-        other.descEmpresa == descEmpresa;
+        other.CNPJ == CNPJ &&
+        other.LOGIN == LOGIN &&
+        other.SENHA == SENHA &&
+        other.NOME == NOME &&
+        other.CCUSTO == CCUSTO &&
+        other.DESC_EMPRESA == DESC_EMPRESA;
   }
 
   @override
   int get hashCode {
-    return cnpj.hashCode ^
-        login.hashCode ^
-        senha.hashCode ^
-        nome.hashCode ^
-        ccusto.hashCode ^
-        descEmpresa.hashCode;
+    return CNPJ.hashCode ^
+        LOGIN.hashCode ^
+        SENHA.hashCode ^
+        NOME.hashCode ^
+        CCUSTO.hashCode ^
+        DESC_EMPRESA.hashCode;
   }
 }

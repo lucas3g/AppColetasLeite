@@ -40,7 +40,7 @@ abstract class _TiketEntradaControllerBase with Store {
       status = TiketEntradaStatus.loading;
 
       final cnpj = UtilBrasilFields.removeCaracteres(
-          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+          GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
       final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/clientes');
 
@@ -103,15 +103,15 @@ abstract class _TiketEntradaControllerBase with Store {
       for (var item in produtores) {
         final List tiket = await txn.query('produtores',
             where: 'rota = ? and clifor = ? ',
-            whereArgs: [item.rota, item.clifor]);
+            whereArgs: [item.ROTA, item.CLIFOR]);
 
         if (tiket.isEmpty) {
           await txn.insert('produtores', {
-            'clifor': item.clifor,
-            'uf': item.uf,
-            'municipios': item.municipios,
-            'nome': item.nome,
-            'rota': item.rota,
+            'clifor': item.CLIFOR,
+            'uf': item.UF,
+            'municipios': item.MUNICIPIOS,
+            'nome': item.NOME,
+            'rota': item.ROTA,
           });
         }
       }
@@ -132,7 +132,7 @@ abstract class _TiketEntradaControllerBase with Store {
     if (tiketsdb.isNotEmpty) {
       final lista = tiketsdb
           .map<TiketEntradaModel>(
-              (elemento) => TiketEntradaModel.fromMap(elemento))
+              (elemento) => TiketEntradaModel.fromMapDb(elemento))
           .toList();
       tikets = ObservableList.of(lista);
     }
@@ -154,30 +154,30 @@ abstract class _TiketEntradaControllerBase with Store {
       if (tiket.isEmpty) {
         for (var item in tikets) {
           await txn.insert('agl_tiket_entrada', {
-            'clifor': item.clifor,
-            'uf': item.uf,
-            'municipios': item.municipios,
-            'nome': item.nome,
+            'clifor': item.CLIFOR,
+            'uf': item.UF,
+            'municipios': item.MUNICIPIOS,
+            'nome': item.NOME,
             'produto': 0,
             'data': '"' + DateTime.now().DiaMesAnoDB() + '"',
             'tiket': 1,
-            'quantidade': item.quantidade,
+            'quantidade': item.QUANTIDADE,
             'per_desconto': 0.0,
-            'ccusto': GlobalSettings().appSettings.user.ccusto,
+            'ccusto': GlobalSettings().appSettings.user.CCUSTO,
             'rota_coleta': rota,
             'id_coleta': id_coleta,
-            'crioscopia': item.crioscopia,
-            'alizarol': item.alizarol! == true ? 1 : 0,
+            'crioscopia': item.CRIOSCOPIA,
+            'alizarol': item.ALIZAROL! == true ? 1 : 0,
             'hora': '"' +
                 DateTime.now().hour.toString() +
                 ':' +
                 DateTime.now().minute.toString().padLeft(2, '0') +
                 '"',
             'particao': 1,
-            'observacao': item.observacao,
+            'observacao': item.OBSERVACAO,
             'placa': placa,
-            'temperatura': item.temperatura,
-            'qtd_vezes_editado': item.qtd_vezes_editado,
+            'temperatura': item.TEMPERATURA,
+            'qtd_vezes_editado': item.QTD_VEZES_EDITADO,
           });
         }
       }
@@ -200,27 +200,27 @@ abstract class _TiketEntradaControllerBase with Store {
       for (var tik in tiketsdb) {
         tikets.add(
           TiketEntradaModel(
-            clifor: tik['clifor'],
-            uf: tik['uf'],
-            municipios: tik['municipios'],
-            rota: tik['rota_coleta'],
-            nome: tik['nome'],
-            ccusto: tik['ccusto'],
-            crioscopia: tik['crioscopia'],
-            alizarol: tik['alizarol'] == 1 ? true : false,
-            data: tik['data'],
-            hora: tik['hora'],
-            observacao: tik['observacao'],
-            placa: tik['placa'],
-            id: tik['id'],
-            particao: tik['particao'],
-            per_desconto: tik['per_desconto'],
-            produto: tik['produto'],
-            quantidade: tik['quantidade'],
-            temperatura: tik['temperatura'],
-            id_coleta: tik['id_coleta'],
-            tiket: tik['tiket'],
-            qtd_vezes_editado: tik['qtd_vezes_editado'],
+            CLIFOR: tik['clifor'],
+            UF: tik['uf'],
+            MUNICIPIOS: tik['municipios'],
+            ROTA: tik['rota_coleta'],
+            NOME: tik['nome'],
+            CCUSTO: tik['ccusto'],
+            CRIOSCOPIA: tik['crioscopia'],
+            ALIZAROL: tik['alizarol'] == 1 ? true : false,
+            DATA: tik['data'],
+            HORA: tik['hora'],
+            OBSERVACAO: tik['observacao'],
+            PLACA: tik['placa'],
+            ID: tik['id'],
+            PARTICAO: tik['particao'],
+            PER_DESCONTO: tik['per_desconto'],
+            PRODUTO: tik['produto'],
+            QUANTIDADE: tik['quantidade'],
+            TEMPERATURA: tik['temperatura'],
+            ID_COLETA: tik['id_coleta'],
+            TIKET: tik['tiket'],
+            QTD_VEZES_EDITADO: tik['qtd_vezes_editado'],
           ),
         );
       }
@@ -233,25 +233,25 @@ abstract class _TiketEntradaControllerBase with Store {
       {required TiketEntradaModel coleta,
       required TiketEntradaModelCopy coletaCopy}) async {
     try {
-      if (coleta.quantidade! != coletaCopy.quantidade! ||
-          coleta.temperatura! != coletaCopy.temperatura!) {
-        coleta.qtd_vezes_editado = coleta.qtd_vezes_editado! + 1;
+      if (coleta.QUANTIDADE! != coletaCopy.QUANTIDADE! ||
+          coleta.TEMPERATURA! != coletaCopy.TEMPERATURA!) {
+        coleta.QTD_VEZES_EDITADO = coleta.QTD_VEZES_EDITADO! + 1;
       }
       db = await DB.instance.database;
       await db.transaction((txn) async {
         final tiket = await txn.query('agl_tiket_entrada',
-            where: 'id = ?', whereArgs: [coleta.id]);
+            where: 'id = ?', whereArgs: [coleta.ID]);
 
         if (tiket.isNotEmpty) {
           await txn.update(
               'agl_tiket_entrada',
               {
-                'quantidade': coleta.quantidade,
-                'temperatura': coleta.temperatura,
-                'alizarol': coleta.alizarol! ? 1 : 0,
-                'particao': coleta.particao, //TANQUE DO CAMINHAO
-                'observacao': coleta.observacao,
-                'qtd_vezes_editado': coleta.qtd_vezes_editado,
+                'quantidade': coleta.QUANTIDADE,
+                'temperatura': coleta.TEMPERATURA,
+                'alizarol': coleta.ALIZAROL! ? 1 : 0,
+                'particao': coleta.PARTICAO, //TANQUE DO CAMINHAO
+                'observacao': coleta.OBSERVACAO,
+                'qtd_vezes_editado': coleta.QTD_VEZES_EDITADO,
                 'hora': '"' +
                     DateTime.now().hour.toString() +
                     ':' +
@@ -259,7 +259,7 @@ abstract class _TiketEntradaControllerBase with Store {
                     '"', //MOTIVO DA NAO COLETA
               },
               where: 'id = ?',
-              whereArgs: [coleta.id]);
+              whereArgs: [coleta.ID]);
         }
       });
     } catch (e) {
@@ -282,15 +282,15 @@ abstract class _TiketEntradaControllerBase with Store {
         await printer.connect(device!);
     }
 
-    if (tiket.quantidade == 0 && tiket.observacao.toString().trim().isEmpty) {
+    if (tiket.QUANTIDADE == 0 && tiket.OBSERVACAO.toString().trim().isEmpty) {
       return;
     }
 
-    if (tiket.quantidade == tiketCopy?.quantidade &&
-        tiket.temperatura == tiketCopy?.temperatura &&
-        tiket.alizarol == tiketCopy?.alizarol &&
-        tiket.particao == tiketCopy?.particao &&
-        tiket.observacao == tiketCopy?.observacao) {
+    if (tiket.QUANTIDADE == tiketCopy?.QUANTIDADE &&
+        tiket.TEMPERATURA == tiketCopy?.TEMPERATURA &&
+        tiket.ALIZAROL == tiketCopy?.ALIZAROL &&
+        tiket.PARTICAO == tiketCopy?.PARTICAO &&
+        tiket.OBSERVACAO == tiketCopy?.OBSERVACAO) {
       return;
     }
 
@@ -304,7 +304,7 @@ abstract class _TiketEntradaControllerBase with Store {
           GlobalSettings()
               .appSettings
               .user
-              .descEmpresa
+              .DESC_EMPRESA
               .toString()
               .substring(0, 21)
               .removeAcentos(),
@@ -313,27 +313,27 @@ abstract class _TiketEntradaControllerBase with Store {
       printer.printNewLine();
       printer.printCustom(
           'Data: ' +
-              tiket.data.toString().replaceAll('"', '') +
+              tiket.DATA.toString().replaceAll('"', '') +
               ' Hora: ' +
-              tiket.hora.toString().replaceAll('"', ''),
+              tiket.HORA.toString().replaceAll('"', ''),
           1,
           0);
-      printer.printCustom('Produtor: ' + tiket.nome.trim(), 1, 0);
+      printer.printCustom('Produtor: ' + tiket.NOME.trim(), 1, 0);
       printer.printCustom(
           'Quantidade: ' +
-              tiket.quantidade.toString() +
+              tiket.QUANTIDADE.toString() +
               ' Temperatura: ' +
-              tiket.temperatura.toString(),
+              tiket.TEMPERATURA.toString(),
           1,
           0);
       printer.printCustom(
-          'Alizarol: ' + (tiket.alizarol! ? 'Positivo' : 'Negativo'), 1, 0);
-      printer.printCustom('Tanque: ' + tiket.particao.toString(), 1, 0);
-      printer.printCustom('Placa: ' + tiket.placa!, 1, 0);
-      if (tiket.observacao.toString().trim().isNotEmpty)
+          'Alizarol: ' + (tiket.ALIZAROL! ? 'Positivo' : 'Negativo'), 1, 0);
+      printer.printCustom('Tanque: ' + tiket.PARTICAO.toString(), 1, 0);
+      printer.printCustom('Placa: ' + tiket.PLACA!, 1, 0);
+      if (tiket.OBSERVACAO.toString().trim().isNotEmpty)
         printer.printCustom(
             'Motivo da Nao Coleta: ' +
-                tiket.observacao.toString().removeAcentos().trim(),
+                tiket.OBSERVACAO.toString().removeAcentos().trim(),
             1,
             0);
       printer.printNewLine();
@@ -341,7 +341,7 @@ abstract class _TiketEntradaControllerBase with Store {
       printer.printNewLine();
       printer.printNewLine();
       printer.printCustom('_____________________________________', 1, 0);
-      printer.printCustom(GlobalSettings().appSettings.user.nome!, 1, 0);
+      printer.printCustom(GlobalSettings().appSettings.user.NOME!, 1, 0);
       printer.printNewLine();
       printer.printNewLine();
       printer.printNewLine();
@@ -359,7 +359,7 @@ abstract class _TiketEntradaControllerBase with Store {
 
     ObservableList<TiketEntradaModel> lista = ObservableList.of(tikets
         .where(
-            (rota) => (rota.nome.toLowerCase().contains(value.toLowerCase())))
+            (rota) => (rota.NOME.toLowerCase().contains(value.toLowerCase())))
         .toList());
 
     if (value.isEmpty) {
@@ -393,7 +393,7 @@ abstract class _TiketEntradaControllerBase with Store {
       status = TiketEntradaStatus.loading;
 
       final cnpj = UtilBrasilFields.removeCaracteres(
-          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+          GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
       final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/clientes');
 
@@ -436,27 +436,27 @@ abstract class _TiketEntradaControllerBase with Store {
       for (var tik in tiketsdb) {
         tiketsColetas.add(
           TiketEntradaModel(
-            clifor: tik['clifor'],
-            uf: tik['uf'],
-            municipios: tik['municipios'],
-            rota: tik['rota_coleta'],
-            nome: tik['nome'],
-            ccusto: tik['ccusto'],
-            crioscopia: tik['crioscopia'],
-            alizarol: tik['alizarol'] == 1 ? true : false,
-            data: tik['data'],
-            hora: tik['hora'],
-            observacao: tik['observacao'],
-            placa: tik['placa'],
-            id: tik['id'],
-            particao: tik['particao'],
-            per_desconto: tik['per_desconto'],
-            produto: tik['produto'],
-            quantidade: tik['quantidade'],
-            temperatura: tik['temperatura'],
-            id_coleta: tik['id_coleta'],
-            tiket: tik['tiket'],
-            qtd_vezes_editado: tik['qtd_vezes_editado'],
+            CLIFOR: tik['clifor'],
+            UF: tik['uf'],
+            MUNICIPIOS: tik['municipios'],
+            ROTA: tik['rota_coleta'],
+            NOME: tik['nome'],
+            CCUSTO: tik['ccusto'],
+            CRIOSCOPIA: tik['crioscopia'],
+            ALIZAROL: tik['alizarol'] == 1 ? true : false,
+            DATA: tik['data'],
+            HORA: tik['hora'],
+            OBSERVACAO: tik['observacao'],
+            PLACA: tik['placa'],
+            ID: tik['id'],
+            PARTICAO: tik['particao'],
+            PER_DESCONTO: tik['per_desconto'],
+            PRODUTO: tik['produto'],
+            QUANTIDADE: tik['quantidade'],
+            TEMPERATURA: tik['temperatura'],
+            ID_COLETA: tik['id_coleta'],
+            TIKET: tik['tiket'],
+            QTD_VEZES_EDITADO: tik['qtd_vezes_editado'],
           ),
         );
       }

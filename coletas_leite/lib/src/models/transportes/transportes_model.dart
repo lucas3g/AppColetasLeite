@@ -1,41 +1,41 @@
 import 'dart:convert';
 
 class TransportesModel {
-  String placa;
-  String descricao;
-  int tanques;
+  String PLACA;
+  String DESCRICAO;
+  int TANQUES;
 
   TransportesModel({
-    required this.placa,
-    required this.descricao,
-    required this.tanques,
+    required this.PLACA,
+    required this.DESCRICAO,
+    required this.TANQUES,
   });
 
   TransportesModel copyWith({
-    String? placa,
-    String? descricao,
-    int? tanques,
+    String? PLACA,
+    String? DESCRICAO,
+    int? TANQUES,
   }) {
     return TransportesModel(
-      placa: placa ?? this.placa,
-      descricao: descricao ?? this.descricao,
-      tanques: tanques ?? this.tanques,
+      PLACA: PLACA ?? this.PLACA,
+      DESCRICAO: DESCRICAO ?? this.DESCRICAO,
+      TANQUES: TANQUES ?? this.TANQUES,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'placa': placa,
-      'descricao': descricao,
-      'tanques': tanques,
+      'PLACA': PLACA,
+      'DESCRICAO': DESCRICAO,
+      'TANQUES': TANQUES,
     };
   }
 
   factory TransportesModel.fromMap(Map<String, dynamic> map) {
     return TransportesModel(
-      placa: map['placa'] ?? '',
-      descricao: map['descricao'] ?? '',
-      tanques: map['tanques']?.toInt() ?? 0,
+      PLACA: map['PLACA'] ?? '',
+      DESCRICAO: map['DESCRICAO'] ?? '',
+      TANQUES: map['TANQUES']?.toInt() ?? 0,
     );
   }
 
@@ -46,18 +46,18 @@ class TransportesModel {
 
   @override
   String toString() =>
-      'TransportesModel(placa: $placa, descricao: $descricao, tanques: $tanques)';
+      'TransportesModel(PLACA: $PLACA, DESCRICAO: $DESCRICAO, TANQUES: $TANQUES)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is TransportesModel &&
-        other.placa == placa &&
-        other.descricao == descricao &&
-        other.tanques == tanques;
+        other.PLACA == PLACA &&
+        other.DESCRICAO == DESCRICAO &&
+        other.TANQUES == TANQUES;
   }
 
   @override
-  int get hashCode => placa.hashCode ^ descricao.hashCode ^ tanques.hashCode;
+  int get hashCode => PLACA.hashCode ^ DESCRICAO.hashCode ^ TANQUES.hashCode;
 }

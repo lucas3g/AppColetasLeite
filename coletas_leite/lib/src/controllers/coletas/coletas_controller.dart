@@ -17,7 +17,7 @@ abstract class _ColetasControllerBase with Store {
   late BlueThermalPrinter printer = BlueThermalPrinter.instance;
 
   @observable
-  ColetasModel coletas = ColetasModel(rota_finalizada: 0);
+  ColetasModel coletas = ColetasModel(ROTA_FINALIZADA: 0);
 
   @observable
   ObservableList<ColetasModel> ListaColetas = ObservableList.of([]);
@@ -36,7 +36,7 @@ abstract class _ColetasControllerBase with Store {
     try {
       status = ColetasStatus.loading;
 
-      coletas = ColetasModel(rota_finalizada: 0);
+      coletas = ColetasModel(ROTA_FINALIZADA: 0);
 
       db = await DB.instance.database;
 
@@ -65,7 +65,7 @@ abstract class _ColetasControllerBase with Store {
             'transportador': caminhao,
             'tanques': tanques,
             'motorista': motorista,
-            'ccusto': GlobalSettings().appSettings.user.ccusto,
+            'ccusto': GlobalSettings().appSettings.user.CCUSTO,
             'rota_finalizada': 0,
             'enviada': 0,
           });
@@ -78,20 +78,20 @@ abstract class _ColetasControllerBase with Store {
           await db.query('agl_coleta', where: 'id = ?', whereArgs: [id_gerado]);
 
       for (var item in coleta) {
-        coletas.data_mov = item['data_mov'];
-        coletas.rota_coleta = item['rota_coleta'];
-        coletas.motorista = item['motorista'];
-        coletas.dt_hora_ini = item['dt_hora_ini'];
-        coletas.dt_hora_fim = item['dt_hora_fim'];
-        coletas.transportador = item['transportador'];
-        coletas.tanques = item['tanques'];
-        coletas.rota_finalizada = item['rota_finalizada'];
-        coletas.rota_nome = item['rota_nome'];
-        coletas.km_inicio = item['km_inicio'];
-        coletas.km_fim = item['km_fim'];
-        coletas.ccusto = item['ccusto'];
-        coletas.id = item['id'];
-        coletas.enviada = item['enviada'];
+        coletas.DATA_MOV = item['data_mov'];
+        coletas.ROTA_COLETA = item['rota_coleta'];
+        coletas.MOTORISTA = item['motorista'];
+        coletas.DT_HORA_INI = item['dt_hora_ini'];
+        coletas.DT_HORA_FIM = item['dt_hora_fim'];
+        coletas.TRANSPORTADOR = item['transportador'];
+        coletas.TANQUES = item['tanques'];
+        coletas.ROTA_FINALIZADA = item['rota_finalizada'];
+        coletas.ROTA_NOME = item['rota_nome'];
+        coletas.KM_INICIO = item['km_inicio'];
+        coletas.KM_FIM = item['km_fim'];
+        coletas.CCUSTO = item['ccusto'];
+        coletas.ID = item['id'];
+        coletas.ENVIADA = item['enviada'];
       }
 
       status = ColetasStatus.success;
@@ -115,27 +115,27 @@ abstract class _ColetasControllerBase with Store {
       for (var item in coleta) {
         ListaColetas.add(
           ColetasModel(
-            data_mov: item['data_mov'],
-            rota_coleta: item['rota_coleta'],
-            motorista: item['motorista'],
-            dt_hora_ini: item['dt_hora_ini'],
-            dt_hora_fim: item['dt_hora_fim'],
-            transportador: item['transportador'],
-            tanques: item['tanques'],
-            rota_finalizada: item['rota_finalizada'],
-            rota_nome: item['rota_nome'],
-            km_inicio: item['km_inicio'],
-            km_fim: item['km_fim'],
-            ccusto: item['ccusto'],
-            id: item['id'],
-            enviada: item['enviada'],
+            DATA_MOV: item['data_mov'],
+            ROTA_COLETA: item['rota_coleta'],
+            MOTORISTA: item['motorista'],
+            DT_HORA_INI: item['dt_hora_ini'],
+            DT_HORA_FIM: item['dt_hora_fim'],
+            TRANSPORTADOR: item['transportador'],
+            TANQUES: item['tanques'],
+            ROTA_FINALIZADA: item['rota_finalizada'],
+            ROTA_NOME: item['rota_nome'],
+            KM_INICIO: item['km_inicio'],
+            KM_FIM: item['km_fim'],
+            CCUSTO: item['ccusto'],
+            ID: item['id'],
+            ENVIADA: item['enviada'],
           ),
         );
       }
 
-      ListaColetas.sort((a, b) => ("${a.rota_finalizada}${a.enviada}")
+      ListaColetas.sort((a, b) => ("${a.ROTA_FINALIZADA}${a.ENVIADA}")
           .toString()
-          .compareTo(("${b.rota_finalizada}${b.enviada}").toString()));
+          .compareTo(("${b.ROTA_FINALIZADA}${b.ENVIADA}").toString()));
 
       if (ListaColetas.isNotEmpty) {
         status = ColetasStatus.success;
@@ -157,7 +157,7 @@ abstract class _ColetasControllerBase with Store {
 
       await db.transaction((txn) async {
         final col = await txn
-            .query('agl_coleta', where: 'id = ?', whereArgs: [coleta.id]);
+            .query('agl_coleta', where: 'id = ?', whereArgs: [coleta.ID]);
 
         if (col.isNotEmpty) {
           await txn.update(
@@ -171,10 +171,10 @@ abstract class _ColetasControllerBase with Store {
                     ':' +
                     DateTime.now().minute.toString().padLeft(2, '0') +
                     '"',
-                'km_fim': coleta.km_fim
+                'km_fim': coleta.KM_FIM
               },
               where: 'id = ?',
-              whereArgs: [coleta.id]);
+              whereArgs: [coleta.ID]);
         }
 
         status = ColetasStatus.success;
@@ -231,7 +231,7 @@ abstract class _ColetasControllerBase with Store {
         List<dynamic> listaColetas = [];
 
         List tikets = await db.query('agl_tiket_entrada',
-            where: 'id_coleta = ?', whereArgs: [coleta.id]);
+            where: 'id_coleta = ?', whereArgs: [coleta.ID]);
 
         if (tikets.isNotEmpty) {
           listaColetas = tikets;
@@ -243,7 +243,7 @@ abstract class _ColetasControllerBase with Store {
             GlobalSettings()
                 .appSettings
                 .user
-                .descEmpresa
+                .DESC_EMPRESA
                 .toString()
                 .substring(0, 21)
                 .removeAcentos(),

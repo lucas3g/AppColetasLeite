@@ -1,46 +1,46 @@
 import 'dart:convert';
 
 class RotasLeiteModel {
-  int id;
-  String descricao;
-  String transportador;
-  int? rota_finalizada;
+  int ID;
+  String DESCRICAO;
+  String TRANSPORTADOR;
+  int? ROTA_FINALIZADA;
   RotasLeiteModel({
-    required this.id,
-    required this.descricao,
-    required this.transportador,
-    this.rota_finalizada,
+    required this.ID,
+    required this.DESCRICAO,
+    required this.TRANSPORTADOR,
+    this.ROTA_FINALIZADA,
   });
 
   RotasLeiteModel copyWith({
-    int? id,
-    String? descricao,
-    String? transportador,
-    int? rota_finalizada,
+    int? ID,
+    String? DESCRICAO,
+    String? TRANSPORTADOR,
+    int? ROTA_FINALIZADA,
   }) {
     return RotasLeiteModel(
-      id: id ?? this.id,
-      descricao: descricao ?? this.descricao,
-      transportador: transportador ?? this.transportador,
-      rota_finalizada: rota_finalizada ?? this.rota_finalizada,
+      ID: ID ?? this.ID,
+      DESCRICAO: DESCRICAO ?? this.DESCRICAO,
+      TRANSPORTADOR: TRANSPORTADOR ?? this.TRANSPORTADOR,
+      ROTA_FINALIZADA: ROTA_FINALIZADA ?? this.ROTA_FINALIZADA,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'descricao': descricao,
-      'transportador': transportador,
-      'rota_finalizada': rota_finalizada,
+      'ID': ID,
+      'DESCRICAO': DESCRICAO,
+      'TRANSPORTADOR': TRANSPORTADOR,
+      'ROTA_FINALIZADA': ROTA_FINALIZADA,
     };
   }
 
   factory RotasLeiteModel.fromMap(Map<String, dynamic> map) {
     return RotasLeiteModel(
-      id: map['id']?.toInt() ?? 0,
-      descricao: map['descricao'] ?? '',
-      transportador: map['transportador'] ?? '',
-      rota_finalizada: map['rota_finalizada']?.toInt(),
+      ID: map['ID']?.toInt() ?? 0,
+      DESCRICAO: map['DESCRICAO'] ?? '',
+      TRANSPORTADOR: map['TRANSPORTADOR'] ?? '',
+      ROTA_FINALIZADA: map['ROTA_FINALIZADA']?.toInt(),
     );
   }
 
@@ -51,7 +51,7 @@ class RotasLeiteModel {
 
   @override
   String toString() {
-    return 'RotasLeiteModel(id: $id, descricao: $descricao, transportador: $transportador, rota_finalizada: $rota_finalizada)';
+    return 'RotasLeiteModel(ID: $ID, DESCRICAO: $DESCRICAO, TRANSPORTADOR: $TRANSPORTADOR, ROTA_FINALIZADA: $ROTA_FINALIZADA)';
   }
 
   @override
@@ -59,17 +59,17 @@ class RotasLeiteModel {
     if (identical(this, other)) return true;
 
     return other is RotasLeiteModel &&
-        other.id == id &&
-        other.descricao == descricao &&
-        other.transportador == transportador &&
-        other.rota_finalizada == rota_finalizada;
+        other.ID == ID &&
+        other.DESCRICAO == DESCRICAO &&
+        other.TRANSPORTADOR == TRANSPORTADOR &&
+        other.ROTA_FINALIZADA == ROTA_FINALIZADA;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        descricao.hashCode ^
-        transportador.hashCode ^
-        rota_finalizada.hashCode;
+    return ID.hashCode ^
+        DESCRICAO.hashCode ^
+        TRANSPORTADOR.hashCode ^
+        ROTA_FINALIZADA.hashCode;
   }
 }

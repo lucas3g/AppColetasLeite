@@ -22,7 +22,7 @@ class CardRotasWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: (filteredRotas[index].rota_finalizada == 1 ? true : false)
+        color: (filteredRotas[index].ROTA_FINALIZADA == 1 ? true : false)
             ? Colors.white
             : Colors.grey.shade400,
         border: Border.all(),
@@ -30,7 +30,7 @@ class CardRotasWidget extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () async {
-          if (filteredRotas[index].rota_finalizada == 0) {
+          if (filteredRotas[index].ROTA_FINALIZADA == 0) {
             await MeuToast.toast(
                 title: 'Atenção',
                 message: 'Rota pendente de finalização.',
@@ -41,8 +41,8 @@ class CardRotasWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (BuildContext context) => TransportadorPage(
-                  rota: filteredRotas[index].descricao,
-                  id_rota: filteredRotas[index].id,
+                  rota: filteredRotas[index].DESCRICAO,
+                  id_rota: filteredRotas[index].ID,
                 ),
               ),
             );
@@ -59,9 +59,9 @@ class CardRotasWidget extends StatelessWidget {
           ),
         ),
         title: Text(
-          filteredRotas[index].id.toString() +
+          filteredRotas[index].ID.toString() +
               ' - ' +
-              filteredRotas[index].descricao,
+              filteredRotas[index].DESCRICAO,
           style: AppTheme.textStyles.titleLogin.copyWith(
             fontSize: 16,
             color: Colors.black,

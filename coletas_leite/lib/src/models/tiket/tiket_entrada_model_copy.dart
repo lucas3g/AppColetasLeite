@@ -3,149 +3,149 @@ import 'dart:convert';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 
 class TiketEntradaModelCopy {
-  int rota;
-  String? rota_nome;
-  String nome;
-  String municipios;
-  String uf;
-  int? clifor;
-  int? produto;
-  String? data;
-  int? tiket;
-  int? quantidade;
-  double? per_desconto;
-  int? ccusto;
-  double? crioscopia;
-  bool? alizarol;
-  String? hora;
-  int? particao;
-  String? observacao;
-  String? placa;
-  double? temperatura;
-  int? id;
-  int? id_coleta;
+  int ROTA;
+  String? ROTA_NOME;
+  String NOME;
+  String MUNICIPIOS;
+  String UF;
+  int? CLIFOR;
+  int? PRODUTO;
+  String? DATA;
+  int? TIKET;
+  int? QUANTIDADE;
+  double? PER_DESCONTO;
+  int? CCUSTO;
+  double? CRIOSCOPIA;
+  bool? ALIZAROL;
+  String? HORA;
+  int? PARTICAO;
+  String? OBSERVACAO;
+  String? PLACA;
+  double? TEMPERATURA;
+  int? ID;
+  int? ID_COLETA;
 
   TiketEntradaModelCopy({
-    required this.rota,
-    this.rota_nome,
-    required this.nome,
-    required this.municipios,
-    required this.uf,
-    this.clifor,
-    this.produto,
-    this.data,
-    this.tiket,
-    this.quantidade,
-    this.per_desconto,
-    this.alizarol,
-    this.ccusto,
-    this.crioscopia,
-    this.hora,
-    this.particao,
-    this.observacao,
-    this.placa,
-    this.temperatura,
-    this.id,
-    this.id_coleta,
+    required this.ROTA,
+    this.ROTA_NOME,
+    required this.NOME,
+    required this.MUNICIPIOS,
+    required this.UF,
+    this.CLIFOR,
+    this.PRODUTO,
+    this.DATA,
+    this.TIKET,
+    this.QUANTIDADE,
+    this.PER_DESCONTO,
+    this.ALIZAROL,
+    this.CCUSTO,
+    this.CRIOSCOPIA,
+    this.HORA,
+    this.PARTICAO,
+    this.OBSERVACAO,
+    this.PLACA,
+    this.TEMPERATURA,
+    this.ID,
+    this.ID_COLETA,
   });
 
   TiketEntradaModelCopy copyWith({
-    int? rota,
-    String? rota_nome,
-    String? nome,
-    String? municipios,
-    String? uf,
-    int? clifor,
-    int? produto,
-    String? data,
-    int? tiket,
-    int? quantidade,
-    double? per_desconto,
-    int? ccusto,
-    double? crioscopia,
-    bool? alizarol,
-    String? hora,
-    int? particao,
-    String? observacao,
-    String? placa,
-    double? temperatura,
-    int? id,
-    int? id_coleta,
+    int? ROTA,
+    String? ROTA_NOME,
+    String? NOME,
+    String? MUNICIPIOS,
+    String? UF,
+    int? CLIFOR,
+    int? PRODUTO,
+    String? DATA,
+    int? TIKET,
+    int? QUANTIDADE,
+    double? PER_DESCONTO,
+    int? CCUSTO,
+    double? CRIOSCOPIA,
+    bool? ALIZAROL,
+    String? HORA,
+    int? PARTICAO,
+    String? OBSERVACAO,
+    String? PLACA,
+    double? TEMPERATURA,
+    int? ID,
+    int? ID_COLETA,
   }) {
     return TiketEntradaModelCopy(
-      rota: rota ?? this.rota,
-      rota_nome: rota_nome ?? this.rota_nome,
-      nome: nome ?? this.nome,
-      municipios: municipios ?? this.municipios,
-      uf: uf ?? this.uf,
-      clifor: clifor ?? this.clifor,
-      produto: produto ?? this.produto,
-      data: data ?? this.data,
-      tiket: tiket ?? this.tiket,
-      quantidade: quantidade ?? this.quantidade,
-      per_desconto: per_desconto ?? this.per_desconto,
-      ccusto: ccusto ?? this.ccusto,
-      crioscopia: crioscopia ?? this.crioscopia,
-      alizarol: alizarol ?? this.alizarol,
-      hora: hora ?? this.hora,
-      particao: particao ?? this.particao,
-      observacao: observacao ?? this.observacao,
-      placa: placa ?? this.placa,
-      temperatura: temperatura ?? this.temperatura,
-      id: id ?? this.id,
-      id_coleta: id_coleta ?? this.id_coleta,
+      ROTA: ROTA ?? this.ROTA,
+      ROTA_NOME: ROTA_NOME ?? this.ROTA_NOME,
+      NOME: NOME ?? this.NOME,
+      MUNICIPIOS: MUNICIPIOS ?? this.MUNICIPIOS,
+      UF: UF ?? this.UF,
+      CLIFOR: CLIFOR ?? this.CLIFOR,
+      PRODUTO: PRODUTO ?? this.PRODUTO,
+      DATA: DATA ?? this.DATA,
+      TIKET: TIKET ?? this.TIKET,
+      QUANTIDADE: QUANTIDADE ?? this.QUANTIDADE,
+      PER_DESCONTO: PER_DESCONTO ?? this.PER_DESCONTO,
+      CCUSTO: CCUSTO ?? this.CCUSTO,
+      CRIOSCOPIA: CRIOSCOPIA ?? this.CRIOSCOPIA,
+      ALIZAROL: ALIZAROL ?? this.ALIZAROL,
+      HORA: HORA ?? this.HORA,
+      PARTICAO: PARTICAO ?? this.PARTICAO,
+      OBSERVACAO: OBSERVACAO ?? this.OBSERVACAO,
+      PLACA: PLACA ?? this.PLACA,
+      TEMPERATURA: TEMPERATURA ?? this.TEMPERATURA,
+      ID: ID ?? this.ID,
+      ID_COLETA: ID_COLETA ?? this.ID_COLETA,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'rota': rota,
-      'rota_nome': rota_nome,
-      'nome': nome,
-      'municipios': municipios,
-      'uf': uf,
-      'clifor': clifor,
-      'produto': produto,
-      'data': data,
-      'tiket': tiket,
-      'quantidade': quantidade,
-      'per_desconto': per_desconto,
-      'ccusto': ccusto,
-      'crioscopia': crioscopia,
-      'alizarol': alizarol,
-      'hora': hora,
-      'particao': particao,
-      'observacao': observacao,
-      'temperatura': temperatura,
-      'id': id,
-      'id_coleta': id_coleta,
+      'ROTA': ROTA,
+      'ROTA_NOME': ROTA_NOME,
+      'NOME': NOME,
+      'MUNICIPIOS': MUNICIPIOS,
+      'UF': UF,
+      'CLIFOR': CLIFOR,
+      'PRODUTO': PRODUTO,
+      'DATA': DATA,
+      'TIKET': TIKET,
+      'QUANTIDADE': QUANTIDADE,
+      'PER_DESCONTO': PER_DESCONTO,
+      'CCUSTO': CCUSTO,
+      'CRIOSCOPIA': CRIOSCOPIA,
+      'ALIZAROL': ALIZAROL,
+      'HORA': HORA,
+      'PARTICAO': PARTICAO,
+      'OBSERVACAO': OBSERVACAO,
+      'TEMPERATURA': TEMPERATURA,
+      'ID': ID,
+      'ID_COLETA': ID_COLETA,
     };
   }
 
   factory TiketEntradaModelCopy.fromMap(Map<String, dynamic> map) {
     return TiketEntradaModelCopy(
-      rota: map['rota']?.toInt() ?? 0,
-      rota_nome: map['rota_nome'] ?? '',
-      nome: map['nome'] ?? '',
-      municipios: map['municipios'] ?? '',
-      uf: map['uf'] ?? '',
-      clifor: map['clifor']?.toInt() ?? 0,
-      produto: map['produto']?.toInt() ?? 0,
-      data: map['data'] ?? '',
-      tiket: map['tiket']?.toInt() ?? 0,
-      quantidade: map['quantidade']?.toInt() ?? 0,
-      per_desconto: map['per_desconto']?.toDouble() ?? 0.0,
-      ccusto:
-          map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.ccusto,
-      crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
-      alizarol: map['alizarol'] ?? false,
-      hora: map['hora'] ?? '',
-      particao: map['particao']?.toInt() ?? 0,
-      observacao: map['observacao'] ?? '',
-      placa: map['placa'] ?? '',
-      temperatura: map['temperatura']?.toDouble() ?? 0.0,
-      id: map['id']?.toInt() ?? 0,
-      id_coleta: map['id_coleta']?.toInt() ?? 0,
+      ROTA: map['ROTA']?.toInt() ?? 0,
+      ROTA_NOME: map['ROTA_NOME'] ?? '',
+      NOME: map['NOME'] ?? '',
+      MUNICIPIOS: map['MUNICIPIOS'] ?? '',
+      UF: map['UF'] ?? '',
+      CLIFOR: map['CLIFOR']?.toInt() ?? 0,
+      PRODUTO: map['PRODUTO']?.toInt() ?? 0,
+      DATA: map['DATA'] ?? '',
+      TIKET: map['TIKET']?.toInt() ?? 0,
+      QUANTIDADE: map['QUANTIDADE']?.toInt() ?? 0,
+      PER_DESCONTO: map['PER_DESCONTO']?.toDouble() ?? 0.0,
+      CCUSTO:
+          map['CCUSTO']?.toInt() ?? GlobalSettings().appSettings.user.CCUSTO,
+      CRIOSCOPIA: map['CRIOSCOPIA']?.toDouble() ?? 0.0,
+      ALIZAROL: map['ALIZAROL'] ?? false,
+      HORA: map['HORA'] ?? '',
+      PARTICAO: map['PARTICAO']?.toInt() ?? 0,
+      OBSERVACAO: map['OBSERVACAO'] ?? '',
+      PLACA: map['PLACA'] ?? '',
+      TEMPERATURA: map['TEMPERATURA']?.toDouble() ?? 0.0,
+      ID: map['ID']?.toInt() ?? 0,
+      ID_COLETA: map['ID_COLETA']?.toInt() ?? 0,
     );
   }
 
@@ -156,7 +156,7 @@ class TiketEntradaModelCopy {
 
   @override
   String toString() {
-    return 'TiketEntradaModelCopy(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, alizarol: $alizarol, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
+    return 'TiketEntradaModelCopy(ROTA: $ROTA, ROTA_NOME: $ROTA_NOME, NOME: $NOME, MUNICIPIOS: $MUNICIPIOS, UF: $UF, CLIFOR: $CLIFOR, PRODUTO: $PRODUTO, DATA: $DATA, TIKET: $TIKET, QUANTIDADE: $QUANTIDADE, PER_DESCONTO: $PER_DESCONTO, CCUSTO: $CCUSTO, CRIOSCOPIA: $CRIOSCOPIA, ALIZAROL: $ALIZAROL, HORA: $HORA, PARTICAO: $PARTICAO, OBSERVACAO: $OBSERVACAO, TEMPERATURA: $TEMPERATURA, ID: $ID, ID_COLETA: $ID_COLETA)';
   }
 
   @override
@@ -164,51 +164,51 @@ class TiketEntradaModelCopy {
     if (identical(this, other)) return true;
 
     return other is TiketEntradaModelCopy &&
-        other.rota == rota &&
-        other.rota_nome == rota_nome &&
-        other.nome == nome &&
-        other.municipios == municipios &&
-        other.uf == uf &&
-        other.clifor == clifor &&
-        other.produto == produto &&
-        other.data == data &&
-        other.tiket == tiket &&
-        other.quantidade == quantidade &&
-        other.per_desconto == per_desconto &&
-        other.ccusto == ccusto &&
-        other.crioscopia == crioscopia &&
-        other.alizarol == alizarol &&
-        other.hora == hora &&
-        other.particao == particao &&
-        other.observacao == observacao &&
-        other.placa == placa &&
-        other.temperatura == temperatura &&
-        other.id == id &&
-        other.id_coleta == id_coleta;
+        other.ROTA == ROTA &&
+        other.ROTA_NOME == ROTA_NOME &&
+        other.NOME == NOME &&
+        other.MUNICIPIOS == MUNICIPIOS &&
+        other.UF == UF &&
+        other.CLIFOR == CLIFOR &&
+        other.PRODUTO == PRODUTO &&
+        other.DATA == DATA &&
+        other.TIKET == TIKET &&
+        other.QUANTIDADE == QUANTIDADE &&
+        other.PER_DESCONTO == PER_DESCONTO &&
+        other.CCUSTO == CCUSTO &&
+        other.CRIOSCOPIA == CRIOSCOPIA &&
+        other.ALIZAROL == ALIZAROL &&
+        other.HORA == HORA &&
+        other.PARTICAO == PARTICAO &&
+        other.OBSERVACAO == OBSERVACAO &&
+        other.PLACA == PLACA &&
+        other.TEMPERATURA == TEMPERATURA &&
+        other.ID == ID &&
+        other.ID_COLETA == ID_COLETA;
   }
 
   @override
   int get hashCode {
-    return rota.hashCode ^
-        rota_nome.hashCode ^
-        nome.hashCode ^
-        municipios.hashCode ^
-        uf.hashCode ^
-        clifor.hashCode ^
-        produto.hashCode ^
-        data.hashCode ^
-        tiket.hashCode ^
-        quantidade.hashCode ^
-        per_desconto.hashCode ^
-        ccusto.hashCode ^
-        crioscopia.hashCode ^
-        alizarol.hashCode ^
-        hora.hashCode ^
-        particao.hashCode ^
-        observacao.hashCode ^
-        placa.hashCode ^
-        temperatura.hashCode ^
-        id.hashCode ^
-        id_coleta.hashCode;
+    return ROTA.hashCode ^
+        ROTA_NOME.hashCode ^
+        NOME.hashCode ^
+        MUNICIPIOS.hashCode ^
+        UF.hashCode ^
+        CLIFOR.hashCode ^
+        PRODUTO.hashCode ^
+        DATA.hashCode ^
+        TIKET.hashCode ^
+        QUANTIDADE.hashCode ^
+        PER_DESCONTO.hashCode ^
+        CCUSTO.hashCode ^
+        CRIOSCOPIA.hashCode ^
+        ALIZAROL.hashCode ^
+        HORA.hashCode ^
+        PARTICAO.hashCode ^
+        OBSERVACAO.hashCode ^
+        PLACA.hashCode ^
+        TEMPERATURA.hashCode ^
+        ID.hashCode ^
+        ID_COLETA.hashCode;
   }
 }

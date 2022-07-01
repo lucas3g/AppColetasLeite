@@ -29,7 +29,7 @@ abstract class _RotasLeiteControllerBase with Store {
       status = RotasLeiteStatus.loading;
 
       final cnpj = UtilBrasilFields.removeCaracteres(
-          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+          GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
       try {
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
@@ -75,10 +75,10 @@ abstract class _RotasLeiteControllerBase with Store {
       if (rota.isEmpty) {
         for (var item in rotas) {
           await txn.insert('rotas', {
-            'id': item.id,
-            'descricao': item.descricao,
-            'transportador': item.transportador,
-            'rota_finalizada': item.rota_finalizada,
+            'id': item.ID,
+            'descricao': item.DESCRICAO,
+            'transportador': item.TRANSPORTADOR,
+            'rota_finalizada': item.ROTA_FINALIZADA,
           });
         }
       }
@@ -101,10 +101,10 @@ abstract class _RotasLeiteControllerBase with Store {
       for (var item in rota) {
         rotas.add(
           RotasLeiteModel(
-            id: item['id'],
-            descricao: item['descricao'],
-            transportador: item['transportador'],
-            rota_finalizada: item['rota_finalizada'],
+            ID: item['id'],
+            DESCRICAO: item['descricao'],
+            TRANSPORTADOR: item['transportador'],
+            ROTA_FINALIZADA: item['rota_finalizada'],
           ),
         );
       }
@@ -128,13 +128,13 @@ abstract class _RotasLeiteControllerBase with Store {
       db = await DB.instance.database;
 
       List rota = await db
-          .query('agl_coleta', where: 'rota_coleta = ?', whereArgs: [rotaf.id]);
+          .query('agl_coleta', where: 'rota_coleta = ?', whereArgs: [rotaf.ID]);
 
       if (rota.isNotEmpty) {
-        rotas[rotas.indexOf(rotaf)].rota_finalizada =
+        rotas[rotas.indexOf(rotaf)].ROTA_FINALIZADA =
             rota.every((rota) => rota['rota_finalizada'] == 1) ? 1 : 0;
       } else {
-        rotas[rotas.indexOf(rotaf)].rota_finalizada = 1;
+        rotas[rotas.indexOf(rotaf)].ROTA_FINALIZADA = 1;
       }
       status = RotasLeiteStatus.success;
     } catch (e) {
@@ -151,7 +151,7 @@ abstract class _RotasLeiteControllerBase with Store {
 
     ObservableList<RotasLeiteModel> lista = ObservableList.of(rotas
         .where((rota) =>
-            (rota.descricao.toLowerCase().contains(value.toLowerCase())))
+            (rota.DESCRICAO.toLowerCase().contains(value.toLowerCase())))
         .toList());
 
     if (value.isEmpty) {

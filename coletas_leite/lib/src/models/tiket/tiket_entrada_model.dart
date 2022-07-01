@@ -3,155 +3,183 @@ import 'dart:convert';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 
 class TiketEntradaModel {
-  int rota;
-  String? rota_nome;
-  String nome;
-  String municipios;
-  String uf;
-  int? clifor;
-  int? produto;
-  String? data;
-  int? tiket;
-  int? quantidade;
-  double? per_desconto;
-  int? ccusto;
-  double? crioscopia;
-  bool? alizarol;
-  String? hora;
-  int? particao;
-  String? observacao;
-  String? placa;
-  double? temperatura;
-  int? id;
-  int? id_coleta;
-  int? qtd_vezes_editado;
+  int ROTA;
+  String? ROTA_NOME;
+  String NOME;
+  String MUNICIPIOS;
+  String UF;
+  int? CLIFOR;
+  int? PRODUTO;
+  String? DATA;
+  int? TIKET;
+  int? QUANTIDADE;
+  double? PER_DESCONTO;
+  int? CCUSTO;
+  double? CRIOSCOPIA;
+  bool? ALIZAROL;
+  String? HORA;
+  int? PARTICAO;
+  String? OBSERVACAO;
+  String? PLACA;
+  double? TEMPERATURA;
+  int? ID;
+  int? ID_COLETA;
+  int? QTD_VEZES_EDITADO;
 
   TiketEntradaModel({
-    required this.rota,
-    this.rota_nome,
-    required this.nome,
-    required this.municipios,
-    required this.uf,
-    this.clifor,
-    this.produto,
-    this.data,
-    this.tiket,
-    this.quantidade,
-    this.per_desconto,
-    this.alizarol,
-    this.ccusto,
-    this.crioscopia,
-    this.hora,
-    this.particao,
-    this.observacao,
-    this.placa,
-    this.temperatura,
-    this.id,
-    this.id_coleta,
-    this.qtd_vezes_editado,
+    required this.ROTA,
+    this.ROTA_NOME,
+    required this.NOME,
+    required this.MUNICIPIOS,
+    required this.UF,
+    this.CLIFOR,
+    this.PRODUTO,
+    this.DATA,
+    this.TIKET,
+    this.QUANTIDADE,
+    this.PER_DESCONTO,
+    this.ALIZAROL,
+    this.CCUSTO,
+    this.CRIOSCOPIA,
+    this.HORA,
+    this.PARTICAO,
+    this.OBSERVACAO,
+    this.PLACA,
+    this.TEMPERATURA,
+    this.ID,
+    this.ID_COLETA,
+    this.QTD_VEZES_EDITADO,
   });
 
   TiketEntradaModel copyWith({
-    int? rota,
-    String? rota_nome,
-    String? nome,
-    String? municipios,
-    String? uf,
-    int? clifor,
-    int? produto,
-    String? data,
-    int? tiket,
-    int? quantidade,
-    double? per_desconto,
-    int? ccusto,
-    double? crioscopia,
-    bool? alizarol,
-    String? hora,
-    int? particao,
-    String? observacao,
-    String? placa,
-    double? temperatura,
-    int? id,
-    int? id_coleta,
-    int? qtd_vezes_editado,
+    int? ROTA,
+    String? ROTA_NOME,
+    String? NOME,
+    String? MUNICIPIOS,
+    String? UF,
+    int? CLIFOR,
+    int? PRODUTO,
+    String? DATA,
+    int? TIKET,
+    int? QUANTIDADE,
+    double? PER_DESCONTO,
+    int? CCUSTO,
+    double? CRIOSCOPIA,
+    bool? ALIZAROL,
+    String? HORA,
+    int? PARTICAO,
+    String? OBSERVACAO,
+    String? PLACA,
+    double? TEMPERATURA,
+    int? ID,
+    int? ID_COLETA,
+    int? QTD_VEZES_EDITADO,
   }) {
     return TiketEntradaModel(
-      rota: rota ?? this.rota,
-      rota_nome: rota_nome ?? this.rota_nome,
-      nome: nome ?? this.nome,
-      municipios: municipios ?? this.municipios,
-      uf: uf ?? this.uf,
-      clifor: clifor ?? this.clifor,
-      produto: produto ?? this.produto,
-      data: data ?? this.data,
-      tiket: tiket ?? this.tiket,
-      quantidade: quantidade ?? this.quantidade,
-      per_desconto: per_desconto ?? this.per_desconto,
-      ccusto: ccusto ?? this.ccusto,
-      crioscopia: crioscopia ?? this.crioscopia,
-      alizarol: alizarol ?? this.alizarol,
-      hora: hora ?? this.hora,
-      particao: particao ?? this.particao,
-      observacao: observacao ?? this.observacao,
-      placa: placa ?? this.placa,
-      temperatura: temperatura ?? this.temperatura,
-      id: id ?? this.id,
-      id_coleta: id_coleta ?? this.id_coleta,
-      qtd_vezes_editado: qtd_vezes_editado ?? this.qtd_vezes_editado,
+      ROTA: ROTA ?? this.ROTA,
+      ROTA_NOME: ROTA_NOME ?? this.ROTA_NOME,
+      NOME: NOME ?? this.NOME,
+      MUNICIPIOS: MUNICIPIOS ?? this.MUNICIPIOS,
+      UF: UF ?? this.UF,
+      CLIFOR: CLIFOR ?? this.CLIFOR,
+      PRODUTO: PRODUTO ?? this.PRODUTO,
+      DATA: DATA ?? this.DATA,
+      TIKET: TIKET ?? this.TIKET,
+      QUANTIDADE: QUANTIDADE ?? this.QUANTIDADE,
+      PER_DESCONTO: PER_DESCONTO ?? this.PER_DESCONTO,
+      CCUSTO: CCUSTO ?? this.CCUSTO,
+      CRIOSCOPIA: CRIOSCOPIA ?? this.CRIOSCOPIA,
+      ALIZAROL: ALIZAROL ?? this.ALIZAROL,
+      HORA: HORA ?? this.HORA,
+      PARTICAO: PARTICAO ?? this.PARTICAO,
+      OBSERVACAO: OBSERVACAO ?? this.OBSERVACAO,
+      PLACA: PLACA ?? this.PLACA,
+      TEMPERATURA: TEMPERATURA ?? this.TEMPERATURA,
+      ID: ID ?? this.ID,
+      ID_COLETA: ID_COLETA ?? this.ID_COLETA,
+      QTD_VEZES_EDITADO: QTD_VEZES_EDITADO ?? this.QTD_VEZES_EDITADO,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'rota': rota,
-      'rota_nome': rota_nome,
-      'nome': nome,
-      'municipios': municipios,
-      'uf': uf,
-      'clifor': clifor,
-      'produto': produto,
-      'data': data,
-      'tiket': tiket,
-      'quantidade': quantidade,
-      'per_desconto': per_desconto,
-      'ccusto': ccusto,
-      'crioscopia': crioscopia,
-      'alizarol': alizarol,
-      'hora': hora,
-      'particao': particao,
-      'observacao': observacao,
-      'temperatura': temperatura,
-      'id': id,
-      'id_coleta': id_coleta,
-      'qtd_vezes_editado': qtd_vezes_editado,
+      'ROTA': ROTA,
+      'ROTA_NOME': ROTA_NOME,
+      'NOME': NOME,
+      'MUNICIPIOS': MUNICIPIOS,
+      'UF': UF,
+      'CLIFOR': CLIFOR,
+      'PRODUTO': PRODUTO,
+      'DATA': DATA,
+      'TIKET': TIKET,
+      'QUANTIDADE': QUANTIDADE,
+      'PER_DESCONTO': PER_DESCONTO,
+      'CCUSTO': CCUSTO,
+      'CRIOSCOPIA': CRIOSCOPIA,
+      'ALIZAROL': ALIZAROL,
+      'HORA': HORA,
+      'PARTICAO': PARTICAO,
+      'OBSERVACAO': OBSERVACAO,
+      'TEMPERATURA': TEMPERATURA,
+      'ID': ID,
+      'ID_COLETA': ID_COLETA,
+      'QTD_VEZES_EDITADO': QTD_VEZES_EDITADO,
     };
   }
 
   factory TiketEntradaModel.fromMap(Map<String, dynamic> map) {
     return TiketEntradaModel(
-      rota: map['rota']?.toInt() ?? 0,
-      rota_nome: map['rota_nome'] ?? '',
-      nome: map['nome'] ?? '',
-      municipios: map['municipios'] ?? '',
-      uf: map['uf'] ?? '',
-      clifor: map['clifor']?.toInt() ?? 0,
-      produto: map['produto']?.toInt() ?? 0,
-      data: map['data'] ?? '',
-      tiket: map['tiket']?.toInt() ?? 0,
-      quantidade: map['quantidade']?.toInt() ?? 0,
-      per_desconto: map['per_desconto']?.toDouble() ?? 0.0,
-      ccusto:
-          map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.ccusto,
-      crioscopia: map['crioscopia']?.toDouble() ?? 0.0,
-      alizarol: map['alizarol'] ?? false,
-      hora: map['hora'] ?? '',
-      particao: map['particao']?.toInt() ?? 1,
-      observacao: map['observacao'] ?? '',
-      placa: map['placa'] ?? '',
-      temperatura: map['temperatura']?.toDouble() ?? 0.0,
-      id: map['id']?.toInt() ?? 0,
-      id_coleta: map['id_coleta']?.toInt() ?? 0,
-      qtd_vezes_editado: map['qtd_vezes_editado']?.toInt() ?? 0,
+      ROTA: map['ROTA']?.toInt() ?? 0,
+      ROTA_NOME: map['ROTA_NOME'] ?? '',
+      NOME: map['NOME'] ?? '',
+      MUNICIPIOS: map['MUNICIPIOS'] ?? '',
+      UF: map['UF'] ?? '',
+      CLIFOR: map['CLIFOR']?.toInt() ?? 0,
+      PRODUTO: map['PRODUTO']?.toInt() ?? 0,
+      DATA: map['DATA'] ?? '',
+      TIKET: map['TIKET']?.toInt() ?? 0,
+      QUANTIDADE: map['QUANTIDADE']?.toInt() ?? 0,
+      PER_DESCONTO: map['PER_DESCONTO']?.toDouble() ?? 0.0,
+      CCUSTO:
+          map['CCUSTO']?.toInt() ?? GlobalSettings().appSettings.user.CCUSTO,
+      CRIOSCOPIA: map['CRIOSCOPIA']?.toDouble() ?? 0.0,
+      ALIZAROL: map['ALIZAROL'] ?? false,
+      HORA: map['HORA'] ?? '',
+      PARTICAO: map['PARTICAO']?.toInt() ?? 1,
+      OBSERVACAO: map['OBSERVACAO'] ?? '',
+      PLACA: map['PLACA'] ?? '',
+      TEMPERATURA: map['TEMPERATURA']?.toDouble() ?? 0.0,
+      ID: map['ID']?.toInt() ?? 0,
+      ID_COLETA: map['ID_COLETA']?.toInt() ?? 0,
+      QTD_VEZES_EDITADO: map['QTD_VEZES_EDITADO']?.toInt() ?? 0,
+    );
+  }
+
+  factory TiketEntradaModel.fromMapDb(Map<String, dynamic> map) {
+    return TiketEntradaModel(
+      ROTA: map['rota']?.toInt() ?? 0,
+      ROTA_NOME: map['rota_nome'] ?? '',
+      NOME: map['nome'] ?? '',
+      MUNICIPIOS: map['municipios'] ?? '',
+      UF: map['uf'] ?? '',
+      CLIFOR: map['clifor']?.toInt() ?? 0,
+      PRODUTO: map['produto']?.toInt() ?? 0,
+      DATA: map['data'] ?? '',
+      TIKET: map['tiket']?.toInt() ?? 0,
+      QUANTIDADE: map['quantidade']?.toInt() ?? 0,
+      PER_DESCONTO: map['per_desconto']?.toDouble() ?? 0.0,
+      CCUSTO:
+          map['ccusto']?.toInt() ?? GlobalSettings().appSettings.user.CCUSTO,
+      CRIOSCOPIA: map['crioscopia']?.toDouble() ?? 0.0,
+      ALIZAROL: map['alizarol'] ?? false,
+      HORA: map['hora'] ?? '',
+      PARTICAO: map['particao']?.toInt() ?? 1,
+      OBSERVACAO: map['observacao'] ?? '',
+      PLACA: map['placa'] ?? '',
+      TEMPERATURA: map['temperatura']?.toDouble() ?? 0.0,
+      ID: map['id']?.toInt() ?? 0,
+      ID_COLETA: map['id_coleta']?.toInt() ?? 0,
+      QTD_VEZES_EDITADO: map['qtd_vezes_editado']?.toInt() ?? 0,
     );
   }
 
@@ -162,7 +190,7 @@ class TiketEntradaModel {
 
   @override
   String toString() {
-    return 'TiketEntradaModel(rota: $rota, rota_nome: $rota_nome, nome: $nome, municipios: $municipios, uf: $uf, clifor: $clifor, produto: $produto, data: $data, tiket: $tiket, quantidade: $quantidade, per_desconto: $per_desconto, ccusto: $ccusto, crioscopia: $crioscopia, alizarol: $alizarol, hora: $hora, particao: $particao, observacao: $observacao, temperatura: $temperatura, id: $id, id_coleta: $id_coleta)';
+    return 'TiketEntradaModel(ROTA: $ROTA, ROTA_NOME: $ROTA_NOME, NOME: $NOME, MUNICIPIOS: $MUNICIPIOS, UF: $UF, CLIFOR: $CLIFOR, PRODUTO: $PRODUTO, DATA: $DATA, TIKET: $TIKET, QUANTIDADE: $QUANTIDADE, PER_DESCONTO: $PER_DESCONTO, CCUSTO: $CCUSTO, CRIOSCOPIA: $CRIOSCOPIA, ALIZAROL: $ALIZAROL, HORA: $HORA, PARTICAO: $PARTICAO, OBSERVACAO: $OBSERVACAO, TEMPERATURA: $TEMPERATURA, ID: $ID, ID_COLETA: $ID_COLETA)';
   }
 
   @override
@@ -170,53 +198,53 @@ class TiketEntradaModel {
     if (identical(this, other)) return true;
 
     return other is TiketEntradaModel &&
-        other.rota == rota &&
-        other.rota_nome == rota_nome &&
-        other.nome == nome &&
-        other.municipios == municipios &&
-        other.uf == uf &&
-        other.clifor == clifor &&
-        other.produto == produto &&
-        other.data == data &&
-        other.tiket == tiket &&
-        other.quantidade == quantidade &&
-        other.per_desconto == per_desconto &&
-        other.ccusto == ccusto &&
-        other.crioscopia == crioscopia &&
-        other.alizarol == alizarol &&
-        other.hora == hora &&
-        other.particao == particao &&
-        other.observacao == observacao &&
-        other.placa == placa &&
-        other.temperatura == temperatura &&
-        other.id == id &&
-        other.id_coleta == id_coleta &&
-        other.qtd_vezes_editado == qtd_vezes_editado;
+        other.ROTA == ROTA &&
+        other.ROTA_NOME == ROTA_NOME &&
+        other.NOME == NOME &&
+        other.MUNICIPIOS == MUNICIPIOS &&
+        other.UF == UF &&
+        other.CLIFOR == CLIFOR &&
+        other.PRODUTO == PRODUTO &&
+        other.DATA == DATA &&
+        other.TIKET == TIKET &&
+        other.QUANTIDADE == QUANTIDADE &&
+        other.PER_DESCONTO == PER_DESCONTO &&
+        other.CCUSTO == CCUSTO &&
+        other.CRIOSCOPIA == CRIOSCOPIA &&
+        other.ALIZAROL == ALIZAROL &&
+        other.HORA == HORA &&
+        other.PARTICAO == PARTICAO &&
+        other.OBSERVACAO == OBSERVACAO &&
+        other.PLACA == PLACA &&
+        other.TEMPERATURA == TEMPERATURA &&
+        other.ID == ID &&
+        other.ID_COLETA == ID_COLETA &&
+        other.QTD_VEZES_EDITADO == QTD_VEZES_EDITADO;
   }
 
   @override
   int get hashCode {
-    return rota.hashCode ^
-        rota_nome.hashCode ^
-        nome.hashCode ^
-        municipios.hashCode ^
-        uf.hashCode ^
-        clifor.hashCode ^
-        produto.hashCode ^
-        data.hashCode ^
-        tiket.hashCode ^
-        quantidade.hashCode ^
-        per_desconto.hashCode ^
-        ccusto.hashCode ^
-        crioscopia.hashCode ^
-        alizarol.hashCode ^
-        hora.hashCode ^
-        particao.hashCode ^
-        observacao.hashCode ^
-        placa.hashCode ^
-        temperatura.hashCode ^
-        id.hashCode ^
-        id_coleta.hashCode ^
-        qtd_vezes_editado.hashCode;
+    return ROTA.hashCode ^
+        ROTA_NOME.hashCode ^
+        NOME.hashCode ^
+        MUNICIPIOS.hashCode ^
+        UF.hashCode ^
+        CLIFOR.hashCode ^
+        PRODUTO.hashCode ^
+        DATA.hashCode ^
+        TIKET.hashCode ^
+        QUANTIDADE.hashCode ^
+        PER_DESCONTO.hashCode ^
+        CCUSTO.hashCode ^
+        CRIOSCOPIA.hashCode ^
+        ALIZAROL.hashCode ^
+        HORA.hashCode ^
+        PARTICAO.hashCode ^
+        OBSERVACAO.hashCode ^
+        PLACA.hashCode ^
+        TEMPERATURA.hashCode ^
+        ID.hashCode ^
+        ID_COLETA.hashCode ^
+        QTD_VEZES_EDITADO.hashCode;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_status.dart';
 import 'package:mobx/mobx.dart';
@@ -19,9 +18,6 @@ abstract class _SincronizarControllerBase with Store {
   Future<void> baixaTodas() async {
     try {
       status = SincronizarStatus.loading;
-
-      final cnpj = UtilBrasilFields.removeCaracteres(
-          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
 
       await controllerRotas.deletaRotas();
       await controllerRotas.getRotas();

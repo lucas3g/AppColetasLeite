@@ -29,7 +29,7 @@ abstract class _EnvioControllerBase with Store {
 
       try {
         final cnpj = UtilBrasilFields.removeCaracteres(
-            GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+            GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -141,13 +141,13 @@ abstract class _EnvioControllerBase with Store {
     try {
       final UserModel user = GlobalSettings().appSettings.user;
       final authConfig =
-          jsonEncode({'USUARIO': user.login, 'SENHA': user.senha});
+          jsonEncode({'USUARIO': user.LOGIN, 'SENHA': user.SENHA});
 
       final Response<dynamic> response = await GlobalSettings.recursiveFunction(
           function: () {
             try {
               final response = MeuDio.dio().post(
-                '/login/${UtilBrasilFields.removeCaracteres(user.cnpj.substring(0, 10))}',
+                '/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
                 data: authConfig,
               );
               return response;
@@ -163,7 +163,7 @@ abstract class _EnvioControllerBase with Store {
       late String autorizado = 'N';
 
       if (response.data.isNotEmpty) {
-        autorizado = jsonDecode(response.data)['app_coleta'];
+        autorizado = jsonDecode(response.data)['APP_COLETA'];
       } else {
         autorizado = 'N';
       }

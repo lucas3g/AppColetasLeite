@@ -29,7 +29,7 @@ abstract class _TransportesControllerBase with Store {
       status = TransportesStatus.loading;
 
       final cnpj = UtilBrasilFields.removeCaracteres(
-          GlobalSettings().appSettings.user.cnpj.substring(0, 10));
+          GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
       try {
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
@@ -76,9 +76,9 @@ abstract class _TransportesControllerBase with Store {
       if (caminhao.isEmpty) {
         for (var item in transp) {
           await txn.insert('caminhoes', {
-            'placa': item.placa,
-            'descricao': item.descricao,
-            'tanques': item.tanques,
+            'placa': item.PLACA,
+            'descricao': item.DESCRICAO,
+            'tanques': item.TANQUES,
           });
         }
       }
@@ -99,9 +99,9 @@ abstract class _TransportesControllerBase with Store {
       for (var item in caminhao) {
         transp.add(
           TransportesModel(
-              placa: item['placa'],
-              descricao: item['descricao'],
-              tanques: item['tanques']),
+              PLACA: item['placa'],
+              DESCRICAO: item['descricao'],
+              TANQUES: item['tanques']),
         );
       }
     status = TransportesStatus.success;
@@ -116,8 +116,8 @@ abstract class _TransportesControllerBase with Store {
 
     ObservableList<TransportesModel> lista = ObservableList.of(transp
         .where((rota) =>
-            (rota.placa.toLowerCase().contains(value.toLowerCase())) ||
-            (rota.descricao.toLowerCase().contains(value.toLowerCase())))
+            (rota.PLACA.toLowerCase().contains(value.toLowerCase())) ||
+            (rota.DESCRICAO.toLowerCase().contains(value.toLowerCase())))
         .toList());
 
     if (value.isEmpty) {
@@ -175,7 +175,7 @@ abstract class _TransportesControllerBase with Store {
     status = TransportesStatus.loading;
     final ultPlaca = await retornaUltimaPlaca();
     if (ultPlaca.isNotEmpty) {
-      final indexAux = lista.indexWhere((e) => e.placa == ultPlaca);
+      final indexAux = lista.indexWhere((e) => e.PLACA == ultPlaca);
       final aux = lista[indexAux];
       lista.removeAt(indexAux);
       lista.insert(0, aux);

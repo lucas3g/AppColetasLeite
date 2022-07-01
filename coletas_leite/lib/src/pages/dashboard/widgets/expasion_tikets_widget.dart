@@ -48,7 +48,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                 ),
                 childrenPadding: EdgeInsets.zero,
                 children: controller.tiketsColetas
-                    .where((tiket) => tiket.id_coleta == widget.id_coleta)
+                    .where((tiket) => tiket.ID_COLETA == widget.id_coleta)
                     .map((e) {
                   return Container(
                     child: Column(
@@ -64,7 +64,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                             ),
                             Expanded(
                               child: Text(
-                                e.nome,
+                                e.NOME,
                                 style: AppTheme.textStyles.button.copyWith(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -82,7 +82,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                             ),
                             Expanded(
                               child: Text(
-                                e.quantidade.toString(),
+                                e.QUANTIDADE.toString(),
                                 style: AppTheme.textStyles.button.copyWith(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -96,7 +96,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                                   .copyWith(fontSize: 16),
                             ),
                             Text(
-                              e.temperatura.toString(),
+                              e.TEMPERATURA.toString(),
                               style: AppTheme.textStyles.button.copyWith(
                                 fontSize: 16,
                                 color: Colors.black,
@@ -113,7 +113,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                             ),
                             Expanded(
                               child: Text(
-                                e.alizarol! ? 'Positivo' : 'Negativo',
+                                e.ALIZAROL! ? 'Positivo' : 'Negativo',
                                 style: AppTheme.textStyles.button.copyWith(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -127,7 +127,7 @@ class _ExpasionTiketsWidgetState extends State<ExpasionTiketsWidget> {
                                   .copyWith(fontSize: 16),
                             ),
                             Text(
-                              e.particao.toString(),
+                              e.PARTICAO.toString(),
                               style: AppTheme.textStyles.button.copyWith(
                                 fontSize: 16,
                                 color: Colors.black,
