@@ -6,10 +6,11 @@ part of 'configuracao_controller.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
-  final _$devicesAtom = Atom(name: '_ConfiguracaoControllerBase.devices');
+  late final _$devicesAtom =
+      Atom(name: '_ConfiguracaoControllerBase.devices', context: context);
 
   @override
   ObservableList<BluetoothDevice> get devices {
@@ -24,8 +25,8 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$selectedDeviceAtom =
-      Atom(name: '_ConfiguracaoControllerBase.selectedDevice');
+  late final _$selectedDeviceAtom = Atom(
+      name: '_ConfiguracaoControllerBase.selectedDevice', context: context);
 
   @override
   BluetoothDevice? get selectedDevice {
@@ -40,7 +41,8 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$printerAtom = Atom(name: '_ConfiguracaoControllerBase.printer');
+  late final _$printerAtom =
+      Atom(name: '_ConfiguracaoControllerBase.printer', context: context);
 
   @override
   BlueThermalPrinter get printer {
@@ -55,7 +57,8 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$statusAtom = Atom(name: '_ConfiguracaoControllerBase.status');
+  late final _$statusAtom =
+      Atom(name: '_ConfiguracaoControllerBase.status', context: context);
 
   @override
   ConfiguracaoStatus get status {
@@ -70,7 +73,8 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$conectadaAtom = Atom(name: '_ConfiguracaoControllerBase.conectada');
+  late final _$conectadaAtom =
+      Atom(name: '_ConfiguracaoControllerBase.conectada', context: context);
 
   @override
   bool get conectada {
@@ -85,7 +89,8 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$idAtom = Atom(name: '_ConfiguracaoControllerBase.id');
+  late final _$idAtom =
+      Atom(name: '_ConfiguracaoControllerBase.id', context: context);
 
   @override
   String get id {
@@ -100,32 +105,34 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
     });
   }
 
-  final _$deviceConectadoAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.deviceConectado');
+  late final _$deviceConectadoAsyncAction = AsyncAction(
+      '_ConfiguracaoControllerBase.deviceConectado',
+      context: context);
 
   @override
   Future<void> deviceConectado() {
     return _$deviceConectadoAsyncAction.run(() => super.deviceConectado());
   }
 
-  final _$getDevicesAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.getDevices');
+  late final _$getDevicesAsyncAction =
+      AsyncAction('_ConfiguracaoControllerBase.getDevices', context: context);
 
   @override
   Future<void> getDevices() {
     return _$getDevicesAsyncAction.run(() => super.getDevices());
   }
 
-  final _$conectaImpressoraAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.conectaImpressora');
+  late final _$conectaImpressoraAsyncAction = AsyncAction(
+      '_ConfiguracaoControllerBase.conectaImpressora',
+      context: context);
 
   @override
   Future<void> conectaImpressora() {
     return _$conectaImpressoraAsyncAction.run(() => super.conectaImpressora());
   }
 
-  final _$conectaAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.conecta');
+  late final _$conectaAsyncAction =
+      AsyncAction('_ConfiguracaoControllerBase.conecta', context: context);
 
   @override
   Future<void> conecta(
@@ -134,16 +141,17 @@ mixin _$ConfiguracaoController on _ConfiguracaoControllerBase, Store {
         .run(() => super.conecta(device: device, context: context));
   }
 
-  final _$desconectaAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.desconecta');
+  late final _$desconectaAsyncAction =
+      AsyncAction('_ConfiguracaoControllerBase.desconecta', context: context);
 
   @override
   Future<void> desconecta() {
     return _$desconectaAsyncAction.run(() => super.desconecta());
   }
 
-  final _$testeImpressaoAsyncAction =
-      AsyncAction('_ConfiguracaoControllerBase.testeImpressao');
+  late final _$testeImpressaoAsyncAction = AsyncAction(
+      '_ConfiguracaoControllerBase.testeImpressao',
+      context: context);
 
   @override
   Future<void> testeImpressao() {

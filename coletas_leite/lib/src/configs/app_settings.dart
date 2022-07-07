@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppSettigns extends ChangeNotifier {
   late SharedPreferences _prefs;
 
-  Map<String, String> logado = {'conectado': 'N'};
+  Map<String, String> logado = {'conectado': 'N', 'id': ''};
   UserModel user = UserModel();
   BluetoothDevice? imp;
 
@@ -30,8 +30,9 @@ class AppSettigns extends ChangeNotifier {
 
   _readLogado() {
     final logadoApp = _prefs.getString('conectado') ?? 'N';
+    final id = _prefs.getString('id') ?? '';
 
-    logado = {'conectado': logadoApp};
+    logado = {'conectado': logadoApp, 'id': id};
 
     notifyListeners();
   }
@@ -53,8 +54,9 @@ class AppSettigns extends ChangeNotifier {
     notifyListeners();
   }
 
-  setLogado({required String conectado}) async {
+  setLogado({required String conectado, required String id}) async {
     await _prefs.setString('conectado', conectado);
+    await _prefs.setString('id', id);
 
     await _readLogado();
   }

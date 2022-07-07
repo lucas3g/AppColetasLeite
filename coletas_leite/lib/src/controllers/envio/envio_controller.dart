@@ -36,7 +36,7 @@ abstract class _EnvioControllerBase with Store {
           final List<dynamic> ListaColetas = await montaJson();
           if (ListaColetas.isNotEmpty) {
             final response = await MeuDio.dio().post(
-                '/setJson/$cnpj/coletas/' +
+                '${MeuDio.baseURLAPP}/setJson/$cnpj/coletas/' +
                     DateTime.now().day.toString() +
                     DateTime.now().month.toString() +
                     DateTime.now().year.toString() +
@@ -147,7 +147,7 @@ abstract class _EnvioControllerBase with Store {
           function: () {
             try {
               final response = MeuDio.dio().post(
-                '/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
+                '${MeuDio.baseURLAPP}/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
                 data: authConfig,
               );
               return response;

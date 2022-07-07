@@ -34,8 +34,8 @@ abstract class _TransportesControllerBase with Store {
       try {
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          final response =
-              await MeuDio.dio().get('/getJson/$cnpj/transp/transp');
+          final response = await MeuDio.dio()
+              .get('${MeuDio.baseURLAPP}/getJson/$cnpj/transp/transp');
 
           final lista = jsonDecode(response.data)
               .map<TransportesModel>(

@@ -42,7 +42,8 @@ abstract class _TiketEntradaControllerBase with Store {
       final cnpj = UtilBrasilFields.removeCaracteres(
           GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
-      final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/clientes');
+      final response = await MeuDio.dio()
+          .get('${MeuDio.baseURLAPP}/getJson/$cnpj/rotas/clientes');
 
       final lista = jsonDecode(response.data)
           .map<TiketEntradaModel>(
@@ -395,7 +396,8 @@ abstract class _TiketEntradaControllerBase with Store {
       final cnpj = UtilBrasilFields.removeCaracteres(
           GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
-      final response = await MeuDio.dio().get('/getJson/$cnpj/rotas/clientes');
+      final response = await MeuDio.dio()
+          .get('${MeuDio.baseURLAPP}/getJson/$cnpj/rotas/clientes');
 
       final lista = jsonDecode(response.data)
           .map<TiketEntradaModel>(

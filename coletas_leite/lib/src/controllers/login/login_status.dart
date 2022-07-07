@@ -5,5 +5,8 @@ enum LoginStatus {
   error,
   semInternet,
   invalidCNPJ,
-  naoAutorizado
+  naoAutorizado,
+  semLicenca,
+  licencaInativa,
+  licencaAtiva,
 }

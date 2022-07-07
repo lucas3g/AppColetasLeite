@@ -2,6 +2,8 @@ import 'package:coletas_leite/src/configs/app_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_controller.dart';
 import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_controller.dart';
+import 'package:coletas_leite/src/controllers/get_info_phone/get_info_phone_controller.dart';
+import 'package:coletas_leite/src/controllers/login/login_controller.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_controller.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_controller.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_controller.dart';
@@ -15,6 +17,8 @@ class GlobalSettings {
   final controllerTiket = GetIt.I.get<TiketEntradaController>();
   final controllerEnvio = GetIt.I.get<EnvioController>();
   final controllerConfig = GetIt.I.get<ConfiguracaoController>();
+  final controllerInfoPhone = GetIt.I.get<GetInfoPhoneController>();
+  final controllerLogin = GetIt.I.get<LoginController>();
 
   static recursiveFunction(
       {required Function function,

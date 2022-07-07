@@ -6,10 +6,11 @@ part of 'tiket_entrada_controller.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
-  final _$tiketsAtom = Atom(name: '_TiketEntradaControllerBase.tikets');
+  late final _$tiketsAtom =
+      Atom(name: '_TiketEntradaControllerBase.tikets', context: context);
 
   @override
   ObservableList<TiketEntradaModel> get tikets {
@@ -24,8 +25,8 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     });
   }
 
-  final _$tiketsColetasAtom =
-      Atom(name: '_TiketEntradaControllerBase.tiketsColetas');
+  late final _$tiketsColetasAtom =
+      Atom(name: '_TiketEntradaControllerBase.tiketsColetas', context: context);
 
   @override
   ObservableList<TiketEntradaModel> get tiketsColetas {
@@ -40,7 +41,8 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     });
   }
 
-  final _$statusAtom = Atom(name: '_TiketEntradaControllerBase.status');
+  late final _$statusAtom =
+      Atom(name: '_TiketEntradaControllerBase.status', context: context);
 
   @override
   TiketEntradaStatus get status {
@@ -55,8 +57,8 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
     });
   }
 
-  final _$getTiketsAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.getTikets');
+  late final _$getTiketsAsyncAction =
+      AsyncAction('_TiketEntradaControllerBase.getTikets', context: context);
 
   @override
   Future<void> getTikets(
@@ -65,8 +67,9 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         () => super.getTikets(rota: rota, id_coleta: id_coleta, placa: placa));
   }
 
-  final _$geraTiketEntradaAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.geraTiketEntrada');
+  late final _$geraTiketEntradaAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.geraTiketEntrada',
+      context: context);
 
   @override
   Future<void> geraTiketEntrada(
@@ -75,8 +78,9 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         super.geraTiketEntrada(rota: rota, id_coleta: id_coleta, placa: placa));
   }
 
-  final _$atualizaTiketAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.atualizaTiket');
+  late final _$atualizaTiketAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.atualizaTiket',
+      context: context);
 
   @override
   Future<void> atualizaTiket(
@@ -86,8 +90,9 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.atualizaTiket(coleta: coleta, coletaCopy: coletaCopy));
   }
 
-  final _$imprimirTicketAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.imprimirTicket');
+  late final _$imprimirTicketAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.imprimirTicket',
+      context: context);
 
   @override
   Future<void> imprimirTicket(
@@ -96,8 +101,9 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.imprimirTicket(tiket: tiket, tiketCopy: tiketCopy));
   }
 
-  final _$onSearchChangedAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.onSearchChanged');
+  late final _$onSearchChangedAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.onSearchChanged',
+      context: context);
 
   @override
   Future<ObservableList<TiketEntradaModel>> onSearchChanged(
@@ -106,24 +112,27 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
-  final _$deletaProdutoresAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.deletaProdutores');
+  late final _$deletaProdutoresAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.deletaProdutores',
+      context: context);
 
   @override
   Future<void> deletaProdutores() {
     return _$deletaProdutoresAsyncAction.run(() => super.deletaProdutores());
   }
 
-  final _$getProdutoresAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.getProdutores');
+  late final _$getProdutoresAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.getProdutores',
+      context: context);
 
   @override
   Future<void> getProdutores() {
     return _$getProdutoresAsyncAction.run(() => super.getProdutores());
   }
 
-  final _$buscaTiketPorIDAsyncAction =
-      AsyncAction('_TiketEntradaControllerBase.buscaTiketPorID');
+  late final _$buscaTiketPorIDAsyncAction = AsyncAction(
+      '_TiketEntradaControllerBase.buscaTiketPorID',
+      context: context);
 
   @override
   Future<void> buscaTiketPorID({required int id_coleta}) {
@@ -131,8 +140,8 @@ mixin _$TiketEntradaController on _TiketEntradaControllerBase, Store {
         .run(() => super.buscaTiketPorID(id_coleta: id_coleta));
   }
 
-  final _$_TiketEntradaControllerBaseActionController =
-      ActionController(name: '_TiketEntradaControllerBase');
+  late final _$_TiketEntradaControllerBaseActionController =
+      ActionController(name: '_TiketEntradaControllerBase', context: context);
 
   @override
   dynamic limpaDados() {

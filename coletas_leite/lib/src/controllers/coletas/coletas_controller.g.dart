@@ -6,10 +6,11 @@ part of 'coletas_controller.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ColetasController on _ColetasControllerBase, Store {
-  final _$coletasAtom = Atom(name: '_ColetasControllerBase.coletas');
+  late final _$coletasAtom =
+      Atom(name: '_ColetasControllerBase.coletas', context: context);
 
   @override
   ColetasModel get coletas {
@@ -24,7 +25,8 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
     });
   }
 
-  final _$ListaColetasAtom = Atom(name: '_ColetasControllerBase.ListaColetas');
+  late final _$ListaColetasAtom =
+      Atom(name: '_ColetasControllerBase.ListaColetas', context: context);
 
   @override
   ObservableList<ColetasModel> get ListaColetas {
@@ -39,7 +41,8 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
     });
   }
 
-  final _$statusAtom = Atom(name: '_ColetasControllerBase.status');
+  late final _$statusAtom =
+      Atom(name: '_ColetasControllerBase.status', context: context);
 
   @override
   ColetasStatus get status {
@@ -54,8 +57,8 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
     });
   }
 
-  final _$iniciaColetaAsyncAction =
-      AsyncAction('_ColetasControllerBase.iniciaColeta');
+  late final _$iniciaColetaAsyncAction =
+      AsyncAction('_ColetasControllerBase.iniciaColeta', context: context);
 
   @override
   Future<void> iniciaColeta(
@@ -74,16 +77,16 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         tanques: tanques));
   }
 
-  final _$getColetasAsyncAction =
-      AsyncAction('_ColetasControllerBase.getColetas');
+  late final _$getColetasAsyncAction =
+      AsyncAction('_ColetasControllerBase.getColetas', context: context);
 
   @override
   Future<void> getColetas() {
     return _$getColetasAsyncAction.run(() => super.getColetas());
   }
 
-  final _$finalizaColetaAsyncAction =
-      AsyncAction('_ColetasControllerBase.finalizaColeta');
+  late final _$finalizaColetaAsyncAction =
+      AsyncAction('_ColetasControllerBase.finalizaColeta', context: context);
 
   @override
   Future<void> finalizaColeta({required ColetasModel coleta}) {
@@ -91,8 +94,9 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.finalizaColeta(coleta: coleta));
   }
 
-  final _$retornaRotaFinalizadaAsyncAction =
-      AsyncAction('_ColetasControllerBase.retornaRotaFinalizada');
+  late final _$retornaRotaFinalizadaAsyncAction = AsyncAction(
+      '_ColetasControllerBase.retornaRotaFinalizada',
+      context: context);
 
   @override
   Future<bool> retornaRotaFinalizada({required int id}) {
@@ -100,8 +104,9 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.retornaRotaFinalizada(id: id));
   }
 
-  final _$imprimirResumoColetasAsyncAction =
-      AsyncAction('_ColetasControllerBase.imprimirResumoColetas');
+  late final _$imprimirResumoColetasAsyncAction = AsyncAction(
+      '_ColetasControllerBase.imprimirResumoColetas',
+      context: context);
 
   @override
   Future<void> imprimirResumoColetas({required ColetasModel coleta}) {
@@ -109,8 +114,8 @@ mixin _$ColetasController on _ColetasControllerBase, Store {
         .run(() => super.imprimirResumoColetas(coleta: coleta));
   }
 
-  final _$_ColetasControllerBaseActionController =
-      ActionController(name: '_ColetasControllerBase');
+  late final _$_ColetasControllerBaseActionController =
+      ActionController(name: '_ColetasControllerBase', context: context);
 
   @override
   dynamic limpaDados() {

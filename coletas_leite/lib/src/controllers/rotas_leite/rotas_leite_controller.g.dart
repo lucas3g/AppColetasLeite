@@ -6,10 +6,11 @@ part of 'rotas_leite_controller.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
-  final _$rotasAtom = Atom(name: '_RotasLeiteControllerBase.rotas');
+  late final _$rotasAtom =
+      Atom(name: '_RotasLeiteControllerBase.rotas', context: context);
 
   @override
   ObservableList<RotasLeiteModel> get rotas {
@@ -24,7 +25,8 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
     });
   }
 
-  final _$statusAtom = Atom(name: '_RotasLeiteControllerBase.status');
+  late final _$statusAtom =
+      Atom(name: '_RotasLeiteControllerBase.status', context: context);
 
   @override
   RotasLeiteStatus get status {
@@ -39,32 +41,33 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
     });
   }
 
-  final _$getRotasAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.getRotas');
+  late final _$getRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.getRotas', context: context);
 
   @override
   Future<void> getRotas() {
     return _$getRotasAsyncAction.run(() => super.getRotas());
   }
 
-  final _$gravaRotasAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.gravaRotas');
+  late final _$gravaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.gravaRotas', context: context);
 
   @override
   Future<void> gravaRotas() {
     return _$gravaRotasAsyncAction.run(() => super.gravaRotas());
   }
 
-  final _$buscaRotasAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.buscaRotas');
+  late final _$buscaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.buscaRotas', context: context);
 
   @override
   Future<void> buscaRotas() {
     return _$buscaRotasAsyncAction.run(() => super.buscaRotas());
   }
 
-  final _$retornaRotaFinalizadaAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.retornaRotaFinalizada');
+  late final _$retornaRotaFinalizadaAsyncAction = AsyncAction(
+      '_RotasLeiteControllerBase.retornaRotaFinalizada',
+      context: context);
 
   @override
   Future<void> retornaRotaFinalizada({required RotasLeiteModel rotaf}) {
@@ -72,8 +75,9 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
         .run(() => super.retornaRotaFinalizada(rotaf: rotaf));
   }
 
-  final _$onSearchChangedAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.onSearchChanged');
+  late final _$onSearchChangedAsyncAction = AsyncAction(
+      '_RotasLeiteControllerBase.onSearchChanged',
+      context: context);
 
   @override
   Future<ObservableList<RotasLeiteModel>> onSearchChanged(
@@ -82,16 +86,16 @@ mixin _$RotasLeiteController on _RotasLeiteControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
-  final _$deletaRotasAsyncAction =
-      AsyncAction('_RotasLeiteControllerBase.deletaRotas');
+  late final _$deletaRotasAsyncAction =
+      AsyncAction('_RotasLeiteControllerBase.deletaRotas', context: context);
 
   @override
   Future<void> deletaRotas() {
     return _$deletaRotasAsyncAction.run(() => super.deletaRotas());
   }
 
-  final _$_RotasLeiteControllerBaseActionController =
-      ActionController(name: '_RotasLeiteControllerBase');
+  late final _$_RotasLeiteControllerBaseActionController =
+      ActionController(name: '_RotasLeiteControllerBase', context: context);
 
   @override
   dynamic limpaDados() {

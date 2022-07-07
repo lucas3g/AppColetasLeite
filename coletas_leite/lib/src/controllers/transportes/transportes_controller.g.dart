@@ -6,10 +6,11 @@ part of 'transportes_controller.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TransportesController on _TransportesControllerBase, Store {
-  final _$transpAtom = Atom(name: '_TransportesControllerBase.transp');
+  late final _$transpAtom =
+      Atom(name: '_TransportesControllerBase.transp', context: context);
 
   @override
   ObservableList<TransportesModel> get transp {
@@ -24,7 +25,8 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
     });
   }
 
-  final _$statusAtom = Atom(name: '_TransportesControllerBase.status');
+  late final _$statusAtom =
+      Atom(name: '_TransportesControllerBase.status', context: context);
 
   @override
   TransportesStatus get status {
@@ -39,32 +41,35 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
     });
   }
 
-  final _$getTranspAsyncAction =
-      AsyncAction('_TransportesControllerBase.getTransp');
+  late final _$getTranspAsyncAction =
+      AsyncAction('_TransportesControllerBase.getTransp', context: context);
 
   @override
   Future<void> getTransp() {
     return _$getTranspAsyncAction.run(() => super.getTransp());
   }
 
-  final _$gravaCaminhoesAsyncAction =
-      AsyncAction('_TransportesControllerBase.gravaCaminhoes');
+  late final _$gravaCaminhoesAsyncAction = AsyncAction(
+      '_TransportesControllerBase.gravaCaminhoes',
+      context: context);
 
   @override
   Future<void> gravaCaminhoes() {
     return _$gravaCaminhoesAsyncAction.run(() => super.gravaCaminhoes());
   }
 
-  final _$buscaCaminhoesAsyncAction =
-      AsyncAction('_TransportesControllerBase.buscaCaminhoes');
+  late final _$buscaCaminhoesAsyncAction = AsyncAction(
+      '_TransportesControllerBase.buscaCaminhoes',
+      context: context);
 
   @override
   Future<void> buscaCaminhoes() {
     return _$buscaCaminhoesAsyncAction.run(() => super.buscaCaminhoes());
   }
 
-  final _$onSearchChangedAsyncAction =
-      AsyncAction('_TransportesControllerBase.onSearchChanged');
+  late final _$onSearchChangedAsyncAction = AsyncAction(
+      '_TransportesControllerBase.onSearchChanged',
+      context: context);
 
   @override
   Future<ObservableList<TransportesModel>> onSearchChanged(
@@ -73,8 +78,9 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.onSearchChanged(value: value));
   }
 
-  final _$retornaUltimaPlacaAsyncAction =
-      AsyncAction('_TransportesControllerBase.retornaUltimaPlaca');
+  late final _$retornaUltimaPlacaAsyncAction = AsyncAction(
+      '_TransportesControllerBase.retornaUltimaPlaca',
+      context: context);
 
   @override
   Future<String> retornaUltimaPlaca() {
@@ -82,16 +88,18 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.retornaUltimaPlaca());
   }
 
-  final _$deletaCaminhoesAsyncAction =
-      AsyncAction('_TransportesControllerBase.deletaCaminhoes');
+  late final _$deletaCaminhoesAsyncAction = AsyncAction(
+      '_TransportesControllerBase.deletaCaminhoes',
+      context: context);
 
   @override
   Future<void> deletaCaminhoes() {
     return _$deletaCaminhoesAsyncAction.run(() => super.deletaCaminhoes());
   }
 
-  final _$jogaPlacaParaPrimeiroAsyncAction =
-      AsyncAction('_TransportesControllerBase.jogaPlacaParaPrimeiro');
+  late final _$jogaPlacaParaPrimeiroAsyncAction = AsyncAction(
+      '_TransportesControllerBase.jogaPlacaParaPrimeiro',
+      context: context);
 
   @override
   Future<List<TransportesModel>> jogaPlacaParaPrimeiro(
@@ -100,8 +108,8 @@ mixin _$TransportesController on _TransportesControllerBase, Store {
         .run(() => super.jogaPlacaParaPrimeiro(lista: lista));
   }
 
-  final _$_TransportesControllerBaseActionController =
-      ActionController(name: '_TransportesControllerBase');
+  late final _$_TransportesControllerBaseActionController =
+      ActionController(name: '_TransportesControllerBase', context: context);
 
   @override
   dynamic limpaDados() {

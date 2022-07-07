@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:coletas_leite/src/components/el_input_widget.dart';
+import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/login/login_controller.dart';
 import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_controller.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginInputButtonWidget extends StatefulWidget {
   LoginInputButtonWidget({Key? key}) : super(key: key);
@@ -22,11 +26,17 @@ class LoginInputButtonWidget extends StatefulWidget {
 class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   final controllerLogin = LoginController();
   final SincronizarController controllerSincronizar = SincronizarController();
+  final getInfoPhoneController = GlobalSettings().controllerInfoPhone;
   late Map<String, String> logado;
   var visiblePassword = false;
 
   FocusNode login = FocusNode();
   FocusNode senha = FocusNode();
+
+  Future getInfoPhone() async {
+    await getInfoPhoneController.getInfoPhone();
+    await mostraInfoPhone();
+  }
 
   @override
   void initState() {
@@ -65,9 +75,93 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
                 'Seu usuário não tem permissão para acessar o aplicativo.\nVerifique seu usuário e/ou senha.',
             type: TypeToast.dadosInv,
             context: context);
+      } else if (controllerLogin.status == LoginStatus.semLicenca) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message:
+                'Não foi encontrado nenhuma licença. Por favor entre em contato com o suporte.',
+            type: TypeToast.dadosInv,
+            context: context);
+      } else if (controllerLogin.status == LoginStatus.licencaInativa) {
+        MeuToast.toast(
+            title: 'Ops... :(',
+            message:
+                'Sua licença esta inativa. Por favor entre em contato com o suporte.',
+            type: TypeToast.dadosInv,
+            context: context);
       }
     });
     super.initState();
+    getInfoPhone();
+  }
+
+  Future mostraInfoPhone() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            elevation: 8,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    'Código de Autenticação: ${getInfoPhoneController.licenca.id}',
+                    style: AppTheme.textStyles.dropdownText
+                        .copyWith(fontSize: 16)),
+                Text(
+                  'Se você já tem uma licença por favor ignore essa mensagem.',
+                  style: TextStyle(fontSize: 13),
+                ),
+                const Divider(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xffcf1f36),
+                        ),
+                        onPressed: () async {
+                          await openWhatsapp(
+                            context: context,
+                            text:
+                                'Código: ${getInfoPhoneController.licenca.id}',
+                            number: '+5554999712433',
+                          );
+                        },
+                        icon: const Icon(Icons.whatsapp_rounded),
+                        label: const Text('Enviar código'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future<void> openWhatsapp(
+      {required BuildContext context,
+      required String text,
+      required String number}) async {
+    var whatsapp = number; //+92xx enter like this
+    var whatsappURlAndroid = "whatsapp://send?phone=$whatsapp&text=$text";
+    var whatsappURLIos = "https://wa.me/$whatsapp?text=${Uri.tryParse(text)}";
+    if (Platform.isIOS) {
+      // for iOS phone only
+      if (await canLaunchUrl(Uri.parse(whatsappURLIos))) {
+        await launchUrl(
+          Uri.parse(
+            whatsappURLIos,
+          ),
+        );
+      } else {}
+    } else {
+      // android , web
+      if (await canLaunchUrl(Uri.parse(whatsappURlAndroid))) {
+        await launchUrl(Uri.parse(whatsappURlAndroid));
+      } else {}
+    }
   }
 
   @override
@@ -129,7 +223,7 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
               inputFormaters: [UpperCaseTextFormatter()],
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(FocusNode());
-                controllerLogin.login();
+                controllerLogin.login(getInfoPhoneController.licenca.id ?? '');
               },
               focusNode: senha,
               controllerLogin: controllerLogin,
@@ -162,8 +256,10 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
                       controllerLogin.status == LoginStatus.naoAutorizado ||
                       controllerLogin.status == LoginStatus.error ||
                       controllerLogin.status == LoginStatus.invalidCNPJ ||
-                      controllerLogin.status == LoginStatus.semInternet) {
-                    controllerLogin.login();
+                      controllerLogin.status == LoginStatus.semInternet ||
+                      controllerLogin.status == LoginStatus.semLicenca) {
+                    controllerLogin
+                        .login(getInfoPhoneController.licenca.id ?? '');
                     FocusScope.of(context).requestFocus(FocusNode());
                   }
                 },
@@ -219,8 +315,16 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 15,
+            TextButton(
+              onPressed: () async {
+                await getInfoPhone();
+              },
+              child: Text(
+                'Licenca para acessar',
+                style: TextStyle(
+                  color: Color(0xffcf1f36),
+                ),
+              ),
             ),
             RichText(
               text: TextSpan(

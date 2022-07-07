@@ -2,9 +2,14 @@ import 'package:coletas_leite/src/pages/login/widgets/login_input_button_widget.
 import 'package:coletas_leite/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

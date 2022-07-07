@@ -5,6 +5,8 @@ import 'package:coletas_leite/src/configs/app_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_controller.dart';
 import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_controller.dart';
+import 'package:coletas_leite/src/controllers/get_info_phone/get_info_phone_controller.dart';
+import 'package:coletas_leite/src/controllers/login/login_controller.dart';
 import 'package:coletas_leite/src/controllers/rotas_leite/rotas_leite_controller.dart';
 import 'package:coletas_leite/src/controllers/tiket/tiket_entrada_controller.dart';
 import 'package:coletas_leite/src/controllers/transportes/transportes_controller.dart';
@@ -23,6 +25,8 @@ void main() async {
       GetIt getIt = GetIt.I;
       getIt.registerSingleton<AppSettigns>(AppSettigns());
       getIt.registerSingleton<RotasLeiteController>(RotasLeiteController());
+      getIt.registerSingleton<GetInfoPhoneController>(GetInfoPhoneController());
+      getIt.registerSingleton<LoginController>(LoginController());
       getIt.registerSingleton<TransportesController>(TransportesController());
       getIt.registerSingleton<ColetasController>(ColetasController());
       getIt.registerSingleton<TiketEntradaController>(TiketEntradaController());

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
-import 'package:coletas_leite/src/controllers/configuracao/configuracao_controller.dart';
 import 'package:coletas_leite/src/controllers/sincronizar/sincronizar_controller.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
@@ -18,10 +17,12 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   final SincronizarController controllerSincronizar = SincronizarController();
   final controllerConfig = GlobalSettings().controllerConfig;
+  final controllerLogin = GlobalSettings().controllerLogin;
 
   Future<void> inicializar() async {
     await Future.delayed(Duration(milliseconds: 500));
     final String conectado = GlobalSettings().appSettings.logado['conectado']!;
+    final String licenca = GlobalSettings().appSettings.logado['id']!;
 
     if (conectado == 'N') {
       Navigator.pushReplacementNamed(context, '/login');
@@ -31,29 +32,29 @@ class _SplashPageState extends State<SplashPage> {
           await controllerConfig.conectaImpressora();
         final result = await InternetAddress.lookup(MeuDio.baseUrl);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          BotToast.showLoading();
-          BotToast.showText(text: 'Buscando dados do Servidor');
-          await Future.delayed(Duration(seconds: 1));
-          await controllerSincronizar.baixaTodas();
-          await Future.delayed(Duration(seconds: 1));
-          BotToast.closeAllLoading();
-          BotToast.cleanAll();
+          if (await controllerLogin.verificaLicenca(licenca)) {
+            BotToast.showLoading();
+            BotToast.showText(text: 'Buscando dados do Servidor');
+            await Future.delayed(Duration(seconds: 1));
+            await controllerSincronizar.baixaTodas();
+            await Future.delayed(Duration(seconds: 1));
+            BotToast.closeAllLoading();
+            BotToast.cleanAll();
+            Navigator.pushReplacementNamed(context, '/dashboard');
+          } else {
+            Navigator.pushReplacementNamed(context, '/login');
+          }
         }
       } on SocketException catch (_) {
         print('Sem Internet Para Sincronizar');
       }
-      Navigator.pushReplacementNamed(context, '/dashboard');
     }
-  }
-
-  void verificaInternet() async {
-    await inicializar();
   }
 
   @override
   void initState() {
     super.initState();
-    verificaInternet();
+    inicializar();
   }
 
   @override
