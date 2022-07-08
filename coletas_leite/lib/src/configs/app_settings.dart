@@ -9,7 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppSettigns extends ChangeNotifier {
   late SharedPreferences _prefs;
 
-  Map<String, String> logado = {'conectado': 'N', 'id': ''};
+  Map<String, String> logado = {
+    'conectado': 'N',
+    'id': '',
+    'LICENCA_ATIVA': ''
+  };
   UserModel user = UserModel();
   BluetoothDevice? imp;
 
@@ -31,8 +35,9 @@ class AppSettigns extends ChangeNotifier {
   _readLogado() {
     final logadoApp = _prefs.getString('conectado') ?? 'N';
     final id = _prefs.getString('id') ?? '';
+    final LICENCA_ATIVA = _prefs.getString('LICENCA_ATIVA') ?? '';
 
-    logado = {'conectado': logadoApp, 'id': id};
+    logado = {'conectado': logadoApp, 'id': id, 'LICENCA_ATIVA': LICENCA_ATIVA};
 
     notifyListeners();
   }
@@ -54,11 +59,19 @@ class AppSettigns extends ChangeNotifier {
     notifyListeners();
   }
 
-  setLogado({required String conectado, required String id}) async {
+  setLogado(
+      {required String conectado,
+      required String id,
+      required String licencaAtiva}) async {
     await _prefs.setString('conectado', conectado);
     await _prefs.setString('id', id);
+    await _prefs.setString('LICENCA_ATIVA', licencaAtiva);
 
     await _readLogado();
+  }
+
+  setLicencaAtiva({required String licencaAtiva}) async {
+    await _prefs.setString('LICENCA_ATIVA', licencaAtiva);
   }
 
   setUser({required UserModel user}) async {

@@ -17,6 +17,9 @@ abstract class _LoginControllerBase with Store {
   @observable
   UserModel user = UserModel();
 
+  @observable
+  String licencaAtiva = 'N';
+
   @action
   void onChanged({String? cnpj, String? login, String? senha}) {
     user = user.copyWith(CNPJ: cnpj, LOGIN: login, SENHA: senha);
@@ -27,35 +30,50 @@ abstract class _LoginControllerBase with Store {
 
   @action
   Future<bool> verificaLicenca(String id) async {
-    status = LoginStatus.loading;
-    final response = await MeuDio.dio().get(
-      '${MeuDio.baseURLLicense}/licenca',
-      options: Options(
-        headers: {'cnpj': 'licenca', 'id': id},
-      ),
-    );
+    try {
+      status = LoginStatus.loading;
+      final response = await MeuDio.dio().get(
+        '${MeuDio.baseURLLicense}/licenca',
+        options: Options(
+          headers: {'cnpj': 'licenca', 'id': id},
+        ),
+      );
 
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    if (response.statusCode != 200) {
-      status = LoginStatus.semLicenca;
-      return false;
-    }
-
-    if (response.data.toString() != '{}') {
-      if (response.data['ATIVO'] == 'S') {
-        status = LoginStatus.licencaAtiva;
-        return true;
-      }
-
-      if (response.data['ATIVO'] == 'N') {
-        status = LoginStatus.licencaInativa;
+      if (response.statusCode != 200) {
+        status = LoginStatus.semLicenca;
         return false;
       }
-    }
 
-    status = LoginStatus.semLicenca;
-    return false;
+      if (response.data.toString() != '{}') {
+        if (response.data['ATIVO'] == 'S') {
+          licencaAtiva = 'S';
+          await GlobalSettings()
+              .appSettings
+              .setLicencaAtiva(licencaAtiva: licencaAtiva);
+          status = LoginStatus.licencaAtiva;
+          return true;
+        }
+
+        if (response.data['ATIVO'] == 'N') {
+          licencaAtiva = 'N';
+          await GlobalSettings()
+              .appSettings
+              .setLicencaAtiva(licencaAtiva: licencaAtiva);
+          status = LoginStatus.licencaInativa;
+          return false;
+        }
+      }
+
+      await GlobalSettings()
+          .appSettings
+          .setLicencaAtiva(licencaAtiva: licencaAtiva);
+
+      status = LoginStatus.semLicenca;
+      return false;
+    } catch (e) {
+      status = LoginStatus.error;
+      return false;
+    }
   }
 
   @action
@@ -122,25 +140,29 @@ abstract class _LoginControllerBase with Store {
 
             await GlobalSettings()
                 .appSettings
-                .setLogado(conectado: 'S', id: id);
+                .setLogado(conectado: 'S', id: id, licencaAtiva: licencaAtiva);
             await GlobalSettings().appSettings.setUser(user: user);
             status = LoginStatus.success;
             await Future.delayed(Duration(seconds: 2));
           } else {
             await GlobalSettings()
                 .appSettings
-                .setLogado(conectado: 'N', id: '');
+                .setLogado(conectado: 'N', id: '', licencaAtiva: 'N');
             status = LoginStatus.naoAutorizado;
           }
           // print('EU SOU RESPONSE $autorizado');
         } else {
           status = LoginStatus.error;
-          await GlobalSettings().appSettings.setLogado(conectado: 'N', id: '');
+          await GlobalSettings()
+              .appSettings
+              .setLogado(conectado: 'N', id: '', licencaAtiva: 'N');
           await Future.delayed(Duration(seconds: 2));
           status = LoginStatus.empty;
         }
       } on DioError catch (e) {
-        await GlobalSettings().appSettings.setLogado(conectado: 'N', id: '');
+        await GlobalSettings()
+            .appSettings
+            .setLogado(conectado: 'N', id: '', licencaAtiva: 'N');
         status = LoginStatus.error;
         print('EU SOU O ERRO $e');
       }

@@ -23,6 +23,8 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(Duration(milliseconds: 500));
     final String conectado = GlobalSettings().appSettings.logado['conectado']!;
     final String licenca = GlobalSettings().appSettings.logado['id']!;
+    final String licencaAtiva =
+        GlobalSettings().appSettings.logado['LICENCA_ATIVA']!;
 
     if (conectado == 'N') {
       Navigator.pushReplacementNamed(context, '/login');
@@ -42,11 +44,25 @@ class _SplashPageState extends State<SplashPage> {
             BotToast.cleanAll();
             Navigator.pushReplacementNamed(context, '/dashboard');
           } else {
+            if (licencaAtiva == 'S' && conectado == 'S') {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            } else {
+              Navigator.pushReplacementNamed(context, '/login');
+            }
+          }
+        } else {
+          if (licencaAtiva == 'S' && conectado == 'S') {
+            Navigator.pushReplacementNamed(context, '/dashboard');
+          } else {
             Navigator.pushReplacementNamed(context, '/login');
           }
         }
       } on SocketException catch (_) {
-        print('Sem Internet Para Sincronizar');
+        if (licencaAtiva == 'S' && conectado == 'S') {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        } else {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
       }
     }
   }
