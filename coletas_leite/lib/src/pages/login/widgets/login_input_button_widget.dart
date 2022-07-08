@@ -257,7 +257,8 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
                       controllerLogin.status == LoginStatus.error ||
                       controllerLogin.status == LoginStatus.invalidCNPJ ||
                       controllerLogin.status == LoginStatus.semInternet ||
-                      controllerLogin.status == LoginStatus.semLicenca) {
+                      controllerLogin.status == LoginStatus.semLicenca ||
+                      controllerLogin.status == LoginStatus.licencaInativa) {
                     controllerLogin
                         .login(getInfoPhoneController.licenca.id ?? '');
                     FocusScope.of(context).requestFocus(FocusNode());
