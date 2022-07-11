@@ -29,8 +29,9 @@ mixin _$EnvioController on _EnvioControllerBase, Store {
       AsyncAction('_EnvioControllerBase.enviar', context: context);
 
   @override
-  Future<int> enviar({required BuildContext context}) {
-    return _$enviarAsyncAction.run(() => super.enviar(context: context));
+  Future<int> enviar({required BuildContext context, required String id}) {
+    return _$enviarAsyncAction
+        .run(() => super.enviar(context: context, id: id));
   }
 
   @override

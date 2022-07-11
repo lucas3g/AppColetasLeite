@@ -23,59 +23,63 @@ abstract class _EnvioControllerBase with Store {
   EnvioStatus status = EnvioStatus.empty;
 
   @action
-  Future<int> enviar({required BuildContext context}) async {
-    try {
-      status = EnvioStatus.loading;
-
+  Future<int> enviar(
+      {required BuildContext context, required String id}) async {
+    if (await GlobalSettings().controllerLogin.verificaLicenca(id)) {
       try {
-        final cnpj = UtilBrasilFields.removeCaracteres(
-            GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
+        status = EnvioStatus.loading;
 
-        final result = await InternetAddress.lookup(MeuDio.baseUrl);
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          final List<dynamic> ListaColetas = await montaJson();
-          if (ListaColetas.isNotEmpty) {
-            final response = await MeuDio.dio().post(
-                '${MeuDio.baseURLAPP}/setJson/$cnpj/coletas/' +
-                    DateTime.now().day.toString() +
-                    DateTime.now().month.toString() +
-                    DateTime.now().year.toString() +
-                    '_' +
-                    DateTime.now().hour.toString() +
-                    '-' +
-                    DateTime.now().minute.toString() +
-                    '-' +
-                    DateTime.now().second.toString(),
-                data: ListaColetas);
+        try {
+          final cnpj = UtilBrasilFields.removeCaracteres(
+              GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
-            if (response.statusCode == 200) {
-              for (var item in ListaColetas) {
-                await atualizaRotasEnviadas(id_coleta: item['id']);
+          final result = await InternetAddress.lookup(MeuDio.baseUrl);
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            final List<dynamic> ListaColetas = await montaJson();
+            if (ListaColetas.isNotEmpty) {
+              final response = await MeuDio.dio().post(
+                  '${MeuDio.baseURLAPP}/setJson/$cnpj/coletas/' +
+                      DateTime.now().day.toString() +
+                      DateTime.now().month.toString() +
+                      DateTime.now().year.toString() +
+                      '_' +
+                      DateTime.now().hour.toString() +
+                      '-' +
+                      DateTime.now().minute.toString() +
+                      '-' +
+                      DateTime.now().second.toString(),
+                  data: ListaColetas);
+
+              if (response.statusCode == 200) {
+                for (var item in ListaColetas) {
+                  await atualizaRotasEnviadas(id_coleta: item['id']);
+                }
+                status = EnvioStatus.success;
+                return response.statusCode!;
+              } else {
+                status = EnvioStatus.success;
+                return response.statusCode!;
               }
-              status = EnvioStatus.success;
-              return response.statusCode!;
             } else {
               status = EnvioStatus.success;
-              return response.statusCode!;
+              return 0;
             }
           } else {
             status = EnvioStatus.success;
-            return 0;
+            return 1;
           }
-        } else {
+        } on SocketException catch (_) {
+          print('Sem Internet Envio');
           status = EnvioStatus.success;
-          return 1;
+          return 2;
         }
-      } on SocketException catch (_) {
-        print('Sem Internet Envio');
+      } catch (e) {
+        print('EU SOU O ERRO DE ENVIO $e');
         status = EnvioStatus.success;
-        return 2;
+        return 3;
       }
-    } catch (e) {
-      print('EU SOU O ERRO DE ENVIO $e');
-      status = EnvioStatus.success;
-      return 3;
     }
+    return 4; //SEM LICENCA
   }
 
   Future<List> montaJson() async {

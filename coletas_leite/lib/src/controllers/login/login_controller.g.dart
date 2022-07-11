@@ -25,6 +25,22 @@ mixin _$LoginController on _LoginControllerBase, Store {
     });
   }
 
+  late final _$licencaAtivaAtom =
+      Atom(name: '_LoginControllerBase.licencaAtiva', context: context);
+
+  @override
+  String get licencaAtiva {
+    _$licencaAtivaAtom.reportRead();
+    return super.licencaAtiva;
+  }
+
+  @override
+  set licencaAtiva(String value) {
+    _$licencaAtivaAtom.reportWrite(value, super.licencaAtiva, () {
+      super.licencaAtiva = value;
+    });
+  }
+
   late final _$statusAtom =
       Atom(name: '_LoginControllerBase.status', context: context);
 
@@ -75,6 +91,7 @@ mixin _$LoginController on _LoginControllerBase, Store {
   String toString() {
     return '''
 user: ${user},
+licencaAtiva: ${licencaAtiva},
 status: ${status}
     ''';
   }

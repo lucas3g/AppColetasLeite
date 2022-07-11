@@ -27,6 +27,7 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   final controllerLogin = LoginController();
   final SincronizarController controllerSincronizar = SincronizarController();
   final getInfoPhoneController = GlobalSettings().controllerInfoPhone;
+  final controllerSharedPref = GlobalSettings().appSettings;
   late Map<String, String> logado;
   var visiblePassword = false;
 
@@ -34,8 +35,10 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   FocusNode senha = FocusNode();
 
   Future getInfoPhone() async {
-    await getInfoPhoneController.getInfoPhone();
-    await mostraInfoPhone();
+    if (controllerSharedPref.logado['id'] == '') {
+      await getInfoPhoneController.getInfoPhone();
+      await mostraInfoPhone();
+    }
   }
 
   @override
@@ -318,7 +321,8 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
             ),
             TextButton(
               onPressed: () async {
-                await getInfoPhone();
+                await getInfoPhoneController.getInfoPhone();
+                await mostraInfoPhone();
               },
               child: Text(
                 'Licenca para acessar',

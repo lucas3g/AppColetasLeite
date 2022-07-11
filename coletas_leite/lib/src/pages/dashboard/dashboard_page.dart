@@ -5,6 +5,7 @@ import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:coletas_leite/src/configs/global_settings.dart';
 import 'package:coletas_leite/src/controllers/coletas/coletas_status.dart';
 import 'package:coletas_leite/src/controllers/envio/envio_status.dart';
+import 'package:coletas_leite/src/controllers/login/login_controller.dart';
 import 'package:coletas_leite/src/pages/coletas/coletas_page.dart';
 import 'package:coletas_leite/src/services/dio.dart';
 import 'package:coletas_leite/src/theme/app_theme.dart';
@@ -25,6 +26,7 @@ class DashBoardPage extends StatefulWidget {
 class _DashBoardPageState extends State<DashBoardPage> {
   final controller = GlobalSettings().controllerColetas;
   final controllerEnvio = GlobalSettings().controllerEnvio;
+  final controllerLicenca = GlobalSettings().controllerLogin;
   BlueThermalPrinter printer = BlueThermalPrinter.instance;
 
   void getColetas() async {
@@ -148,8 +150,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           if (controllerEnvio.status == EnvioStatus.empty ||
                               controllerEnvio.status == EnvioStatus.success ||
                               controllerEnvio.status == EnvioStatus.error) {
-                            final result =
-                                await controllerEnvio.enviar(context: context);
+                            final result = await controllerEnvio.enviar(
+                                context: context,
+                                id: GlobalSettings().appSettings.logado['id'] ??
+                                    '');
                             switch (result) {
                               case 200:
                                 Navigator.pop(context);
@@ -177,6 +181,17 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     type: TypeToast.dadosInv,
                                     context: context);
                                 break;
+                              case 4:
+                                Navigator.pop(context);
+                                Navigator.pushNamed(context, '/login');
+                                MeuToast.toast(
+                                    title: 'Atenção',
+                                    message:
+                                        'Licença inativa. Por favor entre em contato com o suporte.',
+                                    type: TypeToast.dadosInv,
+                                    context: context);
+
+                                break;
                               default:
                                 Navigator.pop(context);
                                 MeuToast.toast(
@@ -195,24 +210,26 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             child: Center(
-                              child:
-                                  controllerEnvio.status == EnvioStatus.loading
-                                      ? Container(
-                                          height: 25,
-                                          width: 25,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        )
-                                      : Text(
-                                          'Enviar',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                              child: controllerEnvio.status ==
+                                          EnvioStatus.loading ||
+                                      controllerLicenca.status ==
+                                          LoginStatus.loading
+                                  ? Container(
+                                      height: 25,
+                                      width: 25,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
                                         ),
+                                      ),
+                                    )
+                                  : Text(
+                                      'Enviar',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
                             ),
                             height: 45,
                             width: size.width * 0.28,
