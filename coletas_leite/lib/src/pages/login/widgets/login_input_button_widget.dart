@@ -35,8 +35,8 @@ class _LoginInputButtonWidgetState extends State<LoginInputButtonWidget> {
   FocusNode senha = FocusNode();
 
   Future getInfoPhone() async {
+    await getInfoPhoneController.getInfoPhone();
     if (controllerSharedPref.logado['id'] == '') {
-      await getInfoPhoneController.getInfoPhone();
       await mostraInfoPhone();
     }
   }
