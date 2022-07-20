@@ -25,16 +25,16 @@ abstract class _EnvioControllerBase with Store {
   @action
   Future<int> enviar(
       {required BuildContext context, required String id}) async {
-    if (await GlobalSettings().controllerLogin.verificaLicenca(id)) {
+    try {
+      status = EnvioStatus.loading;
+
       try {
-        status = EnvioStatus.loading;
+        final cnpj = UtilBrasilFields.removeCaracteres(
+            GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
 
-        try {
-          final cnpj = UtilBrasilFields.removeCaracteres(
-              GlobalSettings().appSettings.user.CNPJ.substring(0, 10));
-
-          final result = await InternetAddress.lookup(MeuDio.baseUrl);
-          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        final result = await InternetAddress.lookup(MeuDio.baseUrl);
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          if (await GlobalSettings().controllerLogin.verificaLicenca(id)) {
             final List<dynamic> ListaColetas = await montaJson();
             if (ListaColetas.isNotEmpty) {
               final response = await MeuDio.dio().post(
@@ -66,20 +66,22 @@ abstract class _EnvioControllerBase with Store {
             }
           } else {
             status = EnvioStatus.success;
-            return 1;
+            return 4; //SEM LICENCA
           }
-        } on SocketException catch (_) {
-          print('Sem Internet Envio');
+        } else {
           status = EnvioStatus.success;
-          return 2;
+          return 1;
         }
-      } catch (e) {
-        print('EU SOU O ERRO DE ENVIO $e');
+      } on SocketException catch (_) {
+        print('Sem Internet Envio');
         status = EnvioStatus.success;
-        return 3;
+        return 2;
       }
+    } catch (e) {
+      print('EU SOU O ERRO DE ENVIO $e');
+      status = EnvioStatus.success;
+      return 3;
     }
-    return 4; //SEM LICENCA
   }
 
   Future<List> montaJson() async {
@@ -140,48 +142,55 @@ abstract class _EnvioControllerBase with Store {
     }
   }
 
-  Future<bool> verificaFuncionarioAutorizado(
+  Future<int> verificaFuncionarioAutorizado(
       {required BuildContext context}) async {
     try {
-      final UserModel user = GlobalSettings().appSettings.user;
-      final authConfig =
-          jsonEncode({'USUARIO': user.LOGIN, 'SENHA': user.SENHA});
+      final result = await InternetAddress.lookup(MeuDio.baseUrl);
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        final UserModel user = GlobalSettings().appSettings.user;
+        final authConfig =
+            jsonEncode({'USUARIO': user.LOGIN, 'SENHA': user.SENHA});
 
-      final Response<dynamic> response = await GlobalSettings.recursiveFunction(
-          function: () {
-            try {
-              final response = MeuDio.dio().post(
-                '${MeuDio.baseURLAPP}/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
-                data: authConfig,
-              );
-              return response;
-            } on DioError catch (e) {
-              print('EU SOU O ERRO DO DIO $e');
-            }
-          },
-          quantity: 0,
-          callback: () {
-            return;
-          });
+        final Response<dynamic> response =
+            await GlobalSettings.recursiveFunction(
+                function: () {
+                  try {
+                    final response = MeuDio.dio().post(
+                      '${MeuDio.baseURLAPP}/login/${UtilBrasilFields.removeCaracteres(user.CNPJ.substring(0, 10))}',
+                      data: authConfig,
+                    );
+                    return response;
+                  } on DioError catch (e) {
+                    print('EU SOU O ERRO DO DIO $e');
+                  }
+                },
+                quantity: 0,
+                callback: () {
+                  return;
+                });
 
-      late String autorizado = 'N';
+        late String autorizado = 'N';
 
-      if (response.data.isNotEmpty) {
-        autorizado = jsonDecode(response.data)['APP_COLETA'];
+        if (response.data.isNotEmpty) {
+          autorizado = jsonDecode(response.data)['APP_COLETA'];
+        } else {
+          autorizado = 'N';
+        }
+
+        if (autorizado == 'N') {
+          await GlobalSettings().appSettings.removeLogado();
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/login');
+          return 0;
+        } else {
+          return 1;
+        }
       } else {
-        autorizado = 'N';
+        return 2;
       }
-
-      if (autorizado == 'N') {
-        await GlobalSettings().appSettings.removeLogado();
-        Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, '/login');
-        return false;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      rethrow;
+    } on SocketException catch (_) {
+      print('Sem Internet Envio');
+      return 2;
     }
   }
 }

@@ -142,11 +142,29 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     Observer(builder: (_) {
                       return GestureDetector(
                         onTap: () async {
-                          if (!(await controllerEnvio
-                              .verificaFuncionarioAutorizado(
-                                  context: context))) {
-                            return;
+                          final value = await controllerEnvio
+                              .verificaFuncionarioAutorizado(context: context);
+
+                          switch (value) {
+                            case 0:
+                              MeuToast.toast(
+                                title: 'Atenção',
+                                message:
+                                    'Funcionário não autorizado a enviar as coletas.',
+                                type: TypeToast.dadosInv,
+                                context: context,
+                              );
+                              return;
+                            case 2:
+                              MeuToast.toast(
+                                title: 'Atenção',
+                                message: 'Celular sem internet',
+                                type: TypeToast.noNet,
+                                context: context,
+                              );
+                              return;
                           }
+
                           if (controllerEnvio.status == EnvioStatus.empty ||
                               controllerEnvio.status == EnvioStatus.success ||
                               controllerEnvio.status == EnvioStatus.error) {
@@ -183,7 +201,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 break;
                               case 4:
                                 Navigator.pop(context);
-                                Navigator.pushNamed(context, '/login');
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/login', (Route<dynamic> route) => false);
                                 MeuToast.toast(
                                     title: 'Atenção',
                                     message:

@@ -35,7 +35,7 @@ abstract class _LoginControllerBase with Store {
       final response = await MeuDio.dio().get(
         '${MeuDio.baseURLLicense}/licenca',
         options: Options(
-          headers: {'cnpj': 'licenca', 'id': id},
+          headers: {'cnpj': 'licenca', 'id': id.trim()},
         ),
       );
 
