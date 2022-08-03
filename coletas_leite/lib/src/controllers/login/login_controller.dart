@@ -62,6 +62,9 @@ abstract class _LoginControllerBase with Store {
           status = LoginStatus.licencaInativa;
           return false;
         }
+      } else {
+        status = LoginStatus.semLicenca;
+        return false;
       }
 
       await GlobalSettings()
